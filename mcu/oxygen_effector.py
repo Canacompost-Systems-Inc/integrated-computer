@@ -1,3 +1,4 @@
 class OxygenEffector:
-    def setOxygenMCU(value):
+
+    def setOxygenMCU(self, value):
         return "Setting the oxygen to " + value

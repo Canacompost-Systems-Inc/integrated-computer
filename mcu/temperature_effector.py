@@ -1,3 +1,4 @@
 class TemperatureEffector:
-    def setTemperatureMCU(value):
+
+    def setTemperatureMCU(self, value):
         return "Setting the oxygen to " + value
