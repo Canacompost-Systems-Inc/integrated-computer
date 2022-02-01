@@ -9,7 +9,7 @@ from service.mcu_manager import *
 app = Flask(__name__)
 
 oxygen_effector = OxygenEffector()
-temperature_effector = OxygenEffector()
+temperature_effector = TemperatureEffector()
 state_manager = StateManager(oxygen_effector, temperature_effector)
 oxygen_service = OxygenService(oxygen_effector)
 temperature_service = TemperatureService(temperature_effector)

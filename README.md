@@ -10,4 +10,4 @@
 1. [Flask Documentation](https://flask.palletsprojects.com/en/2.0.x/)
 
 # Note on the Project Structure 
-The project has been designed to follow the pattern of [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection). Each layer has its dependencies injected in the `app.py` file, to limit coupling between components. 
+The project has been designed to follow the pattern of [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection). Each layer has its dependencies injected in the `app.py` file to limit coupling between components. 
