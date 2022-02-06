@@ -57,11 +57,9 @@ def testPid(kP = 0.2,  kI = 0.0, kD= 0.0, numberIterations=100):
     plt.xlabel('Iteration Count')
     plt.ylabel('PID')
     plt.title('Test PID Class')
-
-    #plt.ylim((-15-0.5, 15+0.5))
-
     plt.grid(True)
     plt.show()
 
 if __name__ == "__main__":
     testPid(kP=1.2, kI=0.2, kD=0.001, numberIterations=250)
+    
