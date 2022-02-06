@@ -31,7 +31,7 @@ class PID():
 
         # Integral Windup Guard 
         # Todo : Review number
-        self.integralWindupGuard = 10
+        self.integralWindupGuard = 5
 
         # Reset output value
         self.outputValue = 0.0
@@ -82,9 +82,9 @@ class PID():
             self.iTerm  += currentError * timeDelta
 
             if (self.iTerm < -self.integralWindupGuard):
-                self.ITerm = -self.integralWindupGuard
-            elif (self.ITerm > self.integralWindupGuard):
-                self.ITerm = self.integralWindupGuard
+                self.iTerm = -self.integralWindupGuard
+            elif (self.iTerm > self.integralWindupGuard):
+                self.iTerm = self.integralWindupGuard
 
             self.dTerm = 0.0
 
@@ -93,11 +93,11 @@ class PID():
                 self.DTerm = errorDelta / timeDelta
 
             # Remember last time and last error for next calculation
-            self.last_time = self.current_time
+            self.last_time = self.currentTime
             self.last_error = currentError
 
             #Calculate Output
-            self.outputValue = self.pTerm + (self.kI * self.iTerm) + (self.kD * self.DTerm)
+            self.outputValue = self.pTerm + (self.kI * self.iTerm) + (self.kD * self.dTerm)
 
             return self.outputValue
 
@@ -112,10 +112,3 @@ class PID():
         Based on a pre-determined sampe time, the PID decides if it should compute or return immediately.
         """
         self.sampleTime = sampleTime
-
-
-    
-
-
-
-
