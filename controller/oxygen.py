@@ -4,9 +4,8 @@ from flask_cors import cross_origin
 import json
 
 # Construct a GET response model. 
-# TODO: Convert the result in a meaningful way. Right now we just return mock data 
 def construct_get_response(result):
-    return json.dumps({"value": "21%", "delta": "-2%"})
+    return json.dumps({"value": result})
 
 # Dynamically generate blueprint for dependency injection. Classes aren't supported due to Flask limitations.
 def construct_oxygen_bp(oxygen_service):
@@ -18,7 +17,7 @@ def construct_oxygen_bp(oxygen_service):
     def oxygen():
         match request.method: 
             case 'POST':
-                result = oxygen_service.setOxygen(80)
+                result = oxygen_service.setOxygen(request.get_json().get("value"))
                 return Response(result, status=200)
             case 'GET': 
                 result = oxygen_service.getOxygen()

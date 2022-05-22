@@ -1,8 +1,12 @@
 class OxygenEffector:
 
-    # TODO: Remove this. We will set oxygen via valve control.
+    def __init__(self):
+        self.value = 18 # Assume atmospheric norm until we can read from the sensor
+
+    # Used as a developer tool, in the real system oxygen should be controlled with valves
     def setOxygenMCU(self, value):
-        return "Setting the oxygen to " + value
+        self.value = value
+        print("Setting the oxygen to " + str(value))
     
     def getOxygenMCU(self):
-        return "Getting oxygen..."
+        return self.value

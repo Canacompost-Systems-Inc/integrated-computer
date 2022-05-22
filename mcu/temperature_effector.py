@@ -1,8 +1,12 @@
 class TemperatureEffector:
 
-    # TODO: Remove this. We will set temperature via valve control.
+    def __init__(self):
+        self.value = 30 # Assume atmospheric norm until we can read from the sensor
+
+    # Used as a developer tool, in the real system temperature should be controlled with valves
     def setTemperatureMCU(self, value):
-        return "Setting the temperature to " + value
+        self.value = value
+        print("Setting the temperature to " + str(value))
     
     def getTemperatureMCU(self):
-        return "Getting temperature..."
+        return self.value
