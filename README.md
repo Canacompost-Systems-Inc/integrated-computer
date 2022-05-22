@@ -13,26 +13,32 @@
 The project has been designed to follow the pattern of [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection). Each layer has its dependencies injected in the `app.py` file to limit coupling between components. 
 
 # API
-`/oxygen` - Supports `GET` and `POST`. Examples: 
+`/oxygen` - Supports `GET` and `POST`. Get and set the oxygen sensor value. Examples: 
 ```
 curl -X GET http://127.0.0.1:5000/oxygen -H 'Content-Type: application/json' 
 curl -X POST http://127.0.0.1:5000/oxygen -H 'Content-Type: application/json' -d  '{"value": "15"}'
 ```
 
-`/temperature` - Supports `GET` and `POST`. Examples: 
+`/temperature` - Supports `GET` and `POST`. Get and set the temperature sensor value. Examples: 
 ```
 curl -X GET http://127.0.0.1:5000/temperature -H 'Content-Type: application/json' 
 curl -X POST http://127.0.0.1:5000/temperature -H 'Content-Type: application/json' -d  '{"value": "35"}'
 ```
 
-`/r0` - Supports `GET` and `POST`. Examples: 
+`/humidity` - Supports `GET` and `POST`. Get and set the humidity sensor value. Examples: 
+```
+curl -X GET http://127.0.0.1:5000/humidity -H 'Content-Type: application/json' 
+curl -X POST http://127.0.0.1:5000/humidity -H 'Content-Type: application/json' -d  '{"value": "75"}'
+```
+
+`/r0` - Supports `GET` and `POST`. Start routine 0. Examples: 
 ```
 curl -X GET http://127.0.0.1:5000/r0 
 curl -X POST http://127.0.0.1:5000/r0 
 ```
 
-`/r1` - Supports `GET` and `POST`.
-`/r2` - Supports `GET` and `POST`.
-`/r3` - Supports `GET` and `POST`.
-`/r4` - Supports `GET` and `POST`.
-`/r5` - Supports `GET` and `POST`.
+`/r1` - Supports `GET` and `POST`. Start routine 1.
+`/r2` - Supports `GET` and `POST`. Start routine 2.
+`/r3` - Supports `GET` and `POST`. Start routine 3.
+`/r4` - Supports `GET` and `POST`. Start routine 4.
+`/r5` - Supports `GET` and `POST`. Start routine 5.
