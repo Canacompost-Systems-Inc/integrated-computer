@@ -9,11 +9,11 @@
 # Helpful docs 
 1. [Flask Documentation](https://flask.palletsprojects.com/en/2.0.x/)
 
-# Testing
-Using the APIs below, routines can be manually test run, and sensor values can be manually set to test the state machine.
-
 # Note on the Project Structure 
 The project has been designed to follow the pattern of [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection). Each layer has its dependencies injected in the `app.py` file to limit coupling between components. 
+
+# Testing
+Using the APIs below, routines can be manually test run, and sensor values can be manually set to test the state machine.
 
 # API
 `/oxygen` - Supports `GET` and `POST`. Get and set the oxygen sensor value. Examples: 

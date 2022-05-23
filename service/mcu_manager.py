@@ -86,7 +86,7 @@ class StateManager():
                         continue
 
                 case "R5":
-                    print("Checking if routine R5 should end with bfsl")
+                    print("Checking if routine R5 should end")
                     # if datetime.now() - timedelta(seconds=10) > last_compressor_start: # Useful for testing
                     if datetime.now() - timedelta(minutes=self.R5_RUNTIME_MINS) > last_compressor_start:
                         self.routines_service.startR0()
@@ -94,7 +94,7 @@ class StateManager():
 
                 # If machine is in default state (R0), check if any routines should start
                 case "R0":
-                    print("Checking if any routines should start with bfsl")
+                    print("Checking if any routines should start")
                     if temperature > self.R1_START_TEMP_THRESHOLD:
                         self.routines_service.startR1()
                         continue
