@@ -80,39 +80,49 @@ class RoutinesService():
         self.valves = valves
         self.compressor = compressor
         self.water_pump = water_pump
+        self.activeRoutine = "R0" # TODO: Move this to a DB so the system can recover from crashes
+
+    def getActiveRoutine(self):
+        return self.activeRoutine
 
     def startR0(self):
         print("Starting routine: 0, Default")
+        self.activeRoutine = "R0"
         self.valves.setValves(self.r0)
         self.compressor.setCompressor(self.r0)
         self.water_pump.setWaterPump(self.r0)
 
     def startR1(self):
         print("Starting routine: 1, Lower Temp")
+        self.activeRoutine = "R1"
         self.valves.setValves(self.r1)
         self.compressor.setCompressor(self.r1)
         self.water_pump.setWaterPump(self.r1)
 
     def startR2(self):
         print("Starting routine: 2, Lower Humidity")
+        self.activeRoutine = "R2"
         self.valves.setValves(self.r2)
         self.compressor.setCompressor(self.r2)
         self.water_pump.setWaterPump(self.r2)
 
     def startR3(self):
         print("Starting routine: 3, Raise Humidity")
+        self.activeRoutine = "R3"
         self.valves.setValves(self.r3)
         self.compressor.setCompressor(self.r3)
         self.water_pump.setWaterPump(self.r3)
 
     def startR4(self):
         print("Starting routine: 4, Raise Oxygen")
+        self.activeRoutine = "R4"
         self.valves.setValves(self.r4)
         self.compressor.setCompressor(self.r4)
         self.water_pump.setWaterPump(self.r4)
 
     def startR5(self):
         print("Starting routine: 5, Air Cycle")
+        self.activeRoutine = "R5"
         self.valves.setValves(self.r5)
         self.compressor.setCompressor(self.r5)
         self.water_pump.setWaterPump(self.r5)

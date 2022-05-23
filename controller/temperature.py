@@ -17,7 +17,7 @@ def construct_temperature_bp(temperature_service):
     def temperature():
         match request.method: 
             case 'POST':
-                result = temperature_service.setTemperature(request.get_json().get("value"))
+                result = temperature_service.setTemperature(int(request.get_json().get("value")))
                 return Response(result, status=200)
             case 'GET': 
                 result = temperature_service.getTemperature()

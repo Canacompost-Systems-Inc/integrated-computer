@@ -1,7 +1,7 @@
 class HumidityEffector:
 
     def __init__(self):
-        self.value = 65 # Assume atmospheric norm until we can read from the sensor
+        self.value = 79
 
     # Used as a developer tool, in the real system oxygen should be controlled with valves
     def setHumidityMCU(self, value):

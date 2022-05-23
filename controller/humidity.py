@@ -17,7 +17,7 @@ def construct_humidity_bp(humidity_service):
     def humidity():
         match request.method: 
             case 'POST':
-                result = humidity_service.setHumidity(request.get_json().get("value"))
+                result = humidity_service.setHumidity(int(request.get_json().get("value")))
                 return Response(result, status=200)
             case 'GET': 
                 result = humidity_service.getHumidity()

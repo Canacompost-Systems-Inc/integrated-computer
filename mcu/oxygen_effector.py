@@ -1,7 +1,7 @@
 class OxygenEffector:
 
     def __init__(self):
-        self.value = 18 # Assume atmospheric norm until we can read from the sensor
+        self.value = 17 
 
     # Used as a developer tool, in the real system oxygen should be controlled with valves
     def setOxygenMCU(self, value):

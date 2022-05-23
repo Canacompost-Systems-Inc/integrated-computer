@@ -1,6 +1,7 @@
 from flask import Blueprint, Response, request
-from service.oxygen import *
+from service.bsfl import *
 from flask_cors import cross_origin
+from distutils import util
 import json
 
 # Construct a GET response model. 
@@ -8,20 +9,21 @@ def construct_get_response(result):
     return json.dumps({"value": result})
 
 # Dynamically generate blueprint for dependency injection. Classes aren't supported due to Flask limitations.
-def construct_oxygen_bp(oxygen_service):
-    oxygen_bp = Blueprint('oxygen', __name__)
+def construct_bsfl_bp(bsfl_service):
+    bsfl_bp = Blueprint('bsfl', __name__)
 
-    # Oxygen REST endpoint supporting GET & POST
-    @oxygen_bp.route('/oxygen', methods=['GET', 'POST'])
+    # bsfl REST endpoint supporting GET & POST
+    @bsfl_bp.route('/bsfl', methods=['GET', 'POST'])
     @cross_origin(supports_credentials=True)
-    def oxygen():
+    def bsfl():
         match request.method: 
             case 'POST':
-                result = oxygen_service.setOxygen(int(request.get_json().get("value")))
+                val = request.get_json().get("value") == "True" # Hack to convert string into boolean
+                result = bsfl_service.setBSFL(val)
                 return Response(result, status=200)
             case 'GET': 
-                result = oxygen_service.getOxygen()
+                result = bsfl_service.getBSFL()
                 return Response(construct_get_response(result), status=200)
         return Response("Bad request type", status=400)
 
-    return(oxygen_bp)
+    return(bsfl_bp)
