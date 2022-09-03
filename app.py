@@ -18,6 +18,7 @@ from service.routines import *
 from service.valves import *
 from service.compressor import *
 from service.water_pump import *
+from service.mcu import *
 
 app = Flask(__name__)
 
@@ -36,7 +37,8 @@ valves_service = ValvesService(valves_effector)
 compressor_service = CompressorService(compressor_effector)
 water_pump_service = WaterPumpService(water_pump_effector)
 routines_service = RoutinesService(valves_service, compressor_service, water_pump_service)
-state_manager = StateManager(oxygen_service, temperature_service, humidity_service, bsfl_service, compressor_service, routines_service)
+mcu_service = MCUService()
+state_manager = StateManager(oxygen_service, temperature_service, humidity_service, bsfl_service, compressor_service, routines_service, mcu_service)
 oxygen_controller = construct_oxygen_bp(oxygen_service)
 temperature_controller = construct_temperature_bp(temperature_service)
 humidity_controller = construct_humidity_bp(humidity_service)

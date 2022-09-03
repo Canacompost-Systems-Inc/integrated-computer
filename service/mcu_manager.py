@@ -31,13 +31,14 @@ class StateManager():
     R5_RUNTIME_MINS = 2
     R5_LAST_COMPRESSOR_STOP_MINS_THRESHOLD = 2
 
-    def __init__(self, oxygen_service, temperature_service, humidity_service, bsfl_service, compressor_service, routines_service):
+    def __init__(self, oxygen_service, temperature_service, humidity_service, bsfl_service, compressor_service, routines_service, mcu_service):
         self.oxygen_service = oxygen_service
         self.temperature_service = temperature_service
         self.humidity_service = humidity_service
         self.bsfl_service = bsfl_service
         self.compressor_service = compressor_service
         self.routines_service = routines_service
+        self.mcu_service = mcu_service
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
     def manage_state(self):
@@ -52,6 +53,8 @@ class StateManager():
             active_routine = self.routines_service.getActiveRoutine()
             print("--- Monitoring and controlling the recycler. Current State: ---")
             print("Oxygen: "+str(oxygen)+", Temperature: "+str(temperature)+", Humidity: "+str(humidity)+", BSFL: "+str(bsfl)+", Last Compressor Start: "+str(last_compressor_start)+", Last Compressor Stop: "+str(last_compressor_stop)+", Active Routine: "+active_routine)
+            #self.mcu_service.decode()
+            self.mcu_service.poll()
 
             match active_routine:
                 # If any non-default routines are running, check if routine should stop by going to R0 (default)
