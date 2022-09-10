@@ -16,12 +16,12 @@ class SensorDatapoint():
         self.datapoint = datapoint
         
 class SensorRepo():
-    def __init__(self, dataHistoryLength: int = 10000):
+    def __init__(self, dataHistoryLength: int = 10000) -> None:
         # dataHistoryLength 1 point per 5 seconds = 12/min * 60 min * 24 hours = 18k points
         self.dataHistoryLength = dataHistoryLength
         self.data = defaultdict(partial(deque, maxlen=self.dataHistoryLength))
 
-    def addPoint(self, sensorDatapoint: SensorDatapoint):
+    def addPoint(self, sensorDatapoint: SensorDatapoint) -> None:
         if not sensorDatapoint.id: 
             # Raise Exceptipon??
             return
@@ -32,12 +32,12 @@ class SensorRepo():
         # Add to sensor queue
         self.data[sensorDatapoint.id].append(datapoint)
 
-    def get(self, sensorId:str):
+    def get(self, sensorId:str) -> Datapoint:
         if not sensorId or sensorId not in self.data:
             return None
         return self.data[sensorId][-1]
 
-    def list(self, sensorId:str, numPoints:int):
+    def list(self, sensorId:str, numPoints:int) -> list(Datapoint):
         if not sensorId or sensorId not in self.data:
             return None 
         if not numPoints:
