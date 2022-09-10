@@ -37,7 +37,7 @@ class SensorRepo():
             return None
         return self.data[sensorId][-1]
 
-    def list(self, sensorId:str, numPoints:int) -> list(Datapoint):
+    def list(self, sensorId:str, numPoints:int) -> list[Datapoint]:
         if not sensorId or sensorId not in self.data:
             return None 
         if not numPoints:
