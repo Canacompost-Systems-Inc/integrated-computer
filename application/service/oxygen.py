@@ -1,4 +1,4 @@
-from mcu.oxygen_effector import *
+from application.mcu.oxygen_effector import *
 
 class OxygenService:
 

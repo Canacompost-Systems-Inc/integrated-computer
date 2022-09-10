@@ -1,4 +1,4 @@
-from mcu.temperature_effector import *
+from application.mcu.temperature_effector import *
 
 class TemperatureService:
 
