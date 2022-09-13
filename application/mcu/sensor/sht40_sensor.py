@@ -1,19 +1,27 @@
 from typing import List
 
-from application.mcu.measurement.base_measurement import BaseMeasurement
-from application.mcu.measurement.temperature_measurement import TemperatureMeasurement
-from application.mcu.measurement.humidity_measurement import HumidityMeasurement
 from application.mcu.sensor.base_sensor import BaseSensor
 
 
 class SHT40Sensor(BaseSensor):
+    """
+    Name: SHT40
+    DeviceId: 0xC0
+    Measurements: Temperature (C), Humidity (%)
+    """
 
-    def device_id(self) -> bytes:
+    @property
+    def sensor_name(self) -> str:
+        return 'SHT40'
+
+    @property
+    def device_id(self) -> str:
         return 'c0'
 
+    @property
     def payload_length(self) -> int:
         return 3
 
-    def read_values(self, payload: str) -> List[BaseMeasurement]:
-        val0, val1, _ = self.decode_payload(payload)
-        return [TemperatureMeasurement(val0), HumidityMeasurement(val1)]
+    @property
+    def measurement_order(self) -> List[str]:
+        return ['temperature', 'humidity']

@@ -8,12 +8,20 @@ from application.controller.humidity import construct_humidity_bp
 from application.controller.routines import construct_r0_bp, construct_r1_bp, construct_r2_bp, construct_r3_bp,\
     construct_r4_bp, construct_r5_bp
 from application.mcu.bsfl_effector import BSFLEffector
+from application.mcu.measurement.co2_measurement import CO2Measurement
+from application.mcu.measurement.humidity_measurement import HumidityMeasurement
+from application.mcu.measurement.pressure_measurement import PressureMeasurement
+from application.mcu.measurement.temperature_measurement import TemperatureMeasurement
 from application.mcu.oxygen_effector import OxygenEffector
 from application.mcu.temperature_effector import TemperatureEffector
 from application.mcu.humidity_effector import HumidityEffector
 from application.mcu.valve_effector import ValvesEffector
 from application.mcu.compressor_effector import CompressorEffector
 from application.mcu.water_pump_effector import WaterPumpEffector
+from application.mcu.sensor.ds18b20_sensor import DS18B20Sensor
+from application.mcu.sensor.ipc10100_sensor import IPC10100Sensor
+from application.mcu.sensor.scd41_sensor import SCD41Sensor
+from application.mcu.sensor.sht40_sensor import SHT40Sensor
 from application.service.bsfl import BSFLService
 from application.service.humidity import HumidityService
 from application.service.mcu import MCUService
@@ -55,7 +63,19 @@ def init_app():
         compressor_service = CompressorService(compressor_effector)
         water_pump_service = WaterPumpService(water_pump_effector)
         routines_service = RoutinesService(valves_service, compressor_service, water_pump_service)
-        mcu_service = MCUService()
+        sensor_list = [
+            SHT40Sensor(),
+            SCD41Sensor(),
+            IPC10100Sensor(),
+            DS18B20Sensor()
+        ]
+        measurements_list = [
+            CO2Measurement,
+            HumidityMeasurement,
+            PressureMeasurement,
+            TemperatureMeasurement
+        ]
+        mcu_service = MCUService(sensor_list, measurements_list, testing=app.config['TESTING'])
         state_manager = StateManager(oxygen_service, temperature_service, humidity_service, bsfl_service,
                                      compressor_service, routines_service, mcu_service)
 

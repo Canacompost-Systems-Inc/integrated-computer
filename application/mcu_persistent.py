@@ -17,12 +17,11 @@ class MCUPersistent:
         app.extensions[self.config_prefix.lower()] = self
 
     def establish_connection(self):
-        # TODO - uncomment before merging (writing this without the device)
-        # self._serial_connection = serial.Serial(
-        #     app.config['MCU_SERIAL_PORT'],
-        #     app.config['MCU_SERIAL_SPEED'],
-        #     timeout=1)
-        pass
+        if not self.app.config['TESTING']:
+            self._serial_connection = serial.Serial(
+                self.app.config['MCU_SERIAL_PORT'],
+                self.app.config['MCU_SERIAL_SPEED'],
+                timeout=1)
 
     def get_mcu(self):
         if not self._serial_connection:

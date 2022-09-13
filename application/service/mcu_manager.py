@@ -47,7 +47,11 @@ class StateManager():
             time.sleep(3)
             measurements = self.mcu_service.get_measurements()
             # TODO - store the measurements (for now just printing)
-            print(f"measurements: {[str(m) for m in measurements]}")
+            pretty_printable = ""
+            for device_name, measurement_list in measurements.items():
+                for m in measurement_list:
+                    pretty_printable += f"{str(m)} (from {device_name}) "
+            print(f"measurements: {pretty_printable}")
 
             oxygen = self.oxygen_service.getOxygen()
             temperature = self.temperature_service.getTemperature()
