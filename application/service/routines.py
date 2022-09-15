@@ -1,4 +1,4 @@
-from service.model.routine import *
+from application.service.model.routine import *
 
 class RoutinesService():
     """

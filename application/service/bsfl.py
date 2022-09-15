@@ -1,4 +1,4 @@
-from mcu.humidity_effector import *
+from application.mcu.humidity_effector import *
 
 class BSFLService:
 
