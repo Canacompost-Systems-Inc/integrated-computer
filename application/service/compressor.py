@@ -1,5 +1,6 @@
 from datetime import datetime
-from service.model.routine import Routine
+
+from application.service.model.routine import Routine
 
 class CompressorService:
 

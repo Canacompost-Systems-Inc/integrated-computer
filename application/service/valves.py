@@ -1,5 +1,5 @@
-from mcu.valve_effector import *
-from service.model.routine import Routine
+from application.mcu.valve_effector import *
+from application.service.model.routine import Routine
 
 class ValvesService:
 
