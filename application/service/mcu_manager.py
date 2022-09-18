@@ -45,7 +45,7 @@ class StateManager():
     def manage_state(self):
         while True:
             time.sleep(3)
-            measurements = self.mcu_service.get_measurements()
+            measurements = self.mcu_service.get_system_snapshot()
             # TODO - store the measurements (for now just printing)
             pretty_printable = ""
             for device_name, measurement_list in measurements.items():
