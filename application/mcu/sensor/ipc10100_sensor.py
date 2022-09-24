@@ -11,12 +11,8 @@ class IPC10100Sensor(BaseSensor):
     """
 
     @property
-    def sensor_name(self) -> str:
+    def device_type_name(self) -> str:
         return 'IPC10100'
-
-    @property
-    def device_id(self) -> str:
-        return 'c2'
 
     @property
     def payload_length(self) -> int:

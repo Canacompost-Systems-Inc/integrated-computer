@@ -5,3 +5,21 @@ class Config(object):
 
     MCU_BAUD_RATE = 9600
     MCU_SERIAL_PORT = '/dev/tty.usbmodem14201'
+
+    # This needs to map {location -> {device_id -> (sensor_type_name/actuator_type_name, device_friendly_name)}}
+    # The device_ids need to be unique across locations (since this is used to send and receive messages from MCU)
+    DEVICE_MAP = {
+        'BIOREACTOR1': {
+            'e1': ('Valve', 'Bioreactor1OutValve'),
+            'e2': ('Valve', 'Bioreactor1InValve'),
+        },
+        'SHARED': {
+            'c0': ('SHT40', 'SharedTempHumiditySensor'),
+            'c1': ('SCD41', 'SharedCO2TempHumiditySensor'),
+            'c2': ('IPC10100', 'SharedTempPressureSensor'),
+            'c3': ('DS18B20', 'SharedTempSensor'),
+            'e0': ('Compressor', 'SharedCompressor'),
+            'e3': ('Valve', 'SharedEnvExchangeOutValve'),
+            'e4': ('Valve', 'SharedEnvExchangeInValve'),
+        },
+    }

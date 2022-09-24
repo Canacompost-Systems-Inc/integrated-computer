@@ -11,12 +11,8 @@ class SHT40Sensor(BaseSensor):
     """
 
     @property
-    def sensor_name(self) -> str:
+    def device_type_name(self) -> str:
         return 'SHT40'
-
-    @property
-    def device_id(self) -> str:
-        return 'c0'
 
     @property
     def payload_length(self) -> int:

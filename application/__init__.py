@@ -7,10 +7,13 @@ from application.controller.temperature import construct_temperature_bp
 from application.controller.humidity import construct_humidity_bp
 from application.controller.routines import construct_r0_bp, construct_r1_bp, construct_r2_bp, construct_r3_bp,\
     construct_r4_bp, construct_r5_bp
+from application.mcu.actuator.compressor_actuator import CompressorActuator
+from application.mcu.actuator.valve_actuator import ValveActuator
 from application.mcu.bsfl_effector import BSFLEffector
 from application.mcu.measurement.co2_measurement import CO2Measurement
 from application.mcu.measurement.humidity_measurement import HumidityMeasurement
 from application.mcu.measurement.pressure_measurement import PressureMeasurement
+from application.mcu.measurement.state_measurement import StateMeasurement
 from application.mcu.measurement.temperature_measurement import TemperatureMeasurement
 from application.mcu.oxygen_effector import OxygenEffector
 from application.mcu.temperature_effector import TemperatureEffector
@@ -63,19 +66,23 @@ def init_app():
         compressor_service = CompressorService(compressor_effector)
         water_pump_service = WaterPumpService(water_pump_effector)
         routines_service = RoutinesService(valves_service, compressor_service, water_pump_service)
-        sensor_list = [
-            SHT40Sensor(),
-            SCD41Sensor(),
-            IPC10100Sensor(),
-            DS18B20Sensor()
+        device_types_list = [
+            SHT40Sensor,
+            SCD41Sensor,
+            IPC10100Sensor,
+            DS18B20Sensor,
+            CompressorActuator,
+            ValveActuator,
         ]
         measurements_list = [
             CO2Measurement,
             HumidityMeasurement,
             PressureMeasurement,
-            TemperatureMeasurement
+            TemperatureMeasurement,
+            StateMeasurement,
         ]
-        mcu_service = MCUService(sensor_list, measurements_list, testing=app.config['TESTING'])
+        mcu_service = MCUService(device_types_list, measurements_list, testing=app.config['TESTING'],
+                                 device_map_config=app.config['DEVICE_MAP'])
         state_manager = StateManager(oxygen_service, temperature_service, humidity_service, bsfl_service,
                                      compressor_service, routines_service, mcu_service)
 
