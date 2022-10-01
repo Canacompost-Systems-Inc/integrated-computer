@@ -11,16 +11,12 @@ class DS18B20Sensor(BaseSensor):
     """
 
     @property
-    def sensor_name(self) -> str:
+    def device_type_name(self) -> str:
         return 'DS18B20'
 
     @property
-    def device_id(self) -> str:
-        return 'c3'
-
-    @property
     def payload_length(self) -> int:
-        return 3
+        return 1
 
     @property
     def measurement_order(self) -> List[str]:

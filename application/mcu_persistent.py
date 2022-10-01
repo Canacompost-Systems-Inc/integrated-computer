@@ -1,4 +1,5 @@
 from flask import current_app
+import time
 import serial
 
 
@@ -20,8 +21,9 @@ class MCUPersistent:
         if not self.app.config['TESTING']:
             self._serial_connection = serial.Serial(
                 self.app.config['MCU_SERIAL_PORT'],
-                self.app.config['MCU_SERIAL_SPEED'],
-                timeout=1)
+                self.app.config['MCU_BAUD_RATE'],
+                timeout=30)
+            time.sleep(1)
 
     def get_mcu(self):
         if not self._serial_connection:

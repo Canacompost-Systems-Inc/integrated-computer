@@ -1,20 +1,20 @@
 from application.mcu.measurement.base_measurement import BaseMeasurement
 
 
-class CO2Measurement(BaseMeasurement):
+class StateMeasurement(BaseMeasurement):
 
     @property
     def name(self) -> str:
-        return "co2"
+        return "state"
 
     @property
     def unit(self) -> str:
-        return "ppm"
+        return ""
 
     @property
     def normal_max(self) -> float:
-        return 40.0
+        return 0
 
     @property
     def normal_min(self) -> float:
-        return 2.0
+        return 0
