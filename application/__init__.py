@@ -2,8 +2,7 @@ import threading
 from flask import Flask
 
 from application.controller.oxygen import construct_oxygen_bp
-from application.mcu.actuator.compressor_actuator import CompressorActuator
-from application.mcu.actuator.valve_actuator import ValveActuator
+from application.mcu.actuator.air_mover_actuator import AirMoverActuator
 from application.mcu.measurement.co2_measurement import CO2Measurement
 from application.mcu.measurement.humidity_measurement import HumidityMeasurement
 from application.mcu.measurement.pressure_measurement import PressureMeasurement
@@ -38,8 +37,7 @@ def init_app():
             SCD41Sensor,
             IPC10100Sensor,
             DS18B20Sensor,
-            CompressorActuator,
-            ValveActuator,
+            AirMoverActuator,
         ]
         measurements_list = [
             CO2Measurement,
