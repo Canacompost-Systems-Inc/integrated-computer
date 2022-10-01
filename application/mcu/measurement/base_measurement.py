@@ -1,10 +1,17 @@
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 
 
-class BaseMeasurement(ABC):
+class BaseMeasurement(metaclass=ABCMeta):
+
+    def __init__(self, val):
+        self.val = val
 
     def __str__(self):
-        return f"{self.val:.2f} {self.unit} {self.name}"
+        val = f"{self.val:.2f}" if isinstance(self.val, float) else f"{self.val}"
+        return f"{val} {self.unit} {self.name}"
+
+    def __repr__(self):
+        return self.__str__()
 
     @property
     @abstractmethod

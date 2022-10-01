@@ -3,9 +3,6 @@ from application.mcu.measurement.base_measurement import BaseMeasurement
 
 class HumidityMeasurement(BaseMeasurement):
 
-    def __init__(self, val):
-        self.val = val
-
     @property
     def name(self) -> str:
         return "humidity"

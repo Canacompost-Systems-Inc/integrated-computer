@@ -1,7 +1,8 @@
 
 # State machine for reading values from MCU
 IDLE = 0
-READING = 1
+READING_DEVICE_ID = 1
+READING_PAYLOAD = 2
 
 # MCU API Misc
 EMPTY = b''

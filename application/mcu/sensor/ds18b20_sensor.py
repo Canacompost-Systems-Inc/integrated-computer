@@ -16,7 +16,7 @@ class DS18B20Sensor(BaseSensor):
 
     @property
     def payload_length(self) -> int:
-        return 3
+        return 1
 
     @property
     def measurement_order(self) -> List[str]:

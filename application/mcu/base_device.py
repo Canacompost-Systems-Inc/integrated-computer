@@ -43,6 +43,7 @@ class BaseDevice(metaclass=ABCMeta):
             if i >= len(self.measurement_order):
                 break
             bytes_val = payload[i*4:i*4+4]
+
             float_val = struct.unpack('!f', bytes_val)[0]
             measurement_name = self.measurement_order[i]
             ret[measurement_name] = float_val

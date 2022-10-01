@@ -16,7 +16,7 @@ class SHT40Sensor(BaseSensor):
 
     @property
     def payload_length(self) -> int:
-        return 3
+        return 2
 
     @property
     def measurement_order(self) -> List[str]:

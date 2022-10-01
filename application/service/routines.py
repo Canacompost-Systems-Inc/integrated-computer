@@ -70,7 +70,7 @@ class RoutinesService():
         }
     }
 
-    def __init__(self, valves, compressor, water_pump):
+    def __init__(self, valves=None, compressor=None, water_pump=None):
         self.r0 = Routine(self.routineMap["R0"])
         self.r1 = Routine(self.routineMap["R1"])
         self.r2 = Routine(self.routineMap["R2"])

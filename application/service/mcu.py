@@ -2,9 +2,9 @@ import logging
 import time
 from typing import Dict, List, Union
 
-from application.constants.mcu import IDLE, READING, EMPTY, START_TRANSMISSION, END_TRANSMISSION, \
-    ACKNOWLEDGE, NEGATIVE_ACKNOWLEDGE, GET_SYSTEM_SNAPSHOT_OPCODE, GET_SENSOR_STATE_OPCODE, GET_ACTUATOR_STATE_OPCODE,\
-    SET_ACTUATOR_STATE_OPCODE
+from application.constants.mcu import IDLE, READING_DEVICE_ID, READING_PAYLOAD, EMPTY, START_TRANSMISSION, \
+    END_TRANSMISSION, ACKNOWLEDGE, NEGATIVE_ACKNOWLEDGE, GET_SYSTEM_SNAPSHOT_OPCODE, GET_SENSOR_STATE_OPCODE, \
+    GET_ACTUATOR_STATE_OPCODE, SET_ACTUATOR_STATE_OPCODE
 from application.mcu.actuator.base_actuator import BaseActuator
 from application.mcu.base_device import BaseDevice
 from application.mcu_persistent import get_mcu
@@ -33,26 +33,35 @@ class MCUService:
         self.mcu_persistent = get_mcu()
         self.testing = testing
 
-    def get_system_snapshot(self) -> Dict[str, List[BaseMeasurement]]:
+    def get_system_snapshot(self) -> Dict[str, Dict[str, List[BaseMeasurement]]]:
         if self.testing:
             # Return example response for local testing without the sensors
-            response = b'\xc0\x41\xd4\xb5\xf4\x42\x44\x01\x2c\x00\x00\x00\x00\xc1\x44\x47\xc0\x00\x41\xeb\xb5\x90\x42\x2a\x5a\xf0'
+            response = b'\xc0\x41\xd5\x02\x88\x42\x48\xf6\xb9\xc1\x45\x18\x00\x00\x41\xe6\x8f\x98\x42\x33\xae\x70\xe1\x00\x00\x00\x00'
+            # 41 d2 c9 c4 424b5df8c14513e00041e425a04237
         else:
             response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
-    def get_sensor_state(self, sensor_device_id=b'\xC0') -> Dict[str, List[BaseMeasurement]]:
-        response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
+    def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
+        if self.testing:
+            # Return example response for local testing without the sensors
+            response = bytes.fromhex(sensor_device_id) + b'\x41\xd5\x02\x88\x42\x48\xf6\xb9'
+        else:
+            response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
-    def get_actuator_state(self, actuator_device_id=b'\xE0') -> Dict[str, Dict[str, Union[float, str]]]:
-        response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
+    def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
+        if self.testing:
+            # Return example response for local testing without the sensors
+            response = bytes.fromhex(actuator_device_id) + b'\x00\x00\x00\x00'
+        else:
+            response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
         response_map = self._decode_get_response(response)
-        return response_map
+        return self.structure_response(response_map)
 
-    def set_actuator_state(self, actuator_device_id=b'\xE0', value='low') -> Dict[str, Dict[str, Union[float, str]]]:
+    def set_actuator_state(self, actuator_device_id='e0', value='low') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
         # Get the bytes for the payload that correspond to this value
         device: BaseActuator = self.device_map.get(actuator_device_id, None)
         if device is None:
@@ -61,7 +70,11 @@ class MCUService:
         if payload is None:
             raise ValueError(f"Unknown value '{value}' for device {device.device_type_name}")
 
-        response = self._make_request(SET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id, payload=payload)
+        if self.testing:
+            # Return example response for local testing without the sensors
+            response = ACKNOWLEDGE
+        else:
+            response = self._make_request(SET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id, payload=payload)
         response_map = self._decode_set_response(response, device_id=actuator_device_id, value=value)
 
         # Check for a failure
@@ -70,35 +83,38 @@ class MCUService:
             if state == "UNKNOWN":
                 raise RuntimeError(f"Set actuator state request failed")
 
-        return response_map
+        return self.structure_response(response_map)
 
-    def _make_request(self, opcode, device_id=b'\x00', payload=b'\x00\x00\x00\x00') -> bytes:
-        request = START_TRANSMISSION + opcode + device_id + payload + END_TRANSMISSION
+    def _make_request(self, opcode, device_id='00', payload=b'\x00\x00\x00\x00') -> bytes:
+        request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
         self.mcu_persistent.write(request)
         return self._get_response()
 
     def _get_response(self, timeout_sec=10) -> bytes:
         buffer = b''
         state = IDLE
+        current_payload_length = 0
 
         while True:
+
             byte = self.mcu_persistent.read()
 
+            if byte == EMPTY:
+                # Wait so we don't keep reading nothing repeatedly
+                time.sleep(1)
+                timeout_sec -= 1
+                if timeout_sec <= 0:
+                    err = f"Timeout waiting for response from MCU."
+                    logging.error(err)
+                    raise RuntimeError(err)
+                continue
+
             if state == IDLE:
-                # Currently idling
+                # Currently idling, waiting for start transmission byte
 
-                if byte == EMPTY:
-                    # Wait so we don't keep reading nothing repeatedly
-                    time.sleep(1)
-                    timeout_sec -= 1
-                    if timeout_sec <= 0:
-                        err = f"Timeout waiting for response from MCU."
-                        logging.error(err)
-                        raise RuntimeError(err)
-
-                elif byte == START_TRANSMISSION:
+                if byte == START_TRANSMISSION:
                     # Start of a new response
-                    state = READING
+                    state = READING_DEVICE_ID
 
                 else:
                     # Read something unexpected
@@ -106,16 +122,41 @@ class MCUService:
                     logging.error(err)
                     raise RuntimeError(err)
 
-            else:
-                # Currently reading a response
+            elif state == READING_DEVICE_ID:
+                # Reading the one-byte device id
 
                 if byte == END_TRANSMISSION:
-                    # This response is done; return it
+                    # This response is done; return it since we're done
                     break
 
-                else:
-                    # Add this byte to the buffer
-                    buffer += byte
+                # Add this byte to the buffer
+                buffer += byte
+
+                # If this is a set response, we won't get a device id (just an ACK or NAK)
+                if byte == ACKNOWLEDGE or byte == NEGATIVE_ACKNOWLEDGE:
+                    continue
+
+                device: BaseDevice = self.device_map.get(byte.hex(), None)
+                if device is None:
+                    raise ValueError(f"Unknown device_id '{byte.hex()}' received from MCU")
+
+                current_payload_length = device.payload_length * 4
+
+                state = READING_PAYLOAD
+
+            elif state == READING_PAYLOAD:
+                # Reading the payload
+
+                # Add this byte to the buffer
+                buffer += byte
+
+                # Continue reading until bytes from this payload are consumed
+                current_payload_length -= 1
+                if current_payload_length > 0:
+                    continue
+
+                # Done reading payload, return to checking for device id or end transmission char
+                state = READING_DEVICE_ID
 
         return buffer
 
@@ -147,7 +188,7 @@ class MCUService:
 
         return response_map
 
-    def _decode_set_response(self, response: bytes, device_id: bytes = None, value: str = None) -> Dict[str, Dict[str, Union[float, str]]]:
+    def _decode_set_response(self, response: bytes, device_id: str = None, value: str = None) -> Dict[str, Dict[str, Union[float, str]]]:
         """
         SET Actuator Value will return the format: <STX><ACK><ETX> for success or <STX><NAK><ETX> for failure
 
@@ -157,7 +198,7 @@ class MCUService:
         response_map = {}
 
         # Need to extract this one byte as a range to avoid auto casting to an int
-        first_byte = response[0:1].hex()
+        first_byte = response[0:1]
         if first_byte == ACKNOWLEDGE:
             # Set the state to the intended value
             state = value
@@ -172,17 +213,27 @@ class MCUService:
         response_map[device.device_id] = {'state': state}
         return response_map
 
-    def structure_response(self, response_map) -> Dict[str, List[BaseMeasurement]]:
+    def structure_response(self, response_map) -> Dict[str, Dict[str, List[BaseMeasurement]]]:
         # Convert returned values to measurement objects
-        ret = {}
-        for sensor_name in response_map:
-            ret[sensor_name] = []
 
-            for measurement_name, float_val in response_map[sensor_name].items():
+        # Response is structured like the device map in the config. i.e.
+        # {location -> {device_id -> (device_friendly_name, [measurements])}}
+        ret = {}
+
+        for device_id in response_map:
+
+            device: BaseDevice = self.device_map.get(device_id, None)
+
+            if device.location not in ret:
+                ret[device.location] = {}
+
+            ret[device.location][device.device_id] = (device.device_friendly_name, [])
+
+            for measurement_name, float_val in response_map[device_id].items():
 
                 measurement_class = self.measurement_map.get(measurement_name, None)
                 measurement_instance = measurement_class(float_val)
 
-                ret[sensor_name].append(measurement_instance)
+                ret[device.location][device.device_id][1].append(measurement_instance)
 
         return ret
