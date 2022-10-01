@@ -11,16 +11,12 @@ class IPC10100Sensor(BaseSensor):
     """
 
     @property
-    def sensor_name(self) -> str:
+    def device_type_name(self) -> str:
         return 'IPC10100'
 
     @property
-    def device_id(self) -> str:
-        return 'c2'
-
-    @property
     def payload_length(self) -> int:
-        return 3
+        return 2
 
     @property
     def measurement_order(self) -> List[str]:
