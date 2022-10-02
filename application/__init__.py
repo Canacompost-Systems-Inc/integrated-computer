@@ -2,7 +2,14 @@ import threading
 from flask import Flask
 
 from application.controller.oxygen import construct_oxygen_bp
+from application.mcu.actuator.air_hammer_valve_actuator import AirHammerValveActuator
 from application.mcu.actuator.air_mover_actuator import AirMoverActuator
+from application.mcu.actuator.bsf_light_actuator import BSFLightActuator
+from application.mcu.actuator.butterfly_valve_actuator import ButterflyValveActuator
+from application.mcu.actuator.discrete_flap_diverter_valve_actuator import DiscreteFlapDiverterValveActuator
+from application.mcu.actuator.flap_diverter_valve_actuator import FlapDiverterValveActuator
+from application.mcu.actuator.rotary_diverter_valve_1_to_6_actuator import RotaryDiverterValve1To6Actuator
+from application.mcu.actuator.rotary_diverter_valve_6_to_1_actuator import RotaryDiverterValve6To1Actuator
 from application.mcu.measurement.co2_measurement import CO2Measurement
 from application.mcu.measurement.humidity_measurement import HumidityMeasurement
 from application.mcu.measurement.pressure_measurement import PressureMeasurement
@@ -38,6 +45,13 @@ def init_app():
             IPC10100Sensor,
             DS18B20Sensor,
             AirMoverActuator,
+            AirHammerValveActuator,
+            BSFLightActuator,
+            ButterflyValveActuator,
+            DiscreteFlapDiverterValveActuator,
+            FlapDiverterValveActuator,
+            RotaryDiverterValve1To6Actuator,
+            RotaryDiverterValve6To1Actuator,
         ]
         measurements_list = [
             CO2Measurement,

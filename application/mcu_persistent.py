@@ -22,7 +22,7 @@ class MCUPersistent:
             self._serial_connection = serial.Serial(
                 self.app.config['MCU_SERIAL_PORT'],
                 self.app.config['MCU_BAUD_RATE'],
-                timeout=30)
+                timeout=5)
             time.sleep(1)
 
     def get_mcu(self):

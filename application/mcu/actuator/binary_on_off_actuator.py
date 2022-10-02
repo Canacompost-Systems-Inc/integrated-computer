@@ -10,7 +10,7 @@ class BinaryOnOffActuator(BaseActuator, metaclass=ABCMeta):
     def possible_states(self) -> Dict[str, bytes]:
         return {
             'off': b'\x00\x00\x00\x00',
-            'on': b'\x11\x11\x11\x11',
+            'on': b'\x00\x00\x00\x01',
         }
 
     @property

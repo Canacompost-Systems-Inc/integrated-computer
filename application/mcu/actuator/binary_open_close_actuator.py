@@ -10,7 +10,7 @@ class BinaryOpenCloseActuator(BaseActuator, metaclass=ABCMeta):
     def possible_states(self) -> Dict[str, bytes]:
         return {
             'close': b'\x00\x00\x00\x00',
-            'open': b'\x11\x11\x11\x11',
+            'open': b'\x00\x00\x00\x01',
         }
 
     @property

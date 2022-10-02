@@ -1,17 +1,16 @@
 from typing import Dict
 
-from application.mcu.actuator.trinary_actuator import TrinaryActuator
+from application.mcu.actuator.base_actuator import BaseActuator
 
 
-class FlapDiverterValveActuator(TrinaryActuator):
+class FlapDiverterValveActuator(BaseActuator):
 
     @property
     def possible_states(self) -> Dict[str, bytes]:
-        states = TrinaryActuator().possible_states
         return {
-            'starboard': states['0'],
-            'middle': states['1'],
-            'port': states['2'],
+            'left': b'\x00\x00\x00\x00',
+            'middle': b'\x00\x00\x00\x01',
+            'right': b'\x00\x00\x00\x02',
         }
 
     @property

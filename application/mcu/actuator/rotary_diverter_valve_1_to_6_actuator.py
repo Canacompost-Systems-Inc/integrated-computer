@@ -1,7 +1,7 @@
-from application.mcu.actuator.multi_6_actuator import Multi6Actuator
+from application.mcu.actuator.rotary_diverter_valve_actuator import RotaryDiverterValveActuator
 
 
-class RotaryDiverterValve1To6Actuator(Multi6Actuator):
+class RotaryDiverterValve1To6Actuator(RotaryDiverterValveActuator):
 
     @property
     def device_type_name(self) -> str:

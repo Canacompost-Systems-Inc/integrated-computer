@@ -118,7 +118,7 @@ class MCUService:
 
                 else:
                     # Read something unexpected
-                    err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte}'"
+                    err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
                     raise RuntimeError(err)
 
