@@ -1,5 +1,5 @@
 class MachineState:
-    
+
     @staticmethod
     def get_schema():
         return {
@@ -122,5 +122,3 @@ class MachineState:
     def __init__(self, actuators, sensors):
         self.actuators = actuators
         self.sensors = sensors
-
-

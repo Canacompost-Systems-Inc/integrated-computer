@@ -62,7 +62,7 @@ def init_app():
 
         # Start the MCU manager thread. Other threads may also be required, such as polling loops to the MCUs.
         # Implementation is pending the design on how MCUs and the service will communicate
-        #thread = threading.Thread(target=state_manager.manage_state)
-        #thread.start()
+        thread = threading.Thread(target=state_manager.manage_state)
+        thread.start()
 
     return app
