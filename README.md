@@ -16,38 +16,78 @@ The project has been designed to follow the pattern of [dependency injection](ht
 Using the APIs below, routines can be manually test run, and sensor values can be manually set to test the state machine.
 
 # API
-`/oxygen` - Supports `GET` and `POST`. Get and set the oxygen sensor value. Examples: 
-```
-curl -X GET http://127.0.0.1:5000/oxygen -H 'Content-Type: application/json' 
-curl -X POST http://127.0.0.1:5000/oxygen -H 'Content-Type: application/json' -d  '{"value": "15"}'
-```
+Documentation: https://app.nuclino.com/Canacompost-Systems/Canacompost/API-Definition-d9f063ac-528d-462d-b2c6-4aa6d396c0e0
 
-`/temperature` - Supports `GET` and `POST`. Get and set the temperature sensor value. Examples: 
+Examples: 
 ```
-curl -X GET http://127.0.0.1:5000/temperature -H 'Content-Type: application/json' 
-curl -X POST http://127.0.0.1:5000/temperature -H 'Content-Type: application/json' -d  '{"value": "35"}'
+curl -X GET http://127.0.0.1:5000/state -H 'Content-Type: application/json' 
 ```
-
-`/humidity` - Supports `GET` and `POST`. Get and set the humidity sensor value. Examples: 
 ```
-curl -X GET http://127.0.0.1:5000/humidity -H 'Content-Type: application/json' 
-curl -X POST http://127.0.0.1:5000/humidity -H 'Content-Type: application/json' -d  '{"value": "75"}'
+curl -X POST http://127.0.0.1:5000/state -H 'Content-Type: application/json' -d  '
+{
+    "actuators":{
+    "type": "object",
+        "shared_air":{
+            "rotary_valve_1":1,
+            "rotary_valve_2":2,
+            "rotary_valve_3":3,
+            "discrete_valve_1":10,
+            "discrete_valve_2":20,
+            "discrete_valve_3":30,
+            "flap_valve_1":true,
+            "flap_valve_2":false,
+            "flap_valve_3":true,
+            "blower_on":true,
+            "o3_generator":true,
+            "blower_strength":50
+       },
+       "shredder":{
+            "out_valve":true,
+            "in_valve":false
+       },
+       "bioreactor_1":{
+            "out_valve":true,
+            "in_valve":false
+       },
+       "bioreactor_2":{
+            "out_valve":true,
+            "in_valve":false
+       },
+       "bsf_reproduction":{
+            "out_valve":true,
+            "in_valve":false,
+            "light":true
+       }
+    },
+    "sensors":{
+       "shared_air":{
+            "pressure":50
+       },
+       "shredder":{
+            "humidity":30,
+            "c02":5,
+            "air_temperature":18,
+            "soil_temperature":20
+       },
+       "bioreactor_1":{
+            "humidity":30,
+            "c02":5,
+            "air_temperature":18,
+            "soil_temperature":20
+       },
+       "bioreactor_2":{
+            "humidity":30,
+            "c02":5,
+            "air_temperature":18,
+            "soil_temperature":20
+       },
+       "bsf_reproduction":{
+            "humidity":30,
+            "c02":5,
+            "air_temperature":18,
+            "soil_temperature":20
+       }
+    }
+ }
+'
 ```
-
-`/bsfl` - Supports `GET` and `POST`. Get and set the state of BSFL. Examples: 
-```
-curl -X GET http://127.0.0.1:5000/bsfl -H 'Content-Type: application/json' 
-curl -X POST http://127.0.0.1:5000/bsfl -H 'Content-Type: application/json' -d  '{"value": "True"}'
-```
-
-`/r0` - Supports `GET` and `POST`. Start routine 0. Examples: 
-```
-curl -X GET http://127.0.0.1:5000/r0 
-curl -X POST http://127.0.0.1:5000/r0 
-```
-
-`/r1` - Supports `GET` and `POST`. Start routine 1.   
-`/r2` - Supports `GET` and `POST`. Start routine 2.   
-`/r3` - Supports `GET` and `POST`. Start routine 3.   
-`/r4` - Supports `GET` and `POST`. Start routine 4.    
-`/r5` - Supports `GET` and `POST`. Start routine 5.   
