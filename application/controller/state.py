@@ -6,11 +6,9 @@ from application.controller.dto.sensors.bioreactor_2_sensors import Bioreactor2S
 from application.controller.dto.sensors.bsf_reproduction_sensors import BSFReproductionSensors
 from application.controller.dto.sensors.shared_air_sensors import SharedAirSensors
 from application.controller.dto.sensors.shredder_sensors import ShredderSensors
-from application.controller.dto.actuators.bioreactor_1_actuators import Bioreactor1Actuators
-from application.controller.dto.actuators.bioreactor_2_actuators import Bioreactor2Actuators
-from application.controller.dto.actuators.bsf_reproduction_actuators import BSFReproductionActuators
-from application.controller.dto.actuators.shared_air_actuators import SharedAirActuators
-from application.controller.dto.actuators.shredder_actuators import ShredderActuators
+from application.controller.dto.actuators.actuator import Actuator
+from application.controller.dto.actuators.options import Options
+from application.controller.dto.actuators.type import Type
 from flask import Blueprint, Response, request
 from flask_cors import cross_origin
 from jsonschema import validate
@@ -20,37 +18,190 @@ import json
 def construct_mock_get_response():
     return MachineState(
         Actuators(
-            SharedAirActuators(
-                rotary_valve_1=1,
-                rotary_valve_2=2,
-                rotary_valve_3=3,
-                discrete_valve_1=10,
-                discrete_valve_2=20,
-                discrete_valve_3=30,
-                flap_valve_1=True,
-                flap_valve_2=False,
-                flap_valve_3=True,
-                blower_on=True,
-                o3_generator=True,
-                blower_strength=50,
-            ),
-            ShredderActuators(
-                out_valve=True,
-                in_valve=False
-            ),
-            Bioreactor1Actuators(
-                out_valve=True,
-                in_valve=False
-            ),
-            Bioreactor2Actuators(
-                out_valve=True,
-                in_valve=False
-            ),
-            BSFReproductionActuators(
-                out_valve=True,
-                in_valve=False,
-                light=True
-            )
+            [
+                Actuator(
+                    "e0",
+                    str(Type.RADIO.name),
+                    "Rotary Valve 1",
+                    "1",
+                    [
+                        Options("1", 1), 
+                        Options("2", 2),
+                        Options("3", 3),
+                        Options("4", 4),
+                        Options("5", 5),
+                        Options("6", 6),
+                    ]
+                ),
+                Actuator(
+                    "e1",
+                    str(Type.RADIO.name),
+                    "Rotary Valve 2",
+                    "2",
+                    [
+                        Options("1", 1), 
+                        Options("2", 2),
+                        Options("3", 3),
+                        Options("4", 4),
+                        Options("5", 5),
+                        Options("6", 6),
+                    ]
+                ),
+                Actuator(
+                    "e2",
+                    str(Type.RADIO.name),
+                    "Rotary Valve 3",
+                    "3",
+                    [
+                        Options("1", 1), 
+                        Options("2", 2),
+                        Options("3", 3),
+                        Options("4", 4),
+                        Options("5", 5),
+                        Options("6", 6),
+                    ]
+                ),
+                Actuator(
+                    "eb",
+                    str(Type.RANGE.name),
+                    "Discrete Valve 1",
+                    "10",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "ec",
+                    str(Type.RANGE.name),
+                    "Discrete Valve 2",
+                    "20",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "f4",
+                    str(Type.RANGE.name),
+                    "Discrete Valve 3",
+                    "30",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "e7",
+                    str(Type.SWITCH.name),
+                    "Flap Diverter Valve 1",
+                    "false"
+                ),
+                Actuator(
+                    "e8",
+                    str(Type.SWITCH.name),
+                    "Flap Diverter Valve 2",
+                    "true"
+                ),
+                Actuator(
+                    "ea",
+                    str(Type.SWITCH.name),
+                    "Flap Diverter Valve 3",
+                    "true"
+                ),
+                Actuator(
+                    "f1",
+                    str(Type.SWITCH.name),
+                    "Regen Blower",
+                    "true"
+                ),
+                Actuator(
+                    "f3",
+                    str(Type.SWITCH.name),
+                    "O3 Generator",
+                    "true"
+                ),
+                Actuator(
+                    "f4",
+                    str(Type.RANGE.name),
+                    "Blower Strength",
+                    "30",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "ed",
+                    str(Type.SWITCH.name),
+                    "Shredder In Valve",
+                    "true"
+                ),
+                Actuator(
+                    "e3",
+                    str(Type.RANGE.name),
+                    "Shredder Out Valve",
+                    "90",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "f3",
+                    str(Type.SWITCH.name),
+                    "Bioreactor 1 In Valve",
+                    "true"
+                ),
+                Actuator(
+                    "e4",
+                    str(Type.RANGE.name),
+                    "Bioreactor 1 Out Valve",
+                    "90",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "f3",
+                    str(Type.SWITCH.name),
+                    "Bioreactor 2 In Valve",
+                    "true"
+                ),
+                Actuator(
+                    "e5",
+                    str(Type.RANGE.name),
+                    "Bioreactor 2 Out Valve",
+                    "90",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "f3",
+                    str(Type.SWITCH.name),
+                    "BSF Reproduction In Valve",
+                    "true"
+                ),
+                Actuator(
+                    "e6",
+                    str(Type.RANGE.name),
+                    "BSF Reproduction Out Valve",
+                    "90",
+                    0,
+                    100,
+                    10, 
+                    "Percent"
+                ),
+                Actuator(
+                    "f3",
+                    str(Type.SWITCH.name),
+                    "BSF Reproduction Light",
+                    "true"
+                ),
+            ]
         ),
         Sensors(
             SharedAirSensors(

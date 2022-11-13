@@ -26,40 +26,244 @@ curl -X GET http://127.0.0.1:5000/state -H 'Content-Type: application/json'
 ```
 curl -X POST http://127.0.0.1:5000/state -H 'Content-Type: application/json' -d  '
 {
-    "actuators":{
-    "type": "object",
-        "shared_air":{
-            "rotary_valve_1":1,
-            "rotary_valve_2":2,
-            "rotary_valve_3":3,
-            "discrete_valve_1":10,
-            "discrete_valve_2":20,
-            "discrete_valve_3":30,
-            "flap_valve_1":true,
-            "flap_valve_2":false,
-            "flap_valve_3":true,
-            "blower_on":true,
-            "o3_generator":true,
-            "blower_strength":50
-       },
-       "shredder":{
-            "out_valve":true,
-            "in_valve":false
-       },
-       "bioreactor_1":{
-            "out_valve":true,
-            "in_valve":false
-       },
-       "bioreactor_2":{
-            "out_valve":true,
-            "in_valve":false
-       },
-       "bsf_reproduction":{
-            "out_valve":true,
-            "in_valve":false,
-            "light":true
-       }
-    },
+    "actuators":[
+        {
+            "id": "e0",
+            "type": "RADIO",
+            "description": "Rotary Valve 1",
+            "value": "1",
+            "options": [
+                {
+                    "name": "1",
+                    "value": 1
+                },
+                {
+                    "name": "2",
+                    "value": 2
+                },
+                {
+                    "name": "3",
+                    "value": 3v
+                },
+                {
+                    "name": "4",
+                    "value": 4
+                },
+                {
+                    "name": "5",
+                    "value": 5
+                },
+                {
+                    "name": "6",
+                    "value": 6
+                }
+            ]
+        },
+        {
+            "id": "e1",
+            "type": "RADIO",
+            "description": "Rotary Valve 2",
+            "value": "2",
+            "options": [
+                {
+                    "name": "1",
+                    "value": 1
+                },
+                {
+                    "name": "2",
+                    "value": 2
+                },
+                {
+                    "name": "3",
+                    "value": 3
+                },
+                {
+                    "name": "4",
+                    "value": 4
+                },
+                {
+                    "name": "5",
+                    "value": 5
+                },
+                {
+                    "name": "6",
+                    "value": 6
+                }
+            ]
+        },
+        {
+            "id": "e2",
+            "type": "RADIO",
+            "description": "Rotary Valve 3",
+            "value": "3",
+            "options": [
+                {
+                    "name": "1",
+                    "value": 1
+                },
+                {
+                    "name": "2",
+                    "value": 2
+                },
+                {
+                    "name": "3",
+                    "value": 3
+                },
+                {
+                    "name": "4",
+                    "value": 4
+                },
+                {
+                    "name": "5",
+                    "value": 5
+                },
+                {
+                    "name": "6",
+                    "value": 6
+                }
+            ]
+        },
+        {
+            "id": "eb",
+            "type": "RANGE",
+            "description": "Discrete Valve 1",
+            "value": "10",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "ec",
+            "type": "RANGE",
+            "description": "Discrete Valve 2",
+            "value": "20",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "f4",
+            "type": "RANGE",
+            "description": "Discrete Valve 3",
+            "value": "30",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "e7",
+            "type": "SWITCH",
+            "description": "Flap Diverter Valve 1",
+            "value": "false"
+        },
+        {
+            "id": "e8",
+            "type": "SWITCH",
+            "description": "Flap Diverter Valve 2",
+            "value": "true"
+        },
+        {
+            "id": "ea",
+            "type": "SWITCH",
+            "description": "Flap Diverter Valve 3",
+            "value": "true"
+        },
+        {
+            "id": "f1",
+            "type": "SWITCH",
+            "description": "Regen Blower",
+            "value": "true"
+        },
+        {
+            "id": "f3",
+            "type": "SWITCH",
+            "description": "O3 Generator",
+            "value": "true"
+        },
+        {
+            "id": "f4",
+            "type": "RANGE",
+            "description": "Blower Strength",
+            "value": "30",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "ed",
+            "type": "SWITCH",
+            "description": "Shredder In Valve",
+            "value": "true"
+        },
+        {
+            "id": "e3",
+            "type": "RANGE",
+            "description": "Shredder Out Valve",
+            "value": "90",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "f3",
+            "type": "SWITCH",
+            "description": "Bioreactor 1 In Valve",
+            "value": "true"
+        },
+        {
+            "id": "e4",
+            "type": "RANGE",
+            "description": "Bioreactor 1 Out Valve",
+            "value": "90",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "f3",
+            "type": "SWITCH",
+            "description": "Bioreactor 2 In Valve",
+            "value": "true"
+        },
+        {
+            "id": "e5",
+            "type": "RANGE",
+            "description": "Bioreactor 2 Out Valve",
+            "value": "90",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "f3",
+            "type": "SWITCH",
+            "description": "BSF Reproduction In Valve",
+            "value": "true"
+        },
+        {
+            "id": "e6",
+            "type": "RANGE",
+            "description": "BSF Reproduction Out Valve",
+            "value": "90",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "Percent"
+        },
+        {
+            "id": "f3",
+            "type": "SWITCH",
+            "description": "BSF Reproduction Light",
+            "value": "true"
+        }
+    ],
     "sensors":{
        "shared_air":{
             "pressure":50
