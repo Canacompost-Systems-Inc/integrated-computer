@@ -25,3 +25,4 @@ class Config(object):
             'e6': ('Valve', 'SharedSensorLoopStartValve'),
         },
     }
+
