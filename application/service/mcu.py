@@ -61,7 +61,7 @@ class MCUService:
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
-    def set_actuator_state(self, actuator_device_id='e0', value='low') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
+    def set_actuator_state(self, actuator_device_id='e0', value='off') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
         # Get the bytes for the payload that correspond to this value
         device: BaseActuator = self.device_map.get(actuator_device_id, None)
         if device is None:
@@ -118,7 +118,7 @@ class MCUService:
 
                 else:
                     # Read something unexpected
-                    err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte}'"
+                    err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
                     raise RuntimeError(err)
 

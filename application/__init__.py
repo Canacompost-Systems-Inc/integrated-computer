@@ -1,9 +1,15 @@
 import threading
 from flask import Flask
 
-from application.controller.oxygen import construct_oxygen_bp
-from application.mcu.actuator.compressor_actuator import CompressorActuator
-from application.mcu.actuator.valve_actuator import ValveActuator
+from application.controller.state import construct_state_bp
+from application.mcu.actuator.air_hammer_valve_actuator import AirHammerValveActuator
+from application.mcu.actuator.air_mover_actuator import AirMoverActuator
+from application.mcu.actuator.bsf_light_actuator import BSFLightActuator
+from application.mcu.actuator.butterfly_valve_actuator import ButterflyValveActuator
+from application.mcu.actuator.discrete_flap_diverter_valve_actuator import DiscreteFlapDiverterValveActuator
+from application.mcu.actuator.flap_diverter_valve_actuator import FlapDiverterValveActuator
+from application.mcu.actuator.rotary_diverter_valve_1_to_6_actuator import RotaryDiverterValve1To6Actuator
+from application.mcu.actuator.rotary_diverter_valve_6_to_1_actuator import RotaryDiverterValve6To1Actuator
 from application.mcu.measurement.co2_measurement import CO2Measurement
 from application.mcu.measurement.humidity_measurement import HumidityMeasurement
 from application.mcu.measurement.pressure_measurement import PressureMeasurement
@@ -38,8 +44,14 @@ def init_app():
             SCD41Sensor,
             IPC10100Sensor,
             DS18B20Sensor,
-            CompressorActuator,
-            ValveActuator,
+            AirMoverActuator,
+            AirHammerValveActuator,
+            BSFLightActuator,
+            ButterflyValveActuator,
+            DiscreteFlapDiverterValveActuator,
+            FlapDiverterValveActuator,
+            RotaryDiverterValve1To6Actuator,
+            RotaryDiverterValve6To1Actuator,
         ]
         measurements_list = [
             CO2Measurement,
@@ -54,11 +66,11 @@ def init_app():
 
         # Construct blueprints
         # TODO - add in a construct_sensors_bp?
-        # oxygen_controller = construct_oxygen_bp(oxygen_service)
+        state_controller = construct_state_bp()
 
         # Register API controller blueprints
         # TODO - register blueprint
-        # app.register_blueprint(oxygen_controller)
+        app.register_blueprint(state_controller)
 
         # Start the MCU manager thread. Other threads may also be required, such as polling loops to the MCUs.
         # Implementation is pending the design on how MCUs and the service will communicate

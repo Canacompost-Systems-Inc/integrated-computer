@@ -21,6 +21,41 @@ class StateManager():
             measurement_map = self.mcu_service.get_system_snapshot()
             print(f"measurement_map: {measurement_map}")
 
+            # print("########## Testing set actuator state endpoint ##########")
+            #
+            # def set_to_next_state(device_id, current_measurement_map):
+            #     device = self.mcu_service.device_map[device_id]
+            #     current_state = current_measurement_map[device.location][device.device_id][1][0].val
+            #
+            #     # Get the next possible state
+            #     possible_states = list(device.possible_states.keys())
+            #     possible_states = possible_states + possible_states
+            #     new_state = possible_states[possible_states.index(current_state) + 1]
+            #
+            #     print(f"Setting state of {device.device_friendly_name} from {current_state} to {new_state}")
+            #     return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=new_state)
+            #
+            # cur_measurement_map = measurement_map
+            # for location in measurement_map:
+            #     for device_id in measurement_map[location]:
+            #
+            #         if self.mcu_service.device_map[device_id].device_category != 'actuator':
+            #             continue
+            #
+            #         for i in range(3):
+            #
+            #             time.sleep(3)
+            #
+            #             update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
+            #
+            #             for loc in update_to_measurement_map:
+            #                 for did in update_to_measurement_map[loc]:
+            #                     cur_measurement_map[loc][did] = update_to_measurement_map[loc][did]
+            #
+            #             print(f"measurement_map: {cur_measurement_map}")
+
+
+
             # # Testing set actuator state endpoint
             # print("########## Testing set actuator state endpoint ##########")
             # import random
