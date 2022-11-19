@@ -1,7 +1,7 @@
 import threading
 from flask import Flask
 
-from application.controller.oxygen import construct_oxygen_bp
+from application.controller.state import construct_state_bp
 from application.mcu.actuator.air_hammer_valve_actuator import AirHammerValveActuator
 from application.mcu.actuator.air_mover_actuator import AirMoverActuator
 from application.mcu.actuator.bsf_light_actuator import BSFLightActuator
@@ -66,11 +66,11 @@ def init_app():
 
         # Construct blueprints
         # TODO - add in a construct_sensors_bp?
-        # oxygen_controller = construct_oxygen_bp(oxygen_service)
+        state_controller = construct_state_bp()
 
         # Register API controller blueprints
         # TODO - register blueprint
-        # app.register_blueprint(oxygen_controller)
+        app.register_blueprint(state_controller)
 
         # Start the MCU manager thread. Other threads may also be required, such as polling loops to the MCUs.
         # Implementation is pending the design on how MCUs and the service will communicate

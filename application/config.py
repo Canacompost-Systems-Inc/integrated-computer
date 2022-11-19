@@ -55,3 +55,4 @@ class Config(object):
             'f2': ('BSFLight', 'BSFReproductionLight'),
         },
     }
+
