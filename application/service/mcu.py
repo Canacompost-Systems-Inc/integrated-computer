@@ -36,7 +36,7 @@ class MCUService:
     def get_system_snapshot(self) -> Dict[str, Dict[str, List[BaseMeasurement]]]:
         if self.testing:
             # Return example response for local testing without the sensors
-            response = b'\xc0\x41\xd5\x02\x88\x42\x48\xf6\xb9\xc1\x45\x18\x00\x00\x41\xe6\x8f\x98\x42\x33\xae\x70\xe1\x00\x00\x00\x00'
+            response = b'\xc0\x41\xd5\x02\x88\x42\x48\xf6\xb9\xc1\x45\x18\x00\x00\x41\xe6\x8f\x98\x42\x33\xae\x70\xe1\x00\x00\x00\x00\xe7\x00\x00\x00\x01\xf6\x00\x00\x00\x00'
             # 41 d2 c9 c4 424b5df8c14513e00041e425a04237
         else:
             response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
