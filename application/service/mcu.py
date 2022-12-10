@@ -36,7 +36,7 @@ class MCUService:
     def get_system_snapshot(self) -> Dict[str, Dict[str, List[BaseMeasurement]]]:
         if self.testing:
             # Return example response for local testing without the sensors
-            response = b'\xc0\x41\xd5\x02\x88\x42\x48\xf6\xb9\xc1\x45\x18\x00\x00\x41\xe6\x8f\x98\x42\x33\xae\x70\xe1\x00\x00\x00\x00'
+            response = b'\xc0\x41\xd5\x02\x88\x42\x48\xf6\xb9\xc1\x45\x18\x00\x00\x41\xe6\x8f\x98\x42\x33\xae\x70\xe1\x00\x00\x00\x00\xe7\x00\x00\x00\x01\xf6\x00\x00\x00\x00'
             # 41 d2 c9 c4 424b5df8c14513e00041e425a04237
         else:
             response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
@@ -61,7 +61,7 @@ class MCUService:
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
-    def set_actuator_state(self, actuator_device_id='e0', value='low') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
+    def set_actuator_state(self, actuator_device_id='e0', value='off') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
         # Get the bytes for the payload that correspond to this value
         device: BaseActuator = self.device_map.get(actuator_device_id, None)
         if device is None:
@@ -118,7 +118,7 @@ class MCUService:
 
                 else:
                     # Read something unexpected
-                    err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte}'"
+                    err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
                     raise RuntimeError(err)
 
