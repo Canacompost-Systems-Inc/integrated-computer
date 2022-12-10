@@ -19,21 +19,20 @@ class DiscreteFlapDiverterValveActuator(BaseActuator):
             '40per': b'\x00\x00\x00\x08',
             '45per': b'\x00\x00\x00\x09',
             '50per': b'\x00\x00\x00\x0a',
-            '55per': b'\x00\x00\x00\x0b',
-            '60per': b'\x00\x00\x00\x0c',
-            '65per': b'\x00\x00\x00\x0d',
-            '70per': b'\x00\x00\x00\x0e',
-            '75per': b'\x00\x00\x00\x0f',
-            '80per': b'\x00\x00\x00\x10',
-            '85per': b'\x00\x00\x00\x11',
-            '90per': b'\x00\x00\x00\x12',
-            '95per': b'\x00\x00\x00\x13',
-            '100per': b'\x00\x00\x00\x14',
+            '60per': b'\x00\x00\x00\x0b',
+            '65per': b'\x00\x00\x00\x0c',
+            '70per': b'\x00\x00\x00\x0d',
+            '75per': b'\x00\x00\x00\x0e',
+            '80per': b'\x00\x00\x00\x0f',
+            '85per': b'\x00\x00\x00\x10',
+            '90per': b'\x00\x00\x00\x11',
+            '95per': b'\x00\x00\x00\x12',
+            '100per': b'\x00\x00\x00\x13',
         }
 
     @property
     def default_state(self) -> str:
-        return '0per'
+        return '50per'
 
     @property
     def device_type_name(self) -> str:

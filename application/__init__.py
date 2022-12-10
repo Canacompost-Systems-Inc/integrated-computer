@@ -78,8 +78,22 @@ def init_app():
             TemperatureMeasurement,
             StateMeasurement,
         ]
+
+        # Temporarily modify DEVICE_MAP using DEVICE_MAP_TEMP_MAPPING (for integration testing)
+        device_map_temp_mapping = app.config['DEVICE_MAP_TEMP_MAPPING']
+        device_map_config = app.config['DEVICE_MAP']
+        # print(f"device_map_config BEFORE:\n{device_map_config}")
+        for old_id, new_id in device_map_temp_mapping.items():
+            for location in device_map_config:
+                if new_id in device_map_config[location]:
+                    del device_map_config[location][new_id]
+                if old_id in device_map_config[location]:
+                    device_map_config[location][new_id] = device_map_config[location][old_id]
+                    del device_map_config[location][old_id]
+        # print(f"device_map_config AFTER:\n{device_map_config}")
+
         mcu_service = MCUService(device_types_list, measurements_list, testing=app.config['TESTING'],
-                                 device_map_config=app.config['DEVICE_MAP'])
+                                 device_map_config=device_map_config)
         state_manager = StateManager(routines_service, mcu_service)
 
         # Construct blueprints

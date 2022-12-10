@@ -66,3 +66,12 @@ class Config(object):
         'CompostOutput': {
         },
     }
+
+    DEVICE_MAP_TEMP_MAPPING = {
+        'e7': 'e3',
+        'e8': 'e4',
+        'ea': 'e5',
+        'eb': 'e6',
+        'ec': 'e7',
+        'f4': 'e8',
+    }
