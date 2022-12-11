@@ -42,6 +42,7 @@ class MCUService:
             response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
         print(f"Response from get_system_snapshot: '{response.hex()}'")
         response_map = self._decode_get_response(response)
+        print(f"response_map: '{response_map}'")
         return self.structure_response(response_map)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, Dict[str, List[BaseMeasurement]]]:
