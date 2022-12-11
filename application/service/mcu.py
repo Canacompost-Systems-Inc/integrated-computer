@@ -40,6 +40,7 @@ class MCUService:
             # 41 d2 c9 c4 424b5df8c14513e00041e425a04237
         else:
             response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
+        print(f"Response from get_system_snapshot: '{response.hex()}'")
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
