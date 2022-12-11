@@ -61,6 +61,9 @@ class StateManager():
 
                         # print(f"measurement_map: {cur_measurement_map}")
 
+                    break
+                break
+
 
 
 
