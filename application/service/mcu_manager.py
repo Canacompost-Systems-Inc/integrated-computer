@@ -43,7 +43,7 @@ class StateManager():
             for location in measurement_map:
                 for device_id in measurement_map[location]:
 
-                    if device_id in ['e0', 'e1', 'e3', 'e4', 'e5', 'e6']:
+                    if device_id in ['e0', 'e1', 'e3', 'e4', 'e5', 'e6', 'e7']:
                         continue
 
                     if self.mcu_service.device_map[device_id].device_category != 'actuator':
@@ -59,7 +59,7 @@ class StateManager():
                             for did in update_to_measurement_map[loc]:
                                 cur_measurement_map[loc][did] = update_to_measurement_map[loc][did]
 
-                        print(f"measurement_map: {cur_measurement_map}")
+                        # print(f"measurement_map: {cur_measurement_map}")
 
                     break
                 break
