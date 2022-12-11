@@ -49,7 +49,7 @@ class StateManager():
                     if self.mcu_service.device_map[device_id].device_category != 'actuator':
                         continue
 
-                    for i in range(get_number_of_possible_states(device_id) + 1):
+                    for i in range(get_number_of_possible_states(device_id)):
 
                         time.sleep(2)
 
