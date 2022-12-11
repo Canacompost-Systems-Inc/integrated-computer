@@ -36,14 +36,14 @@ class StateManager():
                 possible_states = possible_states + possible_states
                 new_state = possible_states[possible_states.index(current_state) + 1]
 
-                print(f"Setting state of {device.device_friendly_name} from {current_state} to {new_state}")
+                print(f"Setting state of {device.device_friendly_name} ({device_id}) from {current_state} to {new_state}")
                 return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=new_state)
 
             cur_measurement_map = measurement_map
             for location in measurement_map:
                 for device_id in measurement_map[location]:
 
-                    if device_id in []:
+                    if device_id in ['e0']:
                         continue
 
                     if self.mcu_service.device_map[device_id].device_category != 'actuator':
