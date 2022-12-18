@@ -250,6 +250,6 @@ def construct_state_bp():
                 print("Schema failed validation: {}", str(e))
                 return Response(json.dumps({"error": str(e)}), status=400)
         elif request.method == 'GET':
-            return Response(jsonpickle.encode(construct_mock_get_response()), status=200)
+            return Response(jsonpickle.encode(construct_mock_get_response(), unpicklable=False), status=200)
 
     return (state_bp)
