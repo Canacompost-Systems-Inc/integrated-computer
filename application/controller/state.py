@@ -50,7 +50,7 @@ machineState = MachineState(
                 "Rotary Valve 3",
                 "3",
                 [
-                    Options("1", 1), 
+                    Options("One", 1), 
                     Options("2", 2),
                     Options("3", 3),
                     Options("4", 4),
@@ -116,13 +116,13 @@ machineState = MachineState(
                 "true"
             ),
             Actuator(
-                "f3",
+                "f31",
                 str(Type.SWITCH.name),
                 "O3 Generator",
                 "true"
             ),
             Actuator(
-                "f4",
+                "f41",
                 str(Type.RANGE.name),
                 "Blower Strength",
                 "30",
@@ -150,7 +150,7 @@ machineState = MachineState(
                 "Percent"
             ),
             Actuator(
-                "f3",
+                "f32",
                 str(Type.SWITCH.name),
                 "Bioreactor 1 In Valve",
                 "true"
@@ -167,7 +167,7 @@ machineState = MachineState(
                 "Percent"
             ),
             Actuator(
-                "f3",
+                "f33",
                 str(Type.SWITCH.name),
                 "Bioreactor 2 In Valve",
                 "true"
@@ -184,7 +184,7 @@ machineState = MachineState(
                 "Percent"
             ),
             Actuator(
-                "f3",
+                "f34",
                 str(Type.SWITCH.name),
                 "BSF Reproduction In Valve",
                 "true"
@@ -201,7 +201,7 @@ machineState = MachineState(
                 "Percent"
             ),
             Actuator(
-                "f3",
+                "f35",
                 str(Type.SWITCH.name),
                 "BSF Reproduction Light",
                 "true"
