@@ -7,9 +7,9 @@ class MachineState:
             "additionalProperties": False,
             "properties": {
                     "actuators": {
-                        "type": "array",
+                        "type": ["array", "null"],
                         "items": {
-                            "type": "object",
+                            "type": ["object", "null"],
                             "additionalProperties": False,
                             "properties": {
                                 "id": {"type": "string"},
@@ -17,7 +17,7 @@ class MachineState:
                                 "description": {"type": "string"},
                                 "value": {"type": "string"},
                                 "options": {
-                                    "type": "array",
+                                    "type": ["array", "null"],
                                     "additionalProperties": False,
                                     "items": {
                                         "type": "object",
@@ -37,18 +37,18 @@ class MachineState:
                         }
                     },
                     "sensors":{
-                        "type": "object",
+                        "type": ["object", "null"],
                         "additionalProperties": False,
                         "properties": {
                             "shared_air":{
-                                "type": "object",
+                                "type": ["object", "null"],
                                 "additionalProperties": False,
                                 "properties": {
                                     "pressure":{"type": ["number", "null"]}
                                 }
                             },
                             "shredder":{
-                                "type": "object",
+                                "type": ["object", "null"],
                                 "additionalProperties": False,
                                 "properties": {
                                     "humidity":{"type": ["number", "null"]},
@@ -58,7 +58,7 @@ class MachineState:
                                 }
                             },
                             "bioreactor_1":{
-                                "type": "object",
+                                "type": ["object", "null"],
                                 "additionalProperties": False,
                                 "properties": {
                                     "humidity":{"type": ["number", "null"]},
@@ -68,7 +68,7 @@ class MachineState:
                                 }
                             },
                             "bioreactor_2":{
-                                "type": "object",
+                                "type": ["object", "null"],
                                 "additionalProperties": False,
                                 "properties": {
                                     "humidity":{"type": ["number", "null"]},
@@ -78,7 +78,7 @@ class MachineState:
                                 }
                             },
                             "bsf_reproduction":{
-                                "type": "object",
+                                "type": ["object", "null"],
                                 "additionalProperties": False,
                                 "properties": {
                                     "humidity":{"type": ["number", "null"]},
