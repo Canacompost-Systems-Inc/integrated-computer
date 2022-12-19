@@ -28,10 +28,10 @@ class MachineState:
                                         "required": ["name", "value"]
                                     }
                                 },
-                                "min": {"type": "number"},
-                                "max": {"type": "number"},
-                                "step": {"type": "number"},
-                                "unit": {"type": "string"}
+                                "min": {"type": ["number", "null"]}, 
+                                "max": {"type": ["number", "null"]},
+                                "step": {"type": ["number", "null"]},
+                                "unit": {"type": ["string", "null"]}
                             },
                             "required": ["id", "type", "description", "value"]
                         }
@@ -44,47 +44,47 @@ class MachineState:
                                 "type": "object",
                                 "additionalProperties": False,
                                 "properties": {
-                                    "pressure":{"type": "number"}
+                                    "pressure":{"type": ["number", "null"]}
                                 }
                             },
                             "shredder":{
                                 "type": "object",
                                 "additionalProperties": False,
                                 "properties": {
-                                    "humidity":{"type": "number"},
-                                    "c02":{"type": "number"},
-                                    "air_temperature":{"type": "number"},
-                                    "soil_temperature":{"type": "number"}
+                                    "humidity":{"type": ["number", "null"]},
+                                    "c02":{"type": ["number", "null"]},
+                                    "air_temperature":{"type": ["number", "null"]},
+                                    "soil_temperature":{"type": ["number", "null"]}
                                 }
                             },
                             "bioreactor_1":{
                                 "type": "object",
                                 "additionalProperties": False,
                                 "properties": {
-                                    "humidity":{"type": "number"},
-                                    "c02":{"type": "number"},
-                                    "air_temperature":{"type": "number"},
-                                    "soil_temperature":{"type": "number"}
+                                    "humidity":{"type": ["number", "null"]},
+                                    "c02":{"type": ["number", "null"]},
+                                    "air_temperature":{"type": ["number", "null"]},
+                                    "soil_temperature":{"type": ["number", "null"]}
                                 }
                             },
                             "bioreactor_2":{
                                 "type": "object",
                                 "additionalProperties": False,
                                 "properties": {
-                                    "humidity":{"type": "number"},
-                                    "c02":{"type": "number"},
-                                    "air_temperature":{"type": "number"},
-                                    "soil_temperature":{"type": "number"}
+                                    "humidity":{"type": ["number", "null"]},
+                                    "c02":{"type": ["number", "null"]},
+                                    "air_temperature":{"type": ["number", "null"]},
+                                    "soil_temperature":{"type": ["number", "null"]}
                                 }
                             },
                             "bsf_reproduction":{
                                 "type": "object",
                                 "additionalProperties": False,
                                 "properties": {
-                                    "humidity":{"type": "number"},
-                                    "c02":{"type": "number"},
-                                    "air_temperature":{"type": "number"},
-                                    "soil_temperature":{"type": "number"}
+                                    "humidity":{"type": ["number", "null"]},
+                                    "c02":{"type": ["number", "null"]},
+                                    "air_temperature":{"type": ["number", "null"]},
+                                    "soil_temperature":{"type": ["number", "null"]}
                                 }
                             }
                         }
