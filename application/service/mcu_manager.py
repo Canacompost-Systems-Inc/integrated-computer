@@ -43,7 +43,7 @@ class StateManager():
             for location in measurement_map:
                 for device_id in measurement_map[location]:
 
-                    if device_id in ['e0', 'e1', 'e2', 'e7', 'e8', 'e9', 'ea', 'eb', 'ed']:
+                    if device_id not in ['e7']:
                         continue
 
                     if self.mcu_service.device_map[device_id].device_category != 'actuator':
