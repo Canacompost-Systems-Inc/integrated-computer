@@ -73,4 +73,5 @@ class Config(object):
         'ec': 'eb',
         'f0': 'ec',
         'f4': 'ed',
+        'f1': 'ee',
     }
