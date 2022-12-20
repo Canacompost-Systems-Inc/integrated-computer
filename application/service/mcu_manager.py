@@ -27,7 +27,7 @@ class StateManager():
                 device = self.mcu_service.device_map[device_id]
                 return len(device.possible_states)
 
-            def set_to_next_state(device_id, current_measurement_map):
+            def get_next_state(device_id, current_measurement_map):
                 device = self.mcu_service.device_map[device_id]
                 current_state = current_measurement_map[device.location][device.device_id][1][0].val
 
@@ -35,6 +35,15 @@ class StateManager():
                 possible_states = list(device.possible_states.keys())
                 possible_states = possible_states + possible_states
                 new_state = possible_states[possible_states.index(current_state) + 1]
+
+                return new_state
+
+            def set_to_next_state(device_id, current_measurement_map):
+                device = self.mcu_service.device_map[device_id]
+                current_state = current_measurement_map[device.location][device.device_id][1][0].val
+
+                # Get the next possible state
+                new_state = get_next_state(device_id, current_measurement_map)
 
                 print(f"Setting state of {device.device_friendly_name} ({device_id}) from {current_state} to {new_state}")
                 return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=new_state)
@@ -53,10 +62,10 @@ class StateManager():
 
                         time.sleep(5)
 
-                        update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
+                        if str(get_next_state(device_id, cur_measurement_map)) in ["2", "3"]:
+                            continues
 
-                        if str(update_to_measurement_map[location][device_id][1][0].val) in ["2", "3"]:
-                            continue
+                        update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
 
                         for loc in update_to_measurement_map:
                             for did in update_to_measurement_map[loc]:
