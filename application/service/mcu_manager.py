@@ -63,7 +63,7 @@ class StateManager():
                         time.sleep(5)
 
                         if str(get_next_state(device_id, cur_measurement_map)) in ["2", "3"]:
-                            continues
+                            continue
 
                         update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
 
