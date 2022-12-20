@@ -55,9 +55,7 @@ class StateManager():
 
                         update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
 
-                        print(f"test: {update_to_measurement_map[location][device_id][1]}")
-
-                        if str(update_to_measurement_map[location][device_id][1].val) in ["2", "3"]:
+                        if str(update_to_measurement_map[location][device_id][1][0].val) in ["2", "3"]:
                             continue
 
                         for loc in update_to_measurement_map:
