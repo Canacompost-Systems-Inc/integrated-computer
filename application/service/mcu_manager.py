@@ -38,15 +38,12 @@ class StateManager():
 
                 return new_state
 
-            def set_to_next_state(device_id, current_measurement_map):
+            def set_to_next_state(device_id, current_measurement_map, next_state):
                 device = self.mcu_service.device_map[device_id]
                 current_state = current_measurement_map[device.location][device.device_id][1][0].val
 
-                # Get the next possible state
-                new_state = get_next_state(device_id, current_measurement_map)
-
-                print(f"Setting state of {device.device_friendly_name} ({device_id}) from {current_state} to {new_state}")
-                return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=new_state)
+                print(f"Setting state of {device.device_friendly_name} ({device_id}) from {current_state} to {next_state}")
+                return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=next_state)
 
             cur_measurement_map = measurement_map
             for location in measurement_map:
@@ -62,10 +59,12 @@ class StateManager():
 
                         time.sleep(5)
 
-                        if str(get_next_state(device_id, cur_measurement_map)) in ["2", "3"]:
-                            continue
+                        next_state = get_next_state(device_id, cur_measurement_map)
 
-                        update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
+                        if str(next_state) in ["2", "3"]:
+                            next_state = 4
+
+                        update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map, next_state)
 
                         for loc in update_to_measurement_map:
                             for did in update_to_measurement_map[loc]:
