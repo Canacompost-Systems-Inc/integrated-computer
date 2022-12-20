@@ -17,9 +17,9 @@ class StateManager():
 
             # NOTE - leaving test code in until we write the new management service
 
-            print("########## Testing get system snapshot endpoint ##########")
-            measurement_map = self.mcu_service.get_system_snapshot()
-            print(f"measurement_map: {measurement_map}")
+            # print("########## Testing get system snapshot endpoint ##########")
+            # measurement_map = self.mcu_service.get_system_snapshot()
+            # print(f"measurement_map: {measurement_map}")
 
             print("########## Testing set actuator state endpoint ##########")
 
@@ -55,7 +55,9 @@ class StateManager():
 
                         update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
 
-                        if int(update_to_measurement_map[location][device_id][1].val) in [2, 3]:
+                        print(f"test: {update_to_measurement_map[location][device_id][1]}")
+
+                        if str(update_to_measurement_map[location][device_id][1].val) in [2, 3]:
                             continue
 
                         for loc in update_to_measurement_map:
