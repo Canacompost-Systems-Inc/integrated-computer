@@ -61,8 +61,8 @@ class StateManager():
 
                         next_state = get_next_state(device_id, cur_measurement_map)
 
-                        if str(next_state) in ["2", "3"]:
-                            next_state = "4"
+                        if str(next_state) in ["2", "3", "4"]:
+                            next_state = "5"
 
                         update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map, next_state)
 
