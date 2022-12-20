@@ -55,6 +55,9 @@ class StateManager():
 
                         update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
 
+                        if int(update_to_measurement_map[location][device_id]) in [2, 3]:
+                            continue
+
                         for loc in update_to_measurement_map:
                             for did in update_to_measurement_map[loc]:
                                 cur_measurement_map[loc][did] = update_to_measurement_map[loc][did]
