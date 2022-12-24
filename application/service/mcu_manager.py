@@ -22,12 +22,16 @@ class StateManager():
             print(f"measurement_map: {measurement_map}")
 
             print("########## Testing get sensor state endpoint ##########")
-            # measurement_map = self.mcu_service.get_sensor_state(sensor_device_id='c0')
-            # print(f"measurement_map: {measurement_map}")
+            measurement_map = self.mcu_service.get_sensor_state(sensor_device_id='c1')
+            print(f"measurement_map: {measurement_map}")
+            measurement_map = self.mcu_service.get_sensor_state(sensor_device_id='c2')
+            print(f"measurement_map: {measurement_map}")
 
             print("########## Testing get actuator state endpoint ##########")
-            # measurement_map = self.mcu_service.get_actuator_state(actuator_device_id='e0')
-            # print(f"measurement_map: {measurement_map}")
+            measurement_map = self.mcu_service.get_actuator_state(actuator_device_id='e0')
+            print(f"measurement_map: {measurement_map}")
+            measurement_map = self.mcu_service.get_actuator_state(actuator_device_id='eb')
+            print(f"measurement_map: {measurement_map}")
 
             print("########## Testing set actuator state endpoint ##########")
 
