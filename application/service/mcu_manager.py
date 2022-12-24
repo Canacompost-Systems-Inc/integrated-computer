@@ -21,56 +21,64 @@ class StateManager():
             measurement_map = self.mcu_service.get_system_snapshot()
             print(f"measurement_map: {measurement_map}")
 
+            print("########## Testing get sensor state endpoint ##########")
+            # measurement_map = self.mcu_service.get_sensor_state(sensor_device_id='c0')
+            # print(f"measurement_map: {measurement_map}")
+
+            print("########## Testing get actuator state endpoint ##########")
+            # measurement_map = self.mcu_service.get_actuator_state(actuator_device_id='e0')
+            # print(f"measurement_map: {measurement_map}")
+
             print("########## Testing set actuator state endpoint ##########")
 
-            def get_number_of_possible_states(device_id):
-                device = self.mcu_service.device_map[device_id]
-                return len(device.possible_states)
-
-            def get_next_state(device_id, current_measurement_map):
-                device = self.mcu_service.device_map[device_id]
-                current_state = current_measurement_map[device.location][device.device_id][1][0].val
-
-                # Get the next possible state
-                possible_states = list(device.possible_states.keys())
-                possible_states = possible_states + possible_states
-                new_state = possible_states[possible_states.index(current_state) + 1]
-
-                return new_state
-
-            def set_to_next_state(device_id, current_measurement_map, next_state):
-                device = self.mcu_service.device_map[device_id]
-                current_state = current_measurement_map[device.location][device.device_id][1][0].val
-
-                print(f"Setting state of {device.device_friendly_name} ({device_id}) from {current_state} to {next_state}")
-                return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=next_state)
-
-            cur_measurement_map = measurement_map
-            for location in measurement_map:
-                for device_id in measurement_map[location]:
-
-                    if device_id not in ['e0']:
-                        continue
-
-                    if self.mcu_service.device_map[device_id].device_category != 'actuator':
-                        continue
-
-                    for i in range(get_number_of_possible_states(device_id)):
-
-                        time.sleep(5)
-
-                        next_state = get_next_state(device_id, cur_measurement_map)
-
-                        if str(next_state) in ["2", "3", "4", "5"]:
-                            next_state = "ref"
-
-                        update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map, next_state)
-
-                        for loc in update_to_measurement_map:
-                            for did in update_to_measurement_map[loc]:
-                                cur_measurement_map[loc][did] = update_to_measurement_map[loc][did]
-
-                        # print(f"measurement_map: {cur_measurement_map}")
+            # def get_number_of_possible_states(device_id):
+            #     device = self.mcu_service.device_map[device_id]
+            #     return len(device.possible_states)
+            #
+            # def get_next_state(device_id, current_measurement_map):
+            #     device = self.mcu_service.device_map[device_id]
+            #     current_state = current_measurement_map[device.location][device.device_id][1][0].val
+            #
+            #     # Get the next possible state
+            #     possible_states = list(device.possible_states.keys())
+            #     possible_states = possible_states + possible_states
+            #     new_state = possible_states[possible_states.index(current_state) + 1]
+            #
+            #     return new_state
+            #
+            # def set_to_next_state(device_id, current_measurement_map, next_state):
+            #     device = self.mcu_service.device_map[device_id]
+            #     current_state = current_measurement_map[device.location][device.device_id][1][0].val
+            #
+            #     print(f"Setting state of {device.device_friendly_name} ({device_id}) from {current_state} to {next_state}")
+            #     return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=next_state)
+            #
+            # cur_measurement_map = measurement_map
+            # for location in measurement_map:
+            #     for device_id in measurement_map[location]:
+            #
+            #         if device_id not in ['e0']:
+            #             continue
+            #
+            #         if self.mcu_service.device_map[device_id].device_category != 'actuator':
+            #             continue
+            #
+            #         for i in range(get_number_of_possible_states(device_id)):
+            #
+            #             time.sleep(5)
+            #
+            #             next_state = get_next_state(device_id, cur_measurement_map)
+            #
+            #             if str(next_state) in ["2", "3", "4", "5"]:
+            #                 next_state = "ref"
+            #
+            #             update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map, next_state)
+            #
+            #             for loc in update_to_measurement_map:
+            #                 for did in update_to_measurement_map[loc]:
+            #                     cur_measurement_map[loc][did] = update_to_measurement_map[loc][did]
+            #
+            #             # print(f"measurement_map: {cur_measurement_map}")
 
 
 
