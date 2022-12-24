@@ -68,10 +68,10 @@ class Config(object):
     }
 
     DEVICE_MAP_TEMP_MAPPING = {
-        'ea': 'e9',
-        'eb': 'ea',
-        'ec': 'eb',
-        'f0': 'ec',
-        'f4': 'ed',
-        'f1': 'ee',
+        # 'ea': 'e9',
+        # 'eb': 'ea',
+        # 'ec': 'eb',
+        # 'f0': 'ec',
+        # 'f4': 'ed',
+        # 'f1': 'ee',
     }
