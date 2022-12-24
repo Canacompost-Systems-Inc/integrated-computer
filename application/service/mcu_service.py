@@ -5,71 +5,46 @@ from typing import Dict, List
 from application.constants.mcu import IDLE, READING_DEVICE_ID, READING_PAYLOAD, EMPTY, START_TRANSMISSION, \
     END_TRANSMISSION, ACKNOWLEDGE, NEGATIVE_ACKNOWLEDGE, GET_SYSTEM_SNAPSHOT_OPCODE, GET_SENSOR_STATE_OPCODE, \
     GET_ACTUATOR_STATE_OPCODE, SET_ACTUATOR_STATE_OPCODE
-from application.model.actuator.base_actuator import BaseActuator
-from application.model.base_device import BaseDevice
 from application.model.datum import Datum
 from application.persistence.mcu_persistent import get_mcu
+from application.service.device_registry_service import DeviceRegistryService
+from application.service.measurement_factory import MeasurementFactory
 
 
 class MCUService:
 
-    def __init__(self, device_types_list, measurements_list, device_map_config=None, testing=False):
+    def __init__(self, device_registry_service, measurement_factory, testing=False):
+
+        self.device_registry_service: DeviceRegistryService = device_registry_service
+        self.measurement_factory: MeasurementFactory = measurement_factory
+        self.testing = testing
 
         self.mcu_persistent = get_mcu()
 
-        self.device_types_map = {d().device_type_name: d for d in device_types_list}
-
-        # Construct an object for each device in the config
-        self.device_map = {}
-        for location in device_map_config:
-            for device_id in device_map_config[location]:
-                device_type_name, device_friendly_name = device_map_config[location][device_id]
-
-                if device_type_name not in self.device_types_map:
-                    raise ValueError(f"Unknown device type name: {device_type_name} is not a sensor or actuator type")
-
-                device_class = self.device_types_map[device_type_name]
-                device_instance = device_class(device_id, device_friendly_name, location)
-                self.device_map[device_id] = device_instance
-
-        self.measurement_class_map = {measurement_class(0).name: measurement_class for measurement_class in measurements_list}
-
-        self.testing = testing
-
     def get_system_snapshot(self) -> Dict[str, List[Datum]]:
-        response = self.make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
-        return self.decode_get_response(response)
+        response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
+        return self._decode_get_response(response)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
-        response = self.make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
-        return self.decode_get_response(response)
+        response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
+        return self._decode_get_response(response)
 
     def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, List[Datum]]:
-        response = self.make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
-        return self.decode_get_response(response)
+        response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
+        return self._decode_get_response(response)
 
     def set_actuator_state(self, actuator_device_id='e0', value='off') -> Dict[str, List[Datum]]:
 
-        def get_payload_bytes(_value):
-            """Get the bytes for the payload that correspond to this value"""
-            device: BaseActuator = self.device_map.get(actuator_device_id, None)
-            if device is None:
-                raise ValueError(f"Unknown device_id '{actuator_device_id}'")
-            _payload = device.possible_states.get(_value, None)
-            if _payload is None:
-                raise ValueError(f"Unknown value '{_value}' for device {device.device_type_name}")
-            return _payload
+        def _decode_set_response(_response: bytes) -> Dict[str, List[Datum]]:
+            """
+            SET Actuator Value will return the format: <STX><ACK><ETX> for success or <STX><NAK><ETX> for failure
+            
+            This returns a map from device_id -> [Datum objects for this device]
+            Note: this format is returned so all MCU endpoints returns the same object structure
+            Note: measurement_name is always 'state' for actuators
+            """
 
-        def decode_set_response(_response: bytes) -> Dict[str, List[Datum]]:
-            ret = {actuator_device_id: []}
-
-            device: BaseActuator = self.device_map.get(actuator_device_id, None)
-            if device is None:
-                raise ValueError(f"Unknown device_id '{actuator_device_id}'")
-
-            measurement_class = self.measurement_class_map.get("state")
-
-            """Need to extract this one byte as a range to avoid auto casting to an int"""
+            # Need to extract this one byte as a range to avoid auto casting to an int
             response_byte = _response[0:1]
 
             if response_byte == ACKNOWLEDGE:
@@ -83,51 +58,59 @@ class MCUService:
             else:
                 raise ValueError(f"Unknown response to set actuator state '{response_byte}' received from MCU")
 
-            measurement = measurement_class(value)
+            # Create datum for this state measurement
+            device = self.device_registry_service.get_device(actuator_device_id)
+            measurement = self.measurement_factory.get_measurement('state', value)
             dat = Datum(device, measurement)
-            ret[actuator_device_id].append(dat)
-            return ret
 
-        payload = get_payload_bytes(value)
-        response = self.make_request(SET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id, payload=payload)
-        return decode_set_response(response)
+            # Return the expected data structure
+            return {actuator_device_id: [dat]}
 
-    def decode_get_response(self, response: bytes) -> Dict[str, List[Datum]]:
+        payload = self.device_registry_service.get_payload_bytes(actuator_device_id, value)
+        response = self._make_request(SET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id, payload=payload)
+        return _decode_set_response(response)
+
+    def _decode_get_response(self, response: bytes) -> Dict[str, List[Datum]]:
+        """
+        GET Sensor Value and GET Actuator Value will return the format: <STX><DID><PAYLOAD><ETX>
+        This format is repeated for each device (which only applies to the GET System Snapshot endpoint)
+
+        This returns a map from device_id -> [Datum objects for this device]
+        """
+
         ret = {}
 
-        device_payloads = self.split_response_by_device_id(response)
+        device_payloads = self._split_response_by_device_id(response)
 
         for device_id, payload_bytes in device_payloads.items():
-
-            device: BaseDevice = self.device_map.get(device_id, None)
-            if device is None:
-                raise ValueError(f"Unknown device_id '{device_id}' received from MCU")
 
             measurement_name_to_value_map = device.decode_payload(payload_bytes)
 
             ret[device_id] = []
             for measurement_name, value in measurement_name_to_value_map.items():
                 
-                measurement_class = self.measurement_class_map.get(measurement_name, None)
-                if measurement_class is None:
-                    raise ValueError(f"Unknown measurement_name '{measurement_name}' for device '{device_id}'")
-
-                measurement = measurement_class(value)
-                
+                device = self.device_registry_service.get_device(device_id)
+                measurement = self.measurement_factory.get_measurement(measurement_name, value)
                 dat = Datum(device, measurement)
                 ret[device_id].append(dat)
 
         return ret
 
-    def make_request(self, opcode, device_id='00', payload=b'\x00\x00\x00\x00') -> bytes:
+    def _make_request(self, opcode, device_id='00', payload=b'\x00\x00\x00\x00') -> bytes:
 
         # If we are testing, there is no MCU to make requests to or read responses from, so return example responses
         if self.testing:
             if opcode == GET_SYSTEM_SNAPSHOT_OPCODE:
-                response = b'\xc0\x41\xd5\x02\x88\x42\x48\xf6\xb9\xc1\x45\x18\x00\x00\x41\xe6\x8f\x98\x42\x33\xae\x70\xe1\x00\x00\x00\x01\xe7\x00\x00\x00\x01\xf6\x00\x00\x00\x01'
+                response = b'\xc1\x44\x0d\xc0\x00\x41\xb8\x4f\xc0\x41\xc4\x1b\x20\xc2\xc2\x30\x7f\x20\x47\xf3\x97\x1a\xe0\x00\x00\x00\x00\xe1\x00\x00\x00\x00\xe2\x00\x00\x00\x00\xe3\x00\x00\x00\x00\xe4\x00\x00\x00\x00\xe5\x00\x00\x00\x00\xe6\x00\x00\x00\x00\xe7\x00\x00\x00\x00\xe8\x00\x00\x00\x00\xea\x00\x00\x00\x00\xeb\x00\x00\x00\x00\xec\x00\x00\x00\x00\xf0\x00\x00\x00\x00\xf4\x00\x00\x00\x00'
             elif opcode == GET_SENSOR_STATE_OPCODE:
+                # Other examples:
+                # response = b'\xc1\x44\x0d\xc0\x00\x41\xb8\x4f\xc0\x41\xc4\x1b\x20'
+                # response = b'\xc2\xc2\x30\x7f\x20\x47\xf3\x97\x1a'
                 response = bytes.fromhex(device_id) + b'\x41\xd5\x02\x88\x42\x48\xf6\xb9'
             elif opcode == GET_ACTUATOR_STATE_OPCODE:
+                # Other examples:
+                # response = b'\xe0\x00\x00\x00\x00'
+                # response = b'\xeb\x00\x00\x00\x00'
                 response = bytes.fromhex(device_id) + b'\x00\x00\x00\x00'
             elif opcode == SET_ACTUATOR_STATE_OPCODE:
                 response = ACKNOWLEDGE
@@ -142,7 +125,7 @@ class MCUService:
     def _get_response(self, timeout_sec=10) -> bytes:
         buffer = b''
         state = IDLE
-        current_payload_length = 0
+        current_payload_length_bytes = 0
 
         while True:
 
@@ -187,11 +170,8 @@ class MCUService:
 
                 device_id = byte.hex()
 
-                device: BaseDevice = self.device_map.get(device_id, None)
-                if device is None:
-                    raise ValueError(f"Unknown device_id '{device_id}' received from MCU")
-
-                current_payload_length = device.payload_length * 4
+                device_payload_length = self.device_registry_service.get_payload_length(device_id)
+                current_payload_length_bytes = device_payload_length * 4
 
                 state = READING_PAYLOAD
 
@@ -202,8 +182,8 @@ class MCUService:
                 buffer += byte
 
                 # Continue reading until bytes from this payload are consumed
-                current_payload_length -= 1
-                if current_payload_length > 0:
+                current_payload_length_bytes -= 1
+                if current_payload_length_bytes > 0:
                     continue
 
                 # Done reading payload, return to checking for device id or end transmission char
@@ -211,7 +191,7 @@ class MCUService:
 
         return buffer
 
-    def split_response_by_device_id(self, response: bytes) -> Dict[str, bytes]:
+    def _split_response_by_device_id(self, response: bytes) -> Dict[str, bytes]:
         """
         GET Sensor Value and GET Actuator Value will return the format: <STX><DID><PAYLOAD><ETX>
 
@@ -225,12 +205,9 @@ class MCUService:
             device_id = response[i:i+1].hex()
             i += 1
 
-            device: BaseDevice = self.device_map.get(device_id, None)
-            if device is None:
-                raise ValueError(f"Unknown device_id '{device_id}' received from MCU")
-
             # Read the number of floats that are returned by this device
-            payload_end_i = device.payload_length * 4
+            device_payload_length = self.device_registry_service.get_payload_length(device_id)
+            payload_end_i = device_payload_length * 4
             payload = response[i:i + payload_end_i]
 
             payload_map[device_id] = payload

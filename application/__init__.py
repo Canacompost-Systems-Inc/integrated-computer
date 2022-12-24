@@ -28,7 +28,10 @@ from application.model.sensor.sen0321_sensor import SEN0321Sensor
 from application.model.sensor.sen0441_sensor import SEN0441Sensor
 from application.model.sensor.sht40_sensor import SHT40Sensor
 from application.model.sensor.yfs201_sensor import YFS201Sensor
+from application.service.device_factory import DeviceFactory
+from application.service.device_registry_service import DeviceRegistryService
 from application.service.mcu_service import MCUService
+from application.service.measurement_factory import MeasurementFactory
 from application.service.state_manager import StateManager
 from application.service.routines import RoutinesService
 from application.persistence.mcu_persistent import MCUPersistent
@@ -48,6 +51,7 @@ def init_app():
     with app.app_context():
 
         routines_service = RoutinesService()
+
         device_types_list = [
             DS18B20Sensor,
             IPC10100Sensor,
@@ -68,6 +72,9 @@ def init_app():
             RotaryDiverterValve6To1Actuator,
             WaterPumpRelayActuator,
         ]
+        device_factory = DeviceFactory(device_types_list)
+        device_registry_service = DeviceRegistryService(device_factory, app.config['DEVICE_MAP'])
+
         measurements_list = [
             CO2Measurement,
             FlowRateMeasurement,
@@ -78,8 +85,10 @@ def init_app():
             TemperatureMeasurement,
             StateMeasurement,
         ]
-        mcu_service = MCUService(device_types_list, measurements_list, device_map_config=app.config['DEVICE_MAP'],
-                                 testing=app.config['TESTING'])
+        measurement_factory = MeasurementFactory(measurements_list)
+
+        mcu_service = MCUService(device_registry_service, measurement_factory, testing=app.config['TESTING'])
+
         state_manager = StateManager(routines_service, mcu_service)
 
         # Construct blueprints
