@@ -40,7 +40,7 @@ class MCUService:
             # 41 d2 c9 c4 424b5df8c14513e00041e425a04237
         else:
             response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
-        print(f"Response from get_system_snapshot: '{response.hex()}'")
+        # print(f"Response from get_system_snapshot: '{response.hex()}'")
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
@@ -50,7 +50,7 @@ class MCUService:
             response = bytes.fromhex(sensor_device_id) + b'\x41\xd5\x02\x88\x42\x48\xf6\xb9'
         else:
             response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
-        print(f"Response from get_sensor_state: '{response.hex()}'")
+        # print(f"Response from get_sensor_state: '{response.hex()}'")
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
@@ -60,7 +60,7 @@ class MCUService:
             response = bytes.fromhex(actuator_device_id) + b'\x00\x00\x00\x00'
         else:
             response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
-        print(f"Response from get_actuator_state: '{response.hex()}'")
+        # print(f"Response from get_actuator_state: '{response.hex()}'")
         response_map = self._decode_get_response(response)
         return self.structure_response(response_map)
 
