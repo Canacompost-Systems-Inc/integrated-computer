@@ -7,10 +7,6 @@ from application.model.base_device import BaseDevice
 
 class BaseActuator(BaseDevice, metaclass=ABCMeta):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._state = None
-
     @property
     def device_category(self) -> str:
         return 'actuator'
@@ -22,14 +18,6 @@ class BaseActuator(BaseDevice, metaclass=ABCMeta):
     @property
     def measurement_order(self) -> List[str]:
         return ['state']
-
-    @property
-    def current_state(self):
-        return self._state
-
-    @current_state.setter
-    def current_state(self, val):
-        self._state = val
 
     @property
     @abstractmethod

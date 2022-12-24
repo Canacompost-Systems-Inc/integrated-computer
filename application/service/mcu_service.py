@@ -102,20 +102,47 @@ class MCUService:
         if self.testing:
             if opcode == GET_SYSTEM_SNAPSHOT_OPCODE:
                 response = b'\xc1\x44\x0d\xc0\x00\x41\xb8\x4f\xc0\x41\xc4\x1b\x20\xc2\xc2\x30\x7f\x20\x47\xf3\x97\x1a\xe0\x00\x00\x00\x00\xe1\x00\x00\x00\x00\xe2\x00\x00\x00\x00\xe3\x00\x00\x00\x00\xe4\x00\x00\x00\x00\xe5\x00\x00\x00\x00\xe6\x00\x00\x00\x00\xe7\x00\x00\x00\x00\xe8\x00\x00\x00\x00\xea\x00\x00\x00\x00\xeb\x00\x00\x00\x00\xec\x00\x00\x00\x00\xf0\x00\x00\x00\x00\xf4\x00\x00\x00\x00'
+
             elif opcode == GET_SENSOR_STATE_OPCODE:
-                # Other examples:
+                # Example responses:
                 # response = b'\xc1\x44\x0d\xc0\x00\x41\xb8\x4f\xc0\x41\xc4\x1b\x20'
                 # response = b'\xc2\xc2\x30\x7f\x20\x47\xf3\x97\x1a'
-                response = bytes.fromhex(device_id) + b'\x41\xd5\x02\x88\x42\x48\xf6\xb9'
+
+                # Construct a response that is within the acceptable range
+                response = bytes.fromhex(device_id)
+
+                for measurement_name in self.device_registry_service.get_device(device_id).measurement_order:
+
+                    measurement = self.measurement_factory.get_measurement(measurement_name, 0)
+                    range_min, range_max = measurement.normal_min, measurement.normal_max
+
+                    from random import uniform
+                    random_value = uniform(range_min, range_max)
+
+                    # Add this measurement to the response
+                    import struct
+                    response += struct.pack("!f", random_value)
+
             elif opcode == GET_ACTUATOR_STATE_OPCODE:
-                # Other examples:
+                # Example responses:
                 # response = b'\xe0\x00\x00\x00\x00'
                 # response = b'\xeb\x00\x00\x00\x00'
-                response = bytes.fromhex(device_id) + b'\x00\x00\x00\x00'
+
+                # Construct a response from the possible states
+                response = bytes.fromhex(device_id)
+                possible_states = self.device_registry_service.get_device(device_id).possible_states
+
+                from random import choice
+                random_value_bytes = choice(list(possible_states.values()))
+
+                response += random_value_bytes
+
             elif opcode == SET_ACTUATOR_STATE_OPCODE:
                 response = ACKNOWLEDGE
+
             else:
                 raise RuntimeError(f"Unknown opcode '{opcode}'")
+
             return response
 
         request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
