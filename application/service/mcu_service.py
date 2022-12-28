@@ -84,6 +84,7 @@ class MCUService:
 
         for device_id, payload_bytes in device_payloads.items():
 
+            device = self.device_registry_service.get_device(device_id)
             measurement_name_to_value_map = device.decode_payload(payload_bytes)
 
             ret[device_id] = []
