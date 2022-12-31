@@ -8,15 +8,20 @@ class IsolationContext(Context):
     loop and compost loop. The IsolationStates implement the requirements for flushing and sanitizing the system when
     switching between states."""
 
-    def __init__(self, default_state: IsolationState = DefaultState):
+    def __init__(self, default_state: IsolationState = None):
         super().__init__(default_state)
         # Setting this twice so the python type hints work
         self.state = default_state
 
+    def get_state(self) -> IsolationState:
+        return self.state
+
     def change_state(self, new_state: IsolationState):
         yield self.deactivate_state()
+        super().change_state(DefaultState(None))  # TODO - figure out if there's a better way to do this - the flush and sanitize require this state
         yield self.flush_air_loop()
         yield self.sanitize_air_loop()
+        yield self.flush_air_loop()
         yield self.activate_state()
         super().change_state(new_state)
 

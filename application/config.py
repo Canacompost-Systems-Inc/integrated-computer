@@ -61,8 +61,7 @@ class Config(object):
         },
         'Sieve': {
         },
-        'LarvaeOutput': {
-        },
-        'CompostOutput': {
-        },
     }
+
+    # List of device_ids for sensors that are in the air loop but take measurements for containers
+    LOCATION_AWARE_SENSORS = ['c0', 'c1', 'c2', 'c8']

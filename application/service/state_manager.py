@@ -1,7 +1,7 @@
+import logging
 import time
-from collections import defaultdict
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from application.model.context.isolation_context import IsolationContext
 from application.model.routine.routine import Routine
@@ -9,49 +9,7 @@ from application.model.state.isolation.isolation_state import IsolationState
 from application.service.isolation_state_registry_service import IsolationStateRegistryService
 from application.service.routine_registry_service import RoutineRegistryService
 from application.service.mcu_service import MCUService
-
-
-# TODO:
-# 1. Add function for determining which state the system is currently in based on the system snapshot
-
-# 2. Have the manage state function get the system snapshot and set the isolation_state if it is not already set (for startup)
-
-# 3. Add in logic for keeping track of the current system state, and updating it with the latest readings
-#     - this includes the get_sensor_state etc. endpoints which are currently not being handled
-
-# 3. Add Routines
-# 	- MoveCompostToBioreactor1
-# 	- MoveCompostToBioreactor2
-# 	- MoveCompostToBSFReproduction
-# 	- MoveCompostToSieve
-#
-# 	- CoolAndDehumidify SS B1 B2 BSF S (i.e. run through dehumidifier)
-# 	- Humidify SS B1 B2 BSF S (i.e. activate water pump)
-# 	- Heat SS B1 B2 BSF S (i.e. activate heater)
-# 	- ReadSensors SS B1 B2 BSF S
-#
-# 4. Make note about needing a concept of 'continuous tasks' like checking the flow rate and the o3 sensor regularly
-#
-# 5. StateManager
-# 	- In ManageState thread, will check which readings haven't been done in a while and will add these to the task queue (i.e. will add ReadSensors and then will call a function to check if any measurements are out of bounds, and if so will have logic for how to handle these - that is, will know which routines to add to the queue in these cases)
-# 	- Can have a config value which tells it how long to wait between sampling containers
-# 	- nvm, this logic belongs in the CompostManager
-#
-# 	- This structure handles cooling and dehumidifying, humidifying, heating, and reading sensors; but it does not cover moving compost from one stage to the next
-# 		- Maybe StateManager has functions for adding the movement of compost to the queue (or a more general function that could be used by the UI as well?), and the logic for when to do this can be handled by the automation layer (CompostManager?)
-#
-# 6. Add this to the description of the action or ActionSet:
-#
-#
-# This registers each low-level action that the system can perform. Routines will be sets of actions with timing and
-#     dependencies (e.g. which bioreactor needs to be active in the shared air). The goal is to make routines consist
-#     of a set of logical steps so that they are readily understandable.
-#
-#     There may be a better way to organize this, perhaps by creating a model for each action, and just registering them
-#     here. But that can be handled in a refactor later. For now, we'll have a set of functions here that represent the
-#     discrete actions that the system can take.
-#
-# 7. Later can add in test code that will replace the MCU so that when the commands are written to it, it responds correctly (and thus it keeps track of the current state of the system, and assumes the default states when it starts up)
+from application.service.mcu_state_tracker_service import MCUStateTrackerService
 
 
 @dataclass
@@ -67,34 +25,95 @@ class StateManager:
     queue for which routines to perform next. Also interacts with the MCUService to perform the routines.
     """
 
-    def __init__(self, routines_service: RoutineRegistryService, mcu_service: MCUService,
-                 isolation_state_registry_service: IsolationStateRegistryService, isolation_context: IsolationContext):
+    def __init__(self, mcu_state_tracker_service: MCUStateTrackerService, routines_service: RoutineRegistryService,
+                 mcu_service: MCUService, isolation_state_registry_service: IsolationStateRegistryService,
+                 isolation_context: IsolationContext):
+        self.mcu_state_tracker_service = mcu_state_tracker_service
         self.routines_service = routines_service
         self.mcu_service = mcu_service
         self.isolation_state_service = isolation_state_registry_service
-        #
-        # self.available_routines = defaultdict(list)
-        # for state in self.isolation_state_service.isolation_state_map.values():
-        #     for routine_name, routine in self.routines_service.routine_map.items():
-        #         if routine.can_run_in_state(state):
-        #             self.available_routines[state.name].append(routine_name)
-
         self.isolation_context = isolation_context
 
+        self.is_initialized = False
         self.task_queue: List[Task] = []
 
-    @property
-    def current_isolation_state(self) -> IsolationState:
-        return self.isolation_context.state
+    def get_current_isolation_state(self) -> IsolationState:
+        return self.isolation_context.get_state()
 
     @property
-    def available_isolation_states(self) -> List[IsolationState]:
-        return self.isolation_state_service.isolation_state_map.values()
+    def list_available_isolation_states(self) -> List[IsolationState]:
+        return self.isolation_state_service.all_isolation_states()
 
-    def change_isolation_state(self, new_state: IsolationState):
+    def change_isolation_state(self, new_state_name: str):
+
+        logging.info(f"Changing isolation state from {self.get_current_isolation_state().name} to {new_state_name}")
+
+        new_state = self.isolation_state_service.get_isolation_state(new_state_name)
+
         for routine in self.isolation_context.change_state(new_state):
             # Need to perform these right away rather than adding them to the queue
             self.perform_routine(routine)
+
+    def initialize_isolation_state_context(self):
+        """Function used during initialization to determine the isolation state based on the current state reported by
+        the MCU, and then to set the isolation state context based on this.
+        """
+
+        def get_expected_actuator_states(_isolation_state: IsolationState) -> Dict[str, str]:
+            """Use the isolation_state.activate_state function to determine the expected actuator states for a given
+            isolation state.
+            """
+            actuator_states = {}
+
+            routine: Routine = _isolation_state.activate_state()
+
+            for routine_step in routine:
+                action_set = routine_step.action_set
+                if action_set is not None:
+                    for action in action_set:
+
+                        if action.set_to_value is not None:
+                            # This is an actuator to set
+                            actuator_states[action.device_id] = action.set_to_value
+
+            return actuator_states
+
+        def all_expected_actuator_states_are_set(
+                actual_states: Dict[str, str],
+                expected_states: Dict[str, str]) -> bool:
+
+            return all([
+                expected_value == actual_states[device_id]
+                for device_id, expected_value
+                in expected_states.items()
+            ])
+
+        # Get the current actuator states of the system
+        actual_actuator_states = self.mcu_state_tracker_service.get_actuator_states()
+
+        # Get the expected actuator states under each isolation state
+        expected_actuator_states = {}
+        for isolation_state in self.list_available_isolation_states:
+
+            expected_actuator_states[isolation_state.name] = get_expected_actuator_states(isolation_state)
+
+        # Determine which isolation_state is currently set - raise error if more than one matches
+        matching_isolation_states = []
+        for isolation_state_name in expected_actuator_states:
+
+            if all_expected_actuator_states_are_set(actual_actuator_states, expected_actuator_states[isolation_state_name]):
+                matching_isolation_states.append(isolation_state_name)
+
+        if len(matching_isolation_states) == 0:
+            raise RuntimeError(f"MCU is reporting actuator states that do not match any isolation states")
+
+        elif len(matching_isolation_states) > 1:
+            raise RuntimeError(f"MCU is reporting actuator states that match multiple isolation states")
+
+        # Set the isolation_context object to the right state
+        isolation_state_name = matching_isolation_states[0]
+        isolation_state_instance = self.isolation_state_service.get_isolation_state(isolation_state_name)
+        self.isolation_context.state = isolation_state_instance
 
     @property
     def current_task_queue(self) -> List[Task]:
@@ -109,46 +128,101 @@ class StateManager:
 
         task = self.task_queue.pop(0)
 
-        if self.current_isolation_state != task.isolation_state:
-            self.change_isolation_state(task.isolation_state)
+        if self.get_current_isolation_state() != task.isolation_state:
+            self.change_isolation_state(task.isolation_state.name)
 
         self.perform_routine(task.routine)
 
     def perform_routine(self, routine: Routine):
 
-        if not routine.can_run_in_state(self.current_isolation_state):
-            raise RuntimeError(f"Cannot run the {routine.name} routine from the {self.current_isolation_state.name} state")
+        logging.debug(f"Performing routine {routine.name}")
+
+        if not routine.can_run_in_state(self.get_current_isolation_state()):
+            raise RuntimeError(f"Cannot run the {routine.name} routine from the "
+                               f"{self.get_current_isolation_state().name} state")
 
         for routine_step in routine:
             action_set = routine_step.action_set
             if action_set is not None:
                 for action in action_set:
 
+                    logging.debug(f"Performing action {action}")
+
                     if action.set_to_value is None:
                         # This is a sensor that needs to be read
-                        self.mcu_service.get_sensor_state(action.device_id)
+                        response = self.mcu_service.get_sensor_state(action.device_id)
                     else:
                         # This is an actuator to set
-                        self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
+                        response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
 
-            time.sleep(routine_step.duration_sec)
+                    self.mcu_state_tracker_service.update_tracked_state(response)
+
+            # TODO - commenting out for testing, uncomment before merging
+            # time.sleep(routine_step.duration_sec)
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
     def manage_state(self):
         while True:
 
-            # TODO - requeue items with the PriorityService, when available
-            # self.task_queue = self.priority_service.reprioritize_task_queue(self.task_queue)
+            if not self.is_initialized:
+                logging.info(f"Initializing the state tracker and isolation context from the MCU")
+
+                try:
+                    system_snapshot = self.mcu_service.get_system_snapshot()
+                except Exception as e:
+                    # If the MCU isn't ready yet, it will sometimes raise an error
+                    time.sleep(3)
+                    continue
+
+                self.mcu_state_tracker_service.update_tracked_state(system_snapshot)
+                self.initialize_isolation_state_context()
+
+                # We should always start at the default state
+                # TODO - in the future, may want to remove this so it can continue operating through restarts gracefully
+                if self.get_current_isolation_state().name != 'DefaultState':
+                    self.change_isolation_state('DefaultState')
+
+                self.is_initialized = True
+
+                # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
+                routine = self.routines_service.get_routine('ReadSensorsBioreactor1Routine')
+                isolation_state = self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State')
+                self.add_routine_to_queue(routine, isolation_state)
 
             self.perform_next_routine_in_queue()
 
+
+
+
+            # latest_actuator_state = self.mcu_state_tracker_service.get_actuator_states()
+            # logging.warning(f"latest_actuator_state: {latest_actuator_state}")
+            #
+            # latest_measurements = self.mcu_state_tracker_service.get_latest_measurements()
+            # logging.warning(f"latest_measurements: {latest_measurements}")
+            #
+            # if self.get_current_isolation_state().name != 'AirLoopBioreactor1State':
+            #     self.change_isolation_state('AirLoopBioreactor1State')
+            #
+            #     routine = self.routines_service.get_routine('ReadSensorsBioreactor1Routine')
+            #     isolation_state = self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State')
+            #     self.add_routine_to_queue(routine, isolation_state)
+
+
+            # import random
+            # if random.random() < 0.50:
+            #     possible_states = [s.name for s in self.list_available_isolation_states if s.name != self.current_isolation_state.name and s.name != 'InitialState']
+            #     chosen_state = random.choice(possible_states) if self.current_isolation_state.name == 'DefaultState' else 'DefaultState'
+            #     print(f"chosen_state: {chosen_state}")
+            #     self.change_isolation_state(chosen_state)
+
             time.sleep(3)
+
 
             # NOTE - leaving test code in until we write the new management service
 
-            print("########## Testing get system snapshot endpoint ##########")
-            measurement_map = self.mcu_service.get_system_snapshot()
-            print(f"measurement_map: {measurement_map}")
+            # print("########## Testing get system snapshot endpoint ##########")
+            # measurement_map = self.mcu_service.get_system_snapshot()
+            # print(f"measurement_map: {measurement_map}")
 
             # print("########## Testing set actuator state endpoint ##########")
             #

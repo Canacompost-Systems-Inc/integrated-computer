@@ -11,12 +11,12 @@ class DeviceFactory:
             in device_types_list
         }
 
-    def get_device(self, device_type_name, device_id, device_friendly_name, location) -> BaseDevice:
+    def get_device(self, device_type_name, device_id, device_friendly_name, location, is_location_aware) -> BaseDevice:
 
         if device_type_name not in self.device_types_map:
             raise ValueError(f"Unknown device type name '{device_type_name}'")
 
         device_class = self.device_types_map.get(device_type_name)
-        device_instance = device_class(device_id, device_friendly_name, location)
+        device_instance = device_class(device_id, device_friendly_name, location, is_location_aware)
 
         return device_instance

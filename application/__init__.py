@@ -14,6 +14,13 @@ from application.model.actuator.rotary_diverter_valve_1_to_6_actuator import Rot
 from application.model.actuator.rotary_diverter_valve_6_to_1_actuator import RotaryDiverterValve6To1Actuator
 from application.model.actuator.water_pump_relay_actuator import WaterPumpRelayActuator
 from application.model.context.isolation_context import IsolationContext
+from application.model.location.airloop_location import AirLoopLocation
+from application.model.location.bioreactor1_location import Bioreactor1Location
+from application.model.location.bioreactor2_location import Bioreactor2Location
+from application.model.location.bsfreproduction_location import BSFReproductionLocation
+from application.model.location.compostloop_location import CompostLoopLocation
+from application.model.location.shredderstorage_location import ShredderStorageLocation
+from application.model.location.sieve_location import SieveLocation
 from application.model.measurement.co2_measurement import CO2Measurement
 from application.model.measurement.flowrate_measurement import FlowRateMeasurement
 from application.model.measurement.h2_measurement import H2Measurement
@@ -24,6 +31,7 @@ from application.model.measurement.state_measurement import StateMeasurement
 from application.model.measurement.temperature_measurement import TemperatureMeasurement
 from application.model.routine.flush_air_loop_routine import FlushAirLoopRoutine
 from application.model.routine.flush_compost_loop_routine import FlushCompostLoopRoutine
+from application.model.routine.read_sensors_bioreactor_1_routine import ReadSensorsBioreactor1Routine
 from application.model.routine.sanitize_air_loop_routine import SanitizeAirLoopRoutine
 from application.model.routine.sanitize_compost_loop_routine import SanitizeCompostLoopRoutine
 from application.model.sensor.ds18b20_sensor import DS18B20Sensor
@@ -43,14 +51,17 @@ from application.model.state.isolation.compost_loop_bioreactor_2_state import Co
 from application.model.state.isolation.compost_loop_bsf_reproduction_state import CompostLoopBSFReproductionState
 from application.model.state.isolation.compost_loop_shredder_storage_state import CompostLoopShredderStorageState
 from application.model.state.isolation.default_state import DefaultState
+from application.model.state.isolation.initial_state import InitialState
 from application.service.device_factory import DeviceFactory
 from application.service.device_registry_service import DeviceRegistryService
 from application.service.isolation_state_registry_service import IsolationStateRegistryService
+from application.service.location_registry_service import LocationRegistryService
 from application.service.mcu_service import MCUService
 from application.service.measurement_factory import MeasurementFactory
 from application.service.state_manager import StateManager
 from application.service.routine_registry_service import RoutineRegistryService
 from application.persistence.mcu_persistent import MCUPersistent
+from application.service.mcu_state_tracker_service import MCUStateTrackerService
 
 # Globally accessible connections / plugins / etc.
 mcu = MCUPersistent()
@@ -65,6 +76,17 @@ def init_app():
     mcu.init_app(app)
 
     with app.app_context():
+
+        location_list = [
+            AirLoopLocation,
+            Bioreactor1Location,
+            Bioreactor2Location,
+            BSFReproductionLocation,
+            CompostLoopLocation,
+            ShredderStorageLocation,
+            SieveLocation,
+        ]
+        location_registry_service = LocationRegistryService(location_list)
 
         device_types_list = [
             DS18B20Sensor,
@@ -87,7 +109,9 @@ def init_app():
             WaterPumpRelayActuator,
         ]
         device_factory = DeviceFactory(device_types_list)
-        device_registry_service = DeviceRegistryService(device_factory, app.config['DEVICE_MAP'])
+        device_registry_service = DeviceRegistryService(device_factory, location_registry_service,
+                                                        app.config['DEVICE_MAP'],
+                                                        app.config['LOCATION_AWARE_SENSORS'])
 
         measurements_list = [
             CO2Measurement,
@@ -100,14 +124,6 @@ def init_app():
             StateMeasurement,
         ]
         measurement_factory = MeasurementFactory(measurements_list)
-
-        routine_list = [
-            FlushAirLoopRoutine,
-            FlushCompostLoopRoutine,
-            SanitizeAirLoopRoutine,
-            SanitizeCompostLoopRoutine,
-        ]
-        routines_service = RoutineRegistryService(routine_list)
 
         mcu_service = MCUService(device_registry_service, measurement_factory, testing=app.config['TESTING'])
 
@@ -122,11 +138,26 @@ def init_app():
             CompostLoopBSFReproductionState,
             CompostLoopShredderStorageState,
             DefaultState,
+            InitialState,
         ]
         isolation_context = IsolationContext()
         isolation_state_registry_service = IsolationStateRegistryService(isolation_state_list, isolation_context)
 
-        state_manager = StateManager(routines_service, mcu_service, isolation_state_registry_service, isolation_context)
+        routine_list = [
+            FlushAirLoopRoutine,
+            FlushCompostLoopRoutine,
+            SanitizeAirLoopRoutine,
+            SanitizeCompostLoopRoutine,
+            ReadSensorsBioreactor1Routine,
+        ]
+        routines_registry_service = RoutineRegistryService(routine_list)
+
+        mcu_state_tracker_service = MCUStateTrackerService(device_registry_service, location_registry_service,
+                                                           isolation_context)
+        state_manager = StateManager(mcu_state_tracker_service, routines_registry_service, mcu_service,
+                                     isolation_state_registry_service, isolation_context)
+
+        # TODO - replace all the registry services with the singleton pattern?
 
         # Construct blueprints
         # TODO - add in a construct_sensors_bp?

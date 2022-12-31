@@ -1,16 +1,17 @@
 from typing import Dict
 
-from application.model.action.activate_air_loop_action_set import ActivateAirLoopActionSet
-from application.model.action.activate_compost_loop_destination_action_set import \
-    ActivateCompostLoopDestinationActionSet
+from application.model.action.action import Action
+from application.model.action.action_set import ActionSet
 from application.model.location.base_location import BaseLocation
 from application.model.routine.routine import Routine
 from application.model.routine.routine_step import RoutineStep
 from application.model.state.isolation.isolation_state import IsolationState
 
 
-class DefaultState(IsolationState):
-    name = "DefaultState"
+class InitialState(IsolationState):
+    """This state is only used during system startup. This may be removed once integration testing is done and the
+    system starts up in the Default State."""
+    name = "InitialState"
 
     @property
     def location_sensor_remapping(self) -> Dict[type(BaseLocation), type(BaseLocation)]:
@@ -18,8 +19,9 @@ class DefaultState(IsolationState):
 
     def activate_state(self):
         return Routine(steps=[
-            RoutineStep(ActivateCompostLoopDestinationActionSet('air_loop'), duration_sec=0),
-            RoutineStep(ActivateAirLoopActionSet('compost_loop'), duration_sec=0),
+            RoutineStep(ActionSet([Action('e0', 'ref')])),
+            RoutineStep(ActionSet([Action('e1', 'ref')])),
+            RoutineStep(ActionSet([Action('e2', 'ref')])),
         ])
 
     def deactivate_state(self):

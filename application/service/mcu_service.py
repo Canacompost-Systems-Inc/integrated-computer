@@ -13,10 +13,11 @@ from application.service.measurement_factory import MeasurementFactory
 
 class MCUService:
 
-    def __init__(self, device_registry_service, measurement_factory, testing=False):
+    def __init__(self, device_registry_service: DeviceRegistryService, measurement_factory: MeasurementFactory,
+                 testing=False):
 
-        self.device_registry_service: DeviceRegistryService = device_registry_service
-        self.measurement_factory: MeasurementFactory = measurement_factory
+        self.device_registry_service = device_registry_service
+        self.measurement_factory = measurement_factory
         self.testing = testing
 
         self.mcu_persistent = get_mcu()

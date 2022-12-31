@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseState(metaclass=ABCMeta):
+    name = "BaseState"
 
     def __init__(self, context):
         self.context = context
@@ -12,9 +13,8 @@ class BaseState(metaclass=ABCMeta):
     def __repr__(self):
         return self.__str__()
 
-    @property
-    def name(self) -> str:
-        return self.__class__.__name__
+    def __eq__(self, other):
+        return getattr(self, 'name', None) == getattr(other, 'name', None)
 
     @abstractmethod
     def activate_state(self):

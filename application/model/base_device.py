@@ -2,13 +2,17 @@ from abc import ABCMeta, abstractmethod
 import struct
 from typing import Dict, List
 
+from application.model.location.base_location import BaseLocation
+
 
 class BaseDevice(metaclass=ABCMeta):
 
-    def __init__(self, device_id=None, device_friendly_name=None, location=None):
+    def __init__(self, device_id: str = None, device_friendly_name: str = None, location: BaseLocation = None,
+                 is_location_aware: bool = False):
         self.device_id = device_id
         self.device_friendly_name = device_friendly_name
         self.location = location
+        self.is_location_aware = is_location_aware
 
     @property
     @abstractmethod

@@ -12,6 +12,7 @@ from application.model.state.isolation.default_state import DefaultState
 
 
 class FlushAirLoopRoutine(Routine):
+    name = "FlushAirLoopRoutine"
 
     def __init__(self):
 

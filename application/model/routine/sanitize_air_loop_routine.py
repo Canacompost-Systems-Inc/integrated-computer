@@ -11,6 +11,7 @@ from application.model.state.isolation.default_state import DefaultState
 
 
 class SanitizeAirLoopRoutine(Routine):
+    name = "SanitizeAirLoopRoutine"
 
     def __init__(self):
 

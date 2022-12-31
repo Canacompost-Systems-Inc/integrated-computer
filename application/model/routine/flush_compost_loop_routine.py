@@ -8,6 +8,7 @@ from application.model.routine.routine_step import RoutineStep
 
 
 class FlushCompostLoopRoutine(Routine):
+    name = "FlushCompostLoopRoutine"
 
     def __init__(self):
 

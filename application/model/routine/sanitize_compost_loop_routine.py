@@ -7,6 +7,7 @@ from application.model.routine.routine_step import RoutineStep
 
 
 class SanitizeCompostLoopRoutine(Routine):
+    name = "SanitizeCompostLoopRoutine"
 
     def __init__(self):
 
