@@ -2,36 +2,39 @@ import threading
 from flask import Flask
 
 from application.controller.state import construct_state_bp
-from application.mcu.actuator.air_hammer_valve_actuator import AirHammerValveActuator
-from application.mcu.actuator.air_mover_actuator import AirMoverActuator
-from application.mcu.actuator.bsf_light_actuator import BSFLightActuator
-from application.mcu.actuator.butterfly_valve_actuator import ButterflyValveActuator
-from application.mcu.actuator.discrete_flap_diverter_valve_actuator import DiscreteFlapDiverterValveActuator
-from application.mcu.actuator.flap_diverter_valve_actuator import FlapDiverterValveActuator
-from application.mcu.actuator.heater_relay_actuator import HeaterRelayActuator
-from application.mcu.actuator.ozone_generator_actuator import OzoneGeneratorActuator
-from application.mcu.actuator.rotary_diverter_valve_1_to_6_actuator import RotaryDiverterValve1To6Actuator
-from application.mcu.actuator.rotary_diverter_valve_6_to_1_actuator import RotaryDiverterValve6To1Actuator
-from application.mcu.actuator.water_pump_relay_actuator import WaterPumpRelayActuator
-from application.mcu.measurement.co2_measurement import CO2Measurement
-from application.mcu.measurement.flowrate_measurement import FlowRateMeasurement
-from application.mcu.measurement.h2_measurement import H2Measurement
-from application.mcu.measurement.humidity_measurement import HumidityMeasurement
-from application.mcu.measurement.o3_measurement import O3Measurement
-from application.mcu.measurement.pressure_measurement import PressureMeasurement
-from application.mcu.measurement.state_measurement import StateMeasurement
-from application.mcu.measurement.temperature_measurement import TemperatureMeasurement
-from application.mcu.sensor.ds18b20_sensor import DS18B20Sensor
-from application.mcu.sensor.ipc10100_sensor import IPC10100Sensor
-from application.mcu.sensor.scd41_sensor import SCD41Sensor
-from application.mcu.sensor.sen0321_sensor import SEN0321Sensor
-from application.mcu.sensor.sen0441_sensor import SEN0441Sensor
-from application.mcu.sensor.sht40_sensor import SHT40Sensor
-from application.mcu.sensor.yfs201_sensor import YFS201Sensor
-from application.service.mcu import MCUService
-from application.service.mcu_manager import StateManager
+from application.model.actuator.air_hammer_valve_actuator import AirHammerValveActuator
+from application.model.actuator.air_mover_actuator import AirMoverActuator
+from application.model.actuator.bsf_light_actuator import BSFLightActuator
+from application.model.actuator.butterfly_valve_actuator import ButterflyValveActuator
+from application.model.actuator.discrete_flap_diverter_valve_actuator import DiscreteFlapDiverterValveActuator
+from application.model.actuator.flap_diverter_valve_actuator import FlapDiverterValveActuator
+from application.model.actuator.heater_relay_actuator import HeaterRelayActuator
+from application.model.actuator.ozone_generator_actuator import OzoneGeneratorActuator
+from application.model.actuator.rotary_diverter_valve_1_to_6_actuator import RotaryDiverterValve1To6Actuator
+from application.model.actuator.rotary_diverter_valve_6_to_1_actuator import RotaryDiverterValve6To1Actuator
+from application.model.actuator.water_pump_relay_actuator import WaterPumpRelayActuator
+from application.model.measurement.co2_measurement import CO2Measurement
+from application.model.measurement.flowrate_measurement import FlowRateMeasurement
+from application.model.measurement.h2_measurement import H2Measurement
+from application.model.measurement.humidity_measurement import HumidityMeasurement
+from application.model.measurement.o3_measurement import O3Measurement
+from application.model.measurement.pressure_measurement import PressureMeasurement
+from application.model.measurement.state_measurement import StateMeasurement
+from application.model.measurement.temperature_measurement import TemperatureMeasurement
+from application.model.sensor.ds18b20_sensor import DS18B20Sensor
+from application.model.sensor.ipc10100_sensor import IPC10100Sensor
+from application.model.sensor.scd41_sensor import SCD41Sensor
+from application.model.sensor.sen0321_sensor import SEN0321Sensor
+from application.model.sensor.sen0441_sensor import SEN0441Sensor
+from application.model.sensor.sht40_sensor import SHT40Sensor
+from application.model.sensor.yfs201_sensor import YFS201Sensor
+from application.service.device_factory import DeviceFactory
+from application.service.device_registry_service import DeviceRegistryService
+from application.service.mcu_service import MCUService
+from application.service.measurement_factory import MeasurementFactory
+from application.service.state_manager import StateManager
 from application.service.routines import RoutinesService
-from application.mcu_persistent import MCUPersistent
+from application.persistence.mcu_persistent import MCUPersistent
 
 # Globally accessible connections / plugins / etc.
 mcu = MCUPersistent()
@@ -48,6 +51,7 @@ def init_app():
     with app.app_context():
 
         routines_service = RoutinesService()
+
         device_types_list = [
             DS18B20Sensor,
             IPC10100Sensor,
@@ -68,6 +72,9 @@ def init_app():
             RotaryDiverterValve6To1Actuator,
             WaterPumpRelayActuator,
         ]
+        device_factory = DeviceFactory(device_types_list)
+        device_registry_service = DeviceRegistryService(device_factory, app.config['DEVICE_MAP'])
+
         measurements_list = [
             CO2Measurement,
             FlowRateMeasurement,
@@ -78,8 +85,10 @@ def init_app():
             TemperatureMeasurement,
             StateMeasurement,
         ]
-        mcu_service = MCUService(device_types_list, measurements_list, testing=app.config['TESTING'],
-                                 device_map_config=app.config['DEVICE_MAP'])
+        measurement_factory = MeasurementFactory(measurements_list)
+
+        mcu_service = MCUService(device_registry_service, measurement_factory, testing=app.config['TESTING'])
+
         state_manager = StateManager(routines_service, mcu_service)
 
         # Construct blueprints
