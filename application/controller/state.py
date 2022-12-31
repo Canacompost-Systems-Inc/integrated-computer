@@ -1,3 +1,9 @@
+from flask import Blueprint, Response, request
+from flask_cors import cross_origin
+from jsonschema import validate
+import jsonpickle
+import json
+
 from application.controller.dto.machine_state import MachineState
 from application.controller.dto.machine_sensors import Sensors
 from application.controller.dto.sensors.bioreactor_1_sensors import Bioreactor1Sensors
@@ -8,11 +14,9 @@ from application.controller.dto.sensors.shredder_sensors import ShredderSensors
 from application.controller.dto.actuators.actuator import Actuator
 from application.controller.dto.actuators.options import Options
 from application.controller.dto.actuators.type import Type
-from flask import Blueprint, Response, request
-from flask_cors import cross_origin
-from jsonschema import validate
-import jsonpickle
-import json
+from application.service.device_registry_service import DeviceRegistryService
+from application.service.mcu_state_tracker_service import MCUStateTrackerService
+
 
 machineState = MachineState(
         [
@@ -66,7 +70,7 @@ machineState = MachineState(
                 None,
                 0,
                 100,
-                10, 
+                10,
                 "Percent"
             ),
             Actuator(
@@ -77,7 +81,7 @@ machineState = MachineState(
                 None,
                 0,
                 100,
-                10, 
+                10,
                 "Percent"
             ),
             Actuator(
@@ -88,7 +92,7 @@ machineState = MachineState(
                 None,
                 0,
                 100,
-                10, 
+                10,
                 "Percent"
             ),
             Actuator(
@@ -129,7 +133,7 @@ machineState = MachineState(
                 None,
                 0,
                 100,
-                10, 
+                10,
                 "Percent"
             ),
             Actuator(
@@ -146,7 +150,7 @@ machineState = MachineState(
                 None,
                 0,
                 100,
-                10, 
+                10,
                 "Percent"
             ),
             Actuator(
@@ -163,7 +167,7 @@ machineState = MachineState(
                 None,
                 0,
                 100,
-                10, 
+                10,
                 "Percent"
             ),
             Actuator(
@@ -209,40 +213,128 @@ machineState = MachineState(
         ],
         Sensors(
             SharedAirSensors(
-                pressure=50
+                flowrate=50,
+                o3=0.01,
             ),
             ShredderSensors(
-                humidity=30,
-                c02=5,
-                air_temperature=18,
-                soil_temperature=20
+                temperature=25.51,
+                humidity=65.21,
+                co2=5.68,
+                pressure=1.68,
+                h2=2.32,
             ),
             Bioreactor1Sensors(
-                humidity=30,
-                c02=5,
-                air_temperature=18,
-                soil_temperature=20
+                temperature=25.51,
+                humidity=65.21,
+                co2=5.68,
+                pressure=1.68,
+                h2=2.32,
             ),
             Bioreactor2Sensors(
-                humidity=30,
-                c02=5,
-                air_temperature=18,
-                soil_temperature=20
+                temperature=25.51,
+                humidity=65.21,
+                co2=5.68,
+                pressure=1.68,
+                h2=2.32,
             ),
             BSFReproductionSensors(
-                humidity=30,
-                c02=5,
-                air_temperature=18,
-                soil_temperature=20
+                temperature=25.51,
+                humidity=65.21,
+                co2=5.68,
+                pressure=1.68,
+                h2=2.32,
             )
         )
     )
 
+
 def construct_mock_get_response():
     return machineState
 
+
+def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerService,
+                                  device_registry_service: DeviceRegistryService):
+
+    actuators = []
+    for device_id, state_value in mcu_state_tracker_service.get_actuator_states().items():
+
+        device = device_registry_service.get_device(device_id)
+
+        display_type = Type.SWITCH
+        if device.device_type_name in [
+            'RotaryDiverterValve1To6',
+            'RotaryDiverterValve6To1'
+        ]:
+            display_type = Type.RADIO
+        elif device.device_type_name == 'DiscreteFlapDiverterValve':
+            display_type = Type.RANGE
+
+        options = min = max = step = unit = None
+        if display_type == Type.RADIO:
+            options = []
+            for string_value in device.possible_states.keys():
+                options.append(Options(string_value, string_value))
+        elif display_type == Type.RANGE:
+            # Hard coding this because this only works for the flap diverter valve.
+            # TODO - Can we replace this with the options list? Also, there is no 55% value.
+            min = 0
+            max = 100
+            step = 5
+            unit = 'percent'
+
+        actuators.append(Actuator(
+                device_id,
+                str(display_type.name),
+                device.device_friendly_name,
+                state_value,
+                options,
+                min,
+                max,
+                step,
+                unit
+            ))
+
+    shared_air_sensors = SharedAirSensors(**{
+        measurement_name: value
+        for measurement_name, value
+        in mcu_state_tracker_service.get_latest_measurements()['AirLoop'].items()
+        })
+    shredder_storage_sensors = ShredderSensors(**{
+        measurement_name: value
+        for measurement_name, value
+        in mcu_state_tracker_service.get_latest_measurements()['ShredderStorage'].items()
+        })
+    bioreactor_1_sensors = Bioreactor1Sensors(**{
+        measurement_name: value
+        for measurement_name, value
+        in mcu_state_tracker_service.get_latest_measurements()['Bioreactor1'].items()
+        })
+    bioreactor_2_sensors = Bioreactor2Sensors(**{
+        measurement_name: value
+        for measurement_name, value
+        in mcu_state_tracker_service.get_latest_measurements()['Bioreactor2'].items()
+        })
+    bsf_reproduction_sensors = BSFReproductionSensors(**{
+        measurement_name: value
+        for measurement_name, value
+        in mcu_state_tracker_service.get_latest_measurements()['BSFReproduction'].items()
+        })
+
+    machine_state = MachineState(actuators,
+                                 Sensors(
+                                     shared_air_sensors,
+                                     shredder_storage_sensors,
+                                     bioreactor_1_sensors,
+                                     bioreactor_2_sensors,
+                                     bsf_reproduction_sensors
+                                     )
+                                 )
+    return machine_state
+
+
 # Dynamically generate blueprint for dependency injection. Classes aren't supported due to Flask limitations.
-def construct_state_bp():
+def construct_state_bp(mcu_state_tracker_service: MCUStateTrackerService,
+                       device_registry_service: DeviceRegistryService):
     state_bp = Blueprint('state', __name__)
 
     # state REST endpoint supporting GET & POST
@@ -259,6 +351,8 @@ def construct_state_bp():
                 print("Schema failed validation: {}", str(e))
                 return Response(json.dumps({"error": str(e)}), status=400)
         elif request.method == 'GET':
-            return Response(jsonpickle.encode(construct_mock_get_response()), status=200)
+            machine_state = convert_mcu_state_to_response(mcu_state_tracker_service, device_registry_service)
+            return Response(jsonpickle.encode(machine_state), status=200)
+            # return Response(jsonpickle.encode(construct_mock_get_response()), status=200)
 
-    return (state_bp)
+    return state_bp

@@ -19,9 +19,9 @@ class IsolationContext(Context):
     def change_state(self, new_state: IsolationState):
         yield self.deactivate_state()
         super().change_state(DefaultState(None))  # TODO - figure out if there's a better way to do this - the flush and sanitize require this state
-        # yield self.flush_air_loop()
-        # yield self.sanitize_air_loop()
-        # yield self.flush_air_loop()
+        yield self.flush_air_loop()
+        yield self.sanitize_air_loop()
+        yield self.flush_air_loop()
         yield self.activate_state()
         super().change_state(new_state)
 

@@ -161,7 +161,7 @@ def init_app():
 
         # Construct blueprints
         # TODO - add in a construct_sensors_bp?
-        state_controller = construct_state_bp()
+        state_controller = construct_state_bp(mcu_state_tracker_service, device_registry_service)
 
         # Register API controller blueprints
         # TODO - register blueprint
