@@ -158,7 +158,7 @@ class StateManager:
                     self.mcu_state_tracker_service.update_tracked_state(response)
 
             # TODO - commenting out for testing, uncomment before merging
-            # time.sleep(routine_step.duration_sec)
+            time.sleep(routine_step.duration_sec)
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
     def manage_state(self):
