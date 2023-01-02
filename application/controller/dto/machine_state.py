@@ -20,7 +20,7 @@ class MachineState:
                                         "type": "object",
                                         "properties": {
                                             "name": {"type": "string"},
-                                            "value": {"type": "number"}
+                                            "value": {"type": "string"}
                                         },
                                         "required": ["name", "value"]
                                     }
@@ -39,43 +39,48 @@ class MachineState:
                             "shared_air":{
                                 "type": ["object", "null"],
                                 "properties": {
-                                    "pressure":{"type": ["number", "null"]}
+                                    "flowrate":{"type": ["number", "null"]},
+                                    "o3":{"type": ["number", "null"]}
                                 }
                             },
                             "shredder":{
                                 "type": ["object", "null"],
                                 "properties": {
+                                    "temperature":{"type": ["number", "null"]},
                                     "humidity":{"type": ["number", "null"]},
-                                    "c02":{"type": ["number", "null"]},
-                                    "air_temperature":{"type": ["number", "null"]},
-                                    "soil_temperature":{"type": ["number", "null"]}
+                                    "co2":{"type": ["number", "null"]},
+                                    "pressure":{"type": ["number", "null"]},
+                                    "h2":{"type": ["number", "null"]}
                                 }
                             },
                             "bioreactor_1":{
                                 "type": ["object", "null"],
                                 "properties": {
+                                    "temperature":{"type": ["number", "null"]},
                                     "humidity":{"type": ["number", "null"]},
-                                    "c02":{"type": ["number", "null"]},
-                                    "air_temperature":{"type": ["number", "null"]},
-                                    "soil_temperature":{"type": ["number", "null"]}
+                                    "co2":{"type": ["number", "null"]},
+                                    "pressure":{"type": ["number", "null"]},
+                                    "h2":{"type": ["number", "null"]}
                                 }
                             },
                             "bioreactor_2":{
                                 "type": ["object", "null"],
                                 "properties": {
+                                    "temperature":{"type": ["number", "null"]},
                                     "humidity":{"type": ["number", "null"]},
-                                    "c02":{"type": ["number", "null"]},
-                                    "air_temperature":{"type": ["number", "null"]},
-                                    "soil_temperature":{"type": ["number", "null"]}
+                                    "co2":{"type": ["number", "null"]},
+                                    "pressure":{"type": ["number", "null"]},
+                                    "h2":{"type": ["number", "null"]}
                                 }
                             },
                             "bsf_reproduction":{
                                 "type": ["object", "null"],
                                 "properties": {
+                                    "temperature":{"type": ["number", "null"]},
                                     "humidity":{"type": ["number", "null"]},
-                                    "c02":{"type": ["number", "null"]},
-                                    "air_temperature":{"type": ["number", "null"]},
-                                    "soil_temperature":{"type": ["number", "null"]}
+                                    "co2":{"type": ["number", "null"]},
+                                    "pressure":{"type": ["number", "null"]},
+                                    "h2":{"type": ["number", "null"]}
                                 }
                             }
                         }

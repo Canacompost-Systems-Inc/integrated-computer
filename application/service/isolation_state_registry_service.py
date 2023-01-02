@@ -1,6 +1,6 @@
 from typing import List
 
-from application import IsolationContext
+from application.model.context.isolation_context import IsolationContext
 from application.model.state.isolation.isolation_state import IsolationState
 
 

@@ -128,14 +128,14 @@ class StateManager:
 
         task = self.task_queue.pop(0)
 
-        if self.get_current_isolation_state() != task.isolation_state:
+        if task.isolation_state is not None and self.get_current_isolation_state() != task.isolation_state:
             self.change_isolation_state(task.isolation_state.name)
 
         self.perform_routine(task.routine)
 
     def perform_routine(self, routine: Routine):
 
-        logging.debug(f"Performing routine {routine.name}")
+        logging.info(f"Performing routine {routine.name}")
 
         if not routine.can_run_in_state(self.get_current_isolation_state()):
             raise RuntimeError(f"Cannot run the {routine.name} routine from the "

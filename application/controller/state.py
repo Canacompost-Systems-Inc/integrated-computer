@@ -14,8 +14,13 @@ from application.controller.dto.sensors.shredder_sensors import ShredderSensors
 from application.controller.dto.actuators.actuator import Actuator
 from application.controller.dto.actuators.options import Options
 from application.controller.dto.actuators.type import Type
+from application.model.action.action import Action
+from application.model.action.action_set import ActionSet
+from application.model.routine.advanced_tab_routine import AdvancedTabRoutine
+from application.model.routine.routine_step import RoutineStep
 from application.service.device_registry_service import DeviceRegistryService
 from application.service.mcu_state_tracker_service import MCUStateTrackerService
+from application.service.state_manager import StateManager
 
 
 machineState = MachineState(
@@ -252,6 +257,30 @@ def construct_mock_get_response():
     return machineState
 
 
+def generate_routine_to_set_state(machine_state: MachineState,
+                                  mcu_state_tracker_service: MCUStateTrackerService) -> AdvancedTabRoutine:
+
+    intended_actuator_states = {}
+    for actuator in machine_state.actuators:
+        intended_actuator_states[actuator.id] = actuator.value
+
+    current_actuator_states = mcu_state_tracker_service.get_actuator_states()
+
+    required_actions = []
+    for device_id, intended_state_value in intended_actuator_states.items():
+
+        if current_actuator_states.get(device_id, None) == intended_state_value:
+            continue
+
+        required_actions.append(Action(device_id, intended_state_value))
+
+    routine = AdvancedTabRoutine(steps=[
+        RoutineStep(ActionSet(iterable=required_actions), duration_sec=0)
+    ])
+
+    return routine
+
+
 def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerService,
                                   device_registry_service: DeviceRegistryService):
 
@@ -295,27 +324,27 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
             ))
 
     shared_air_sensors = SharedAirSensors(**{
-        measurement_name: value
+        measurement_name: float(value) if value is not None else None
         for measurement_name, value
         in mcu_state_tracker_service.get_latest_measurements()['AirLoop'].items()
         })
     shredder_storage_sensors = ShredderSensors(**{
-        measurement_name: value
+        measurement_name: float(value) if value is not None else None
         for measurement_name, value
         in mcu_state_tracker_service.get_latest_measurements()['ShredderStorage'].items()
         })
     bioreactor_1_sensors = Bioreactor1Sensors(**{
-        measurement_name: value
+        measurement_name: float(value) if value is not None else None
         for measurement_name, value
         in mcu_state_tracker_service.get_latest_measurements()['Bioreactor1'].items()
         })
     bioreactor_2_sensors = Bioreactor2Sensors(**{
-        measurement_name: value
+        measurement_name: float(value) if value is not None else None
         for measurement_name, value
         in mcu_state_tracker_service.get_latest_measurements()['Bioreactor2'].items()
         })
     bsf_reproduction_sensors = BSFReproductionSensors(**{
-        measurement_name: value
+        measurement_name: float(value) if value is not None else None
         for measurement_name, value
         in mcu_state_tracker_service.get_latest_measurements()['BSFReproduction'].items()
         })
@@ -333,7 +362,8 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
 
 
 # Dynamically generate blueprint for dependency injection. Classes aren't supported due to Flask limitations.
-def construct_state_bp(mcu_state_tracker_service: MCUStateTrackerService,
+def construct_state_bp(state_manager: StateManager,
+                       mcu_state_tracker_service: MCUStateTrackerService,
                        device_registry_service: DeviceRegistryService):
     state_bp = Blueprint('state', __name__)
 
@@ -344,9 +374,13 @@ def construct_state_bp(mcu_state_tracker_service: MCUStateTrackerService,
         if request.method == 'POST':
             try:
                 validate(request.get_json(), schema=MachineState.get_schema())
-                global machineState 
-                machineState = jsonpickle.decode(json.dumps(request.get_json()))
+                machine_state = jsonpickle.decode(json.dumps(request.get_json()))
+                routine = generate_routine_to_set_state(machine_state, mcu_state_tracker_service)
+                state_manager.add_routine_to_queue(routine)
                 return Response(json.dumps({"result": "success!"}), status=200)
+                # global machineState
+                # machineState = jsonpickle.decode(json.dumps(request.get_json()))
+                # return Response(json.dumps({"result": "success!"}), status=200)
             except Exception as e:
                 print("Schema failed validation: {}", str(e))
                 return Response(json.dumps({"error": str(e)}), status=400)
