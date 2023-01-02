@@ -178,7 +178,9 @@ class MCUService:
                     state = READING_DEVICE_ID
 
                 else:
-                    # Read something unexpected
+                    # Read something unexpected - clear the buffer then raise error
+                    self.mcu_persistent.reset_input_buffer()
+                    self.mcu_persistent.reset_output_buffer()
                     err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
                     raise RuntimeError(err)
