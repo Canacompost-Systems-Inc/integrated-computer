@@ -11,5 +11,5 @@ class SwitchOzoneGeneratorActionSet(ActionSet):
                  ):
 
         super().__init__(iterable=[
-            Action('f3', to)
+            # Action('f3', to)
         ])
