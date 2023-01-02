@@ -20,5 +20,6 @@ class ActivateCompostLoopDestinationActionSet(ActionSet):
         value = location_mapping.get(location)
 
         super().__init__(iterable=[
-            Action('e2', value)
+            Action('e2', value),
+            Action('e1', value)
         ])

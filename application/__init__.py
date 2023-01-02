@@ -29,9 +29,38 @@ from application.model.measurement.o3_measurement import O3Measurement
 from application.model.measurement.pressure_measurement import PressureMeasurement
 from application.model.measurement.state_measurement import StateMeasurement
 from application.model.measurement.temperature_measurement import TemperatureMeasurement
+from application.model.routine.cool_and_dehumidify_bioreactor_1_routine import CoolAndDehumidifyBioreactor1Routine
+from application.model.routine.cool_and_dehumidify_bioreactor_2_routine import CoolAndDehumidifyBioreactor2Routine
+from application.model.routine.cool_and_dehumidify_bsf_reproduction_routine import \
+    CoolAndDehumidifyBSFReproductionRoutine
+from application.model.routine.cool_and_dehumidify_shredder_storage_routine import \
+    CoolAndDehumidifyShredderStorageRoutine
+from application.model.routine.cool_and_dehumidify_sieve_routine import CoolAndDehumidifySieveRoutine
 from application.model.routine.flush_air_loop_routine import FlushAirLoopRoutine
 from application.model.routine.flush_compost_loop_routine import FlushCompostLoopRoutine
+from application.model.routine.heat_bioreactor_1_routine import HeatBioreactor1Routine
+from application.model.routine.heat_bioreactor_2_routine import HeatBioreactor2Routine
+from application.model.routine.heat_bsf_reproduction_routine import HeatBSFReproductionRoutine
+from application.model.routine.heat_shredder_storage_routine import HeatShredderStorageRoutine
+from application.model.routine.humidify_bioreactor_1_routine import HumidifyBioreactor1Routine
+from application.model.routine.humidify_bioreactor_2_routine import HumidifyBioreactor2Routine
+from application.model.routine.humidify_bsf_reproduction_routine import HumidifyBSFReproductionRoutine
+from application.model.routine.humidify_shredder_storage_routine import HumidifyShredderStorageRoutine
+from application.model.routine.move_compost_from_bioreactor_1_to_bsf_reproduction_routine import \
+    MoveCompostFromBioreactor1ToBSFReproductionRoutine
+from application.model.routine.move_compost_from_bioreactor_2_to_bsf_reproduction_routine import \
+    MoveCompostFromBioreactor2ToBSFReproductionRoutine
+from application.model.routine.move_compost_from_bsf_reproduction_to_sieve_routine import \
+    MoveCompostFromBSFReproductionToSieveRoutine
+from application.model.routine.move_compost_from_shredder_storage_to_bioreactor_1_routine import \
+    MoveCompostFromShredderStorageToBioreactor1Routine
+from application.model.routine.move_compost_from_shredder_storage_to_bioreactor_2_routine import \
+    MoveCompostFromShredderStorageToBioreactor2Routine
 from application.model.routine.read_sensors_bioreactor_1_routine import ReadSensorsBioreactor1Routine
+from application.model.routine.read_sensors_bioreactor_2_routine import ReadSensorsBioreactor2Routine
+from application.model.routine.read_sensors_bsf_reproduction_routine import ReadSensorsBSFReproductionRoutine
+from application.model.routine.read_sensors_shredder_storage_routine import ReadSensorsShredderStorageRoutine
+from application.model.routine.read_sensors_sieve_routine import ReadSensorsSieveRoutine
 from application.model.routine.sanitize_air_loop_routine import SanitizeAirLoopRoutine
 from application.model.routine.sanitize_compost_loop_routine import SanitizeCompostLoopRoutine
 from application.model.sensor.ds18b20_sensor import DS18B20Sensor
@@ -144,11 +173,33 @@ def init_app():
         isolation_state_registry_service = IsolationStateRegistryService(isolation_state_list, isolation_context)
 
         routine_list = [
+            CoolAndDehumidifyBioreactor1Routine,
+            CoolAndDehumidifyBioreactor2Routine,
+            CoolAndDehumidifyBSFReproductionRoutine,
+            CoolAndDehumidifyShredderStorageRoutine,
+            CoolAndDehumidifySieveRoutine,
             FlushAirLoopRoutine,
             FlushCompostLoopRoutine,
+            HeatBioreactor1Routine,
+            HeatBioreactor2Routine,
+            HeatBSFReproductionRoutine,
+            HeatShredderStorageRoutine,
+            HumidifyBioreactor1Routine,
+            HumidifyBioreactor2Routine,
+            HumidifyBSFReproductionRoutine,
+            HumidifyShredderStorageRoutine,
+            MoveCompostFromBioreactor1ToBSFReproductionRoutine,
+            MoveCompostFromBioreactor2ToBSFReproductionRoutine,
+            MoveCompostFromBSFReproductionToSieveRoutine,
+            MoveCompostFromShredderStorageToBioreactor1Routine,
+            MoveCompostFromShredderStorageToBioreactor2Routine,
+            ReadSensorsBioreactor1Routine,
+            ReadSensorsBioreactor2Routine,
+            ReadSensorsBSFReproductionRoutine,
+            ReadSensorsShredderStorageRoutine,
+            ReadSensorsSieveRoutine,
             SanitizeAirLoopRoutine,
             SanitizeCompostLoopRoutine,
-            ReadSensorsBioreactor1Routine,
         ]
         routines_registry_service = RoutineRegistryService(routine_list)
 

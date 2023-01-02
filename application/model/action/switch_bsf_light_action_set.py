@@ -4,7 +4,7 @@ from application.model.action.action import Action
 from application.model.action.action_set import ActionSet
 
 
-class SwitchWaterPumpActionSet(ActionSet):
+class SwitchBSFLightActionSet(ActionSet):
 
     def __init__(self,
                  location: Literal['bsf_reproduction'] = 'bsf_reproduction',
