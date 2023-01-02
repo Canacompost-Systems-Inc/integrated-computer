@@ -159,7 +159,16 @@ class StateManager:
                         response = self.mcu_service.get_sensor_state(action.device_id)
                     else:
                         # This is an actuator to set
-                        response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
+                        # response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
+                        # TODO - remove this hack
+                        try:
+                            response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
+                        except RuntimeError as e:
+                            if action.device_id in ['ea']:
+                                pass
+                            else:
+                                raise e
+
 
                     self.mcu_state_tracker_service.update_tracked_state(response)
 
