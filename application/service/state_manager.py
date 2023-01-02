@@ -108,7 +108,7 @@ class StateManager:
             raise RuntimeError(f"MCU is reporting actuator states that do not match any isolation states")
 
         elif len(matching_isolation_states) > 1:
-            raise RuntimeError(f"MCU is reporting actuator states that match multiple isolation states")
+            raise RuntimeError(f"MCU is reporting actuator states that match multiple isolation states: {matching_isolation_states}")
 
         # Set the isolation_context object to the right state
         isolation_state_name = matching_isolation_states[0]
