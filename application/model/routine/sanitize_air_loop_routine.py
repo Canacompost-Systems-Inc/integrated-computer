@@ -18,22 +18,14 @@ class SanitizeAirLoopRoutine(Routine):
         super().__init__(
             steps=[
                 # Remove any bypasses
-                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), duration_sec=0),
                 # Turn on the ozone generator and let it build up
                 RoutineStep(SwitchOzoneGeneratorActionSet('on'), duration_sec=30),
                 # Begin circulating the ozone
                 RoutineStep(SwitchAirMoverActionSet('on', strength='50per'), duration_sec=10),
-                # Cycle through the air loop bypasses to flush each air path
-                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), duration_sec=5),
-                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('divert'), duration_sec=5),
-                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('divert'), duration_sec=5),
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
                 # End sequence
-                RoutineStep(SwitchOzoneGeneratorActionSet('off'), duration_sec=0),
+                RoutineStep(SwitchOzoneGeneratorActionSet('off'), duration_sec=10),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
             ],
             available_in_states=[
