@@ -10,12 +10,12 @@ class RotaryDiverterValveActuator(BaseActuator, metaclass=ABCMeta):
     def possible_states(self) -> Dict[str, bytes]:
         return {
             'ref': b'\x00\x00\x00\x00',
-            '0': b'\x00\x00\x00\x01',
-            '1': b'\x00\x00\x00\x02',
-            '2': b'\x00\x00\x00\x03',
-            '3': b'\x00\x00\x00\x04',
-            '4': b'\x00\x00\x00\x05',
-            '5': b'\x00\x00\x00\x06',
+            '1': b'\x00\x00\x00\x01',
+            '2': b'\x00\x00\x00\x02',
+            '3': b'\x00\x00\x00\x03',
+            '4': b'\x00\x00\x00\x04',
+            '5': b'\x00\x00\x00\x05',
+            '6': b'\x00\x00\x00\x06',
         }
 
     @property
