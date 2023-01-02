@@ -18,5 +18,5 @@ class SwitchAirMoverActionSet(ActionSet):
 
         super().__init__(iterable=[
             # Action('f4', strength),
-            Action('f1', to)
+            #Action('f1', to)
         ])
