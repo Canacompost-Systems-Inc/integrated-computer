@@ -258,7 +258,8 @@ def construct_mock_get_response():
 
 
 def generate_routine_to_set_state(machine_state: MachineState,
-                                  mcu_state_tracker_service: MCUStateTrackerService) -> AdvancedTabRoutine:
+                                  mcu_state_tracker_service: MCUStateTrackerService,
+                                  device_registry_service: DeviceRegistryService) -> AdvancedTabRoutine:
 
     intended_actuator_states = {}
     for actuator in machine_state.actuators:
@@ -269,15 +270,22 @@ def generate_routine_to_set_state(machine_state: MachineState,
     required_actions = []
     for device_id, intended_state_value in intended_actuator_states.items():
 
+        device = device_registry_service.get_device(device_id)
+
         # Boolean values need to be true/false and not open/close and on/off
-        if current_actuator_states.get(device_id, None) in ['open', 'close']:
+        if 'open' in device.possible_states.keys():
             intended_val = {'true': 'open', 'false': 'close'}.get(intended_state_value)
-        elif current_actuator_states.get(device_id, None) in ['on', 'off']:
+        elif 'on' in device.possible_states.keys():
             intended_val = {'true': 'on', 'false': 'off'}.get(intended_state_value)
-        elif current_actuator_states.get(device_id, None) in ['divert', 'through']:
+        elif 'divert' in device.possible_states.keys():
             intended_val = {'true': 'divert', 'false': 'through'}.get(intended_state_value)
         else:
             intended_val = intended_state_value
+
+        # Verify that the intended state is a possible state
+        if intended_val not in device.possible_states.keys():
+            raise RuntimeError(f"Cannot set state of {device.device_friendly_name} ({device_id}) to '{intended_val}' "
+                               f"because the possible states are {list(device.possible_states.keys())}")
 
         if current_actuator_states.get(device_id, None) == intended_val:
             continue
@@ -399,7 +407,7 @@ def construct_state_bp(state_manager: StateManager,
             try:
                 validate(request.get_json(), schema=MachineState.get_schema())
                 machine_state = jsonpickle.decode(json.dumps(request.get_json()))
-                routine = generate_routine_to_set_state(machine_state, mcu_state_tracker_service)
+                routine = generate_routine_to_set_state(machine_state, mcu_state_tracker_service, device_registry_service)
                 state_manager.add_routine_to_queue(routine)
                 return Response(json.dumps({"result": "success!"}), status=200)
                 # global machineState
