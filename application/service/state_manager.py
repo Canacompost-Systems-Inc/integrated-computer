@@ -112,6 +112,7 @@ class StateManager:
             isolation_state_name = 'DefaultState'
             isolation_state_instance = self.isolation_state_service.get_isolation_state(isolation_state_name)
             self.isolation_context.state = isolation_state_instance
+            return
 
         elif len(matching_isolation_states) > 1:
             raise RuntimeError(f"MCU is reporting actuator states that match multiple isolation states: {matching_isolation_states}")
@@ -168,7 +169,6 @@ class StateManager:
                                 pass
                             else:
                                 raise e
-
 
                     self.mcu_state_tracker_service.update_tracked_state(response)
 
