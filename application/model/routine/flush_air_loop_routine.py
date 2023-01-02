@@ -23,9 +23,9 @@ class FlushAirLoopRoutine(Routine):
                 RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), duration_sec=0),
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
                 # Will flush to the environment
-                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100per'), duration_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), duration_sec=0),
                 # Begin flushing
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50per'), duration_sec=10),
+                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=10),
                 # Cycle through the air loop bypasses to flush each air path
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), duration_sec=5),
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),
@@ -34,7 +34,7 @@ class FlushAirLoopRoutine(Routine):
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('divert'), duration_sec=5),
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
                 # End sequence
-                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0per'), duration_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), duration_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
             ],
             available_in_states=[

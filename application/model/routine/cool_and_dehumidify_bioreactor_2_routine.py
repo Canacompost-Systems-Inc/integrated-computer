@@ -21,7 +21,7 @@ class CoolAndDehumidifyBioreactor2Routine(Routine):
                 RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), duration_sec=0),
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('divert'), duration_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50per'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=30),
                 # End sequence
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),

@@ -20,7 +20,7 @@ class MachineState:
                                         "type": "object",
                                         "properties": {
                                             "name": {"type": "string"},
-                                            "value": {"type": "string"}
+                                            "value": {"type": "number"}
                                         },
                                         "required": ["name", "value"]
                                     }

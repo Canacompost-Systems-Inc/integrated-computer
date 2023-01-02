@@ -22,7 +22,7 @@ class SanitizeAirLoopRoutine(Routine):
                 # Turn on the ozone generator and let it build up
                 RoutineStep(SwitchOzoneGeneratorActionSet('on'), duration_sec=30),
                 # Begin circulating the ozone
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50per'), duration_sec=10),
+                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=10),
                 # End sequence
                 RoutineStep(SwitchOzoneGeneratorActionSet('off'), duration_sec=10),
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),

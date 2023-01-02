@@ -269,10 +269,20 @@ def generate_routine_to_set_state(machine_state: MachineState,
     required_actions = []
     for device_id, intended_state_value in intended_actuator_states.items():
 
-        if current_actuator_states.get(device_id, None) == intended_state_value:
+        # Boolean values need to be true/false and not open/close and on/off
+        if current_actuator_states.get(device_id, None) in ['open', 'close']:
+            intended_val = {'true': 'open', 'false': 'close'}.get(intended_state_value)
+        elif current_actuator_states.get(device_id, None) in ['on', 'off']:
+            intended_val = {'true': 'on', 'false': 'off'}.get(intended_state_value)
+        elif current_actuator_states.get(device_id, None) in ['divert', 'through']:
+            intended_val = {'true': 'divert', 'false': 'through'}.get(intended_state_value)
+        else:
+            intended_val = intended_state_value
+
+        if current_actuator_states.get(device_id, None) == intended_val:
             continue
 
-        required_actions.append(Action(device_id, intended_state_value))
+        required_actions.append(Action(device_id, intended_val))
 
     routine = AdvancedTabRoutine(steps=[
         RoutineStep(ActionSet(iterable=required_actions), duration_sec=0)
@@ -289,6 +299,17 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
 
         device = device_registry_service.get_device(device_id)
 
+        # Boolean values need to be true/false and not open/close and on/off
+        remap_state_value = {
+            'open': 'true',
+            'close': 'false',
+            'on': 'true',
+            'off': 'false',
+            'divert': 'true',
+            'through': 'false',
+        }
+        val = remap_state_value.get(state_value, state_value)
+
         display_type = Type.SWITCH
         if device.device_type_name in [
             'RotaryDiverterValve1To6',
@@ -302,7 +323,10 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
         if display_type == Type.RADIO:
             options = []
             for string_value in device.possible_states.keys():
-                options.append(Options(string_value, string_value))
+                # Drop the 'ref' state sine we need a number
+                if string_value == 'ref':
+                    continue
+                options.append(Options(string_value, int(string_value)))
         elif display_type == Type.RANGE:
             # Hard coding this because this only works for the flap diverter valve.
             # TODO - Can we replace this with the options list? Also, there is no 55% value.
@@ -315,7 +339,7 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
                 device_id,
                 str(display_type.name),
                 device.device_friendly_name,
-                state_value,
+                val,
                 options,
                 min,
                 max,

@@ -8,13 +8,13 @@ class SwitchAirMoverActionSet(ActionSet):
 
     def __init__(self,
                  to: Literal['on', 'off'] = 'on',
-                 strength='50per'
+                 strength='50'
                  ):
 
         # TODO - strength needs to be inverted, so maybe pass in an int and convert it to the nearest inverse value
 
         if to == 'off':
-            strength = '100per'
+            strength = '100'
 
         super().__init__(iterable=[
             # Action('f4', strength),

@@ -17,11 +17,11 @@ class FlushCompostLoopRoutine(Routine):
                 # We are skipping the sensor loop
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), duration_sec=0),
                 # Will flush to the environment
-                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100per'), duration_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), duration_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50per'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=30),
                 # End sequence
-                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0per'), duration_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), duration_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
             ],
             available_in_states=[]

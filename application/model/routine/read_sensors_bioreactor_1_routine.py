@@ -23,7 +23,7 @@ class ReadSensorsBioreactor1Routine(Routine):
                 RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('divert'), duration_sec=0),
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50per'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=30),
                 # Read from the sensor box and container
                 RoutineStep(ReadSensorsContainerActionSet('bioreactor1'), duration_sec=0),
                 RoutineStep(ReadSensorsAirLoopActionSet(), duration_sec=0),

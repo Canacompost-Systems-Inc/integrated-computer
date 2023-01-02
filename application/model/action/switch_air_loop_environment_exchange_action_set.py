@@ -5,7 +5,7 @@ from application.model.action.action_set import ActionSet
 class SwitchAirLoopEnvironmentExchangeActionSet(ActionSet):
 
     def __init__(self,
-                 strength='0per'
+                 strength='0'
                  ):
 
         super().__init__(iterable=[
