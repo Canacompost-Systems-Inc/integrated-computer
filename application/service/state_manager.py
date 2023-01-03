@@ -197,20 +197,8 @@ class StateManager:
                 # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
 
                 self.add_routine_to_queue(
-                  Routine(steps=[]),
-                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
-
-                self.add_routine_to_queue(
-                  Routine(steps=[]),
-                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor2State'))
-
-                self.add_routine_to_queue(
-                  Routine(steps=[]),
-                  self.isolation_state_service.get_isolation_state('AirLoopBSFReproductionState'))
-
-                self.add_routine_to_queue(
-                  Routine(steps=[]),
-                  self.isolation_state_service.get_isolation_state('AirLoopShredderStorageState'))
+                  self.routines_service.get_routine('MoveCompostFromBioreactor2ToBSFReproductionRoutine'),
+                  self.isolation_state_service.get_isolation_state('CompostLoopBioreactor2State'))
 
 
                 # self.add_routine_to_queue(
