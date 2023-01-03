@@ -187,6 +187,7 @@ class MCUService:
 
                 else:
                     # Read something unexpected - clear the buffer then raise error
+                    # TODO - need to print the full buffer here to debug
                     self.mcu_persistent.reset_input_buffer()
                     self.mcu_persistent.reset_output_buffer()
                     err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
