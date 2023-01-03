@@ -24,7 +24,9 @@ class Config(object):
             'eb': ('DiscreteFlapDiverterValve', 'Environment Exchange Out'),
             'ec': ('DiscreteFlapDiverterValve', 'Environment Exchange In'),
             'f1': ('AirMover', 'Regen Blower'),
-            'f4': ('DiscreteFlapDiverterValve', 'Regen Blower Output Strength Moderator'),
+            # TODO - f4 DiscreteFlapDiverterValve has been removed, and is now a UVC light switch
+            # 'f4': ('DiscreteFlapDiverterValve', 'Regen Blower Output Strength Moderator'),
+            'f4': ('UVCLightActuator', 'UVC Light'),
             'f3': ('OzoneGenerator', 'Ozone Generator'),
         },
         'CompostLoop': {

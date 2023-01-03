@@ -12,6 +12,7 @@ from application.model.actuator.heater_relay_actuator import HeaterRelayActuator
 from application.model.actuator.ozone_generator_actuator import OzoneGeneratorActuator
 from application.model.actuator.rotary_diverter_valve_1_to_6_actuator import RotaryDiverterValve1To6Actuator
 from application.model.actuator.rotary_diverter_valve_6_to_1_actuator import RotaryDiverterValve6To1Actuator
+from application.model.actuator.uvc_light import UVCLightActuator
 from application.model.actuator.water_pump_relay_actuator import WaterPumpRelayActuator
 from application.model.context.isolation_context import IsolationContext
 from application.model.location.airloop_location import AirLoopLocation
@@ -135,6 +136,7 @@ def init_app():
             OzoneGeneratorActuator,
             RotaryDiverterValve1To6Actuator,
             RotaryDiverterValve6To1Actuator,
+            UVCLightActuator,
             WaterPumpRelayActuator,
         ]
         device_factory = DeviceFactory(device_types_list)

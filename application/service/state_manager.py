@@ -167,8 +167,8 @@ class StateManager:
                         try:
                             response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
                         except RuntimeError as e:
-                            if action.device_id in ['ea', 'f4']:
-                                pass
+                            if action.device_id in ['ea']:
+                                continue
                             else:
                                 raise e
 
