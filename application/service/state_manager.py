@@ -162,20 +162,12 @@ class StateManager:
                         response = self.mcu_service.get_sensor_state(action.device_id)
                     else:
                         # This is an actuator to set
-                        # response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
-                        # TODO - remove this hack
-                        try:
-                            response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
-                        except RuntimeError as e:
-                            if action.device_id in ['ea']:
-                                continue
-                            else:
-                                raise e
+                        response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
 
                     self.mcu_state_tracker_service.update_tracked_state(response)
 
             # TODO - commenting out for testing, uncomment before merging
-            time.sleep(routine_step.duration_sec / 2)
+            time.sleep(routine_step.duration_sec / 4)
             # time.sleep(routine_step.duration_sec)
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
@@ -203,9 +195,9 @@ class StateManager:
                 self.is_initialized = True
 
                 # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
-                # routine = self.routines_service.get_routine('ReadSensorsBioreactor1Routine')
-                # isolation_state = self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State')
-                # self.add_routine_to_queue(routine, isolation_state)
+                routine = self.routines_service.get_routine('ReadSensorsBioreactor1Routine')
+                isolation_state = self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State')
+                self.add_routine_to_queue(routine, isolation_state)
 
             self.perform_next_routine_in_queue()
 

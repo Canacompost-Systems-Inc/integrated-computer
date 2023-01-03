@@ -11,5 +11,6 @@ class SwitchAirLoopBypassSensorBoxActionSet(ActionSet):
                  ):
 
         super().__init__(iterable=[
-            Action('ea', to)
+          # TODO - ask Leo if we will add this back. For now, it is not connected to the MCU
+            # Action('ea', to)
         ])
