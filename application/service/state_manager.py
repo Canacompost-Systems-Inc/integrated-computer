@@ -204,10 +204,6 @@ class StateManager:
                   self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
                 
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('HeatBioreactor1Routine'),
-                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
-                
-                self.add_routine_to_queue(
                   self.routines_service.get_routine('HumidifyBioreactor1Routine'),
                   self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
 
