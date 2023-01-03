@@ -9,7 +9,7 @@ class ActivateCompostLoopSourceActionSet(ActionSet):
     def __init__(self,
                  location: Literal['shredder_storage', 'bioreactor1', 'bioreactor2', 'bsf_reproduction',
                                    'none'] = 'none',
-                 deactivate: bool = True,
+                 deactivate: bool = False,
                  ):
 
         if deactivate:
