@@ -195,9 +195,25 @@ class StateManager:
                 self.is_initialized = True
 
                 # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
-                routine = self.routines_service.get_routine('ReadSensorsBioreactor1Routine')
-                isolation_state = self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State')
-                self.add_routine_to_queue(routine, isolation_state)
+                self.add_routine_to_queue(
+                  self.routines_service.get_routine('ReadSensorsBioreactor1Routine'),
+                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
+                
+                self.add_routine_to_queue(
+                  self.routines_service.get_routine('CoolAndDehumidifyBioreactor1Routine'),
+                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
+                
+                self.add_routine_to_queue(
+                  self.routines_service.get_routine('HeatBioreactor1Routine'),
+                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
+                
+                self.add_routine_to_queue(
+                  self.routines_service.get_routine('HumidifyBioreactor1Routine'),
+                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
+
+                
+                # TODO - we should add shutdown code so each routine defines how to recover during a failure
+
 
             self.perform_next_routine_in_queue()
 
