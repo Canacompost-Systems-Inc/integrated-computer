@@ -167,7 +167,7 @@ class StateManager:
                     self.mcu_state_tracker_service.update_tracked_state(response)
 
             # TODO - commenting out for testing, uncomment before merging
-            time.sleep(routine_step.duration_sec / 4)
+            time.sleep(routine_step.duration_sec)
             # time.sleep(routine_step.duration_sec)
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
@@ -197,8 +197,8 @@ class StateManager:
                 # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
 
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('MoveCompostFromBioreactor2ToBSFReproductionRoutine'),
-                  self.isolation_state_service.get_isolation_state('CompostLoopBioreactor2State'))
+                  self.routines_service.get_routine('MoveCompostFromBioreactor1ToBSFReproductionRoutine'),
+                  self.isolation_state_service.get_isolation_state('CompostLoopBioreactor1State'))
 
                 self.add_routine_to_queue(
                   Routine(steps=[]),
@@ -227,6 +227,8 @@ class StateManager:
                 # TODO - we need to remove the set pressure function from the ui, and maybe other measurements as well
 
                 # TODO - ozone shouldn't go through the sensor loop
+
+                # TODO - the SwitchAirMoverActionSet needs 10 seconds always
 
 
             self.perform_next_routine_in_queue()
