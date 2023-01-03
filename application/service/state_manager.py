@@ -195,21 +195,39 @@ class StateManager:
                 self.is_initialized = True
 
                 # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
+
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('ReadSensorsBioreactor1Routine'),
+                  Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
 
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('ReadSensorsBioreactor2Routine'),
+                  Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopBioreactor2State'))
 
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('ReadSensorsBSFReproductionRoutine'),
+                  Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopBSFReproductionState'))
 
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('ReadSensorsShredderStorageRoutine'),
+                  Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopShredderStorageState'))
+
+
+                # self.add_routine_to_queue(
+                #   self.routines_service.get_routine('ReadSensorsBioreactor1Routine'),
+                #   self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
+
+                # self.add_routine_to_queue(
+                #   self.routines_service.get_routine('ReadSensorsBioreactor2Routine'),
+                #   self.isolation_state_service.get_isolation_state('AirLoopBioreactor2State'))
+
+                # self.add_routine_to_queue(
+                #   self.routines_service.get_routine('ReadSensorsBSFReproductionRoutine'),
+                #   self.isolation_state_service.get_isolation_state('AirLoopBSFReproductionState'))
+
+                # self.add_routine_to_queue(
+                #   self.routines_service.get_routine('ReadSensorsShredderStorageRoutine'),
+                #   self.isolation_state_service.get_isolation_state('AirLoopShredderStorageState'))
 
                 
                 # TODO - we should add shutdown code so each routine defines how to recover during a failure
