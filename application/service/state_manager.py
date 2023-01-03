@@ -50,6 +50,9 @@ class StateManager:
 
         new_state = self.isolation_state_service.get_isolation_state(new_state_name)
 
+        # TODO - remove this (for testing)
+        logging.info(f"Isolation state: {new_state.name} {new_state.__class__.__name__}")
+
         for routine in self.isolation_context.change_state(new_state):
             # Need to perform these right away rather than adding them to the queue
             self.perform_routine(routine)
