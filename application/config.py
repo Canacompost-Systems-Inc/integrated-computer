@@ -26,7 +26,7 @@ class Config(object):
             'f1': ('AirMover', 'Regen Blower'),
             # TODO - f4 DiscreteFlapDiverterValve has been removed, and is now a UVC light switch
             # 'f4': ('DiscreteFlapDiverterValve', 'Regen Blower Output Strength Moderator'),
-            'f4': ('UVCLightActuator', 'UVC Light'),
+            'f4': ('UVCLight', 'UVC Light'),
             'f3': ('OzoneGenerator', 'Ozone Generator'),
         },
         'CompostLoop': {
