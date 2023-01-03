@@ -200,6 +200,10 @@ class StateManager:
                   self.routines_service.get_routine('MoveCompostFromBioreactor2ToBSFReproductionRoutine'),
                   self.isolation_state_service.get_isolation_state('CompostLoopBioreactor2State'))
 
+                self.add_routine_to_queue(
+                  Routine(steps=[]),
+                  self.isolation_state_service.get_isolation_state('DefaultState'))
+
 
                 # self.add_routine_to_queue(
                 #   self.routines_service.get_routine('ReadSensorsBioreactor1Routine'),
@@ -221,6 +225,8 @@ class StateManager:
                 # TODO - we should add shutdown code so each routine defines how to recover during a failure
 
                 # TODO - we need to remove the set pressure function from the ui, and maybe other measurements as well
+
+                # TODO - ozone shouldn't go through the sensor loop
 
 
             self.perform_next_routine_in_queue()
