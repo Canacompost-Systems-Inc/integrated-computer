@@ -307,6 +307,8 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
 
         device = device_registry_service.get_device(device_id)
 
+        # TODO - we removed the 'ref' state, so update this code
+
         # Boolean values need to be true/false and not open/close and on/off
         remap_state_value = {
             'open': 'true',

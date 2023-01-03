@@ -13,6 +13,8 @@ class InitialState(IsolationState):
     system starts up in the Default State."""
     name = "InitialState"
 
+    # TODO - remove this state because we removed the 'ref' state
+
     @property
     def location_sensor_remapping(self) -> Dict[type(BaseLocation), type(BaseLocation)]:
         return {}
