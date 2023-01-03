@@ -220,6 +220,8 @@ class MCUService:
                 # Done reading payload, return to checking for device id or end transmission char
                 state = READING_DEVICE_ID
 
+        logging.debug(f"Response from MCU: {buffer.hex()}")
+
         return buffer
 
     def _split_response_by_device_id(self, response: bytes) -> Dict[str, bytes]:

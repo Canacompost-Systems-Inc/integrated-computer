@@ -91,6 +91,8 @@ class StateManager:
         # Get the current actuator states of the system
         actual_actuator_states = self.mcu_state_tracker_service.get_actuator_states()
 
+        logging.info(f"Initial actuator states: {actual_actuator_states}")
+
         # Get the expected actuator states under each isolation state
         expected_actuator_states = {}
         for isolation_state in self.list_available_isolation_states:
