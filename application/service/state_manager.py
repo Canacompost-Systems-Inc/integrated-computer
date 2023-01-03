@@ -200,14 +200,23 @@ class StateManager:
                   Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
 
+                logging.info(f"Sleeping 10 seconds")
+                time.sleep(10)
+
                 self.add_routine_to_queue(
                   Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopBioreactor2State'))
+
+                logging.info(f"Sleeping 10 seconds")
+                time.sleep(10)
 
                 self.add_routine_to_queue(
                   Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopBSFReproductionState'))
 
+                logging.info(f"Sleeping 10 seconds")
+                time.sleep(10)
+                
                 self.add_routine_to_queue(
                   Routine(steps=[]),
                   self.isolation_state_service.get_isolation_state('AirLoopShredderStorageState'))
