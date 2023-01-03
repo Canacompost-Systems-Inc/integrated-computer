@@ -198,17 +198,23 @@ class StateManager:
                 self.add_routine_to_queue(
                   self.routines_service.get_routine('ReadSensorsBioreactor1Routine'),
                   self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
-                
+
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('CoolAndDehumidifyBioreactor1Routine'),
-                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
-                
+                  self.routines_service.get_routine('ReadSensorsBioreactor2Routine'),
+                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor2State'))
+
                 self.add_routine_to_queue(
-                  self.routines_service.get_routine('HumidifyBioreactor1Routine'),
-                  self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
+                  self.routines_service.get_routine('ReadSensorsBSFReproductionRoutine'),
+                  self.isolation_state_service.get_isolation_state('AirLoopBSFReproductionState'))
+
+                self.add_routine_to_queue(
+                  self.routines_service.get_routine('ReadSensorsShredderStorageRoutine'),
+                  self.isolation_state_service.get_isolation_state('AirLoopShredderStorageState'))
 
                 
                 # TODO - we should add shutdown code so each routine defines how to recover during a failure
+
+                # TODO - we need to remove the set pressure function from the ui, and maybe other measurements as well
 
 
             self.perform_next_routine_in_queue()
