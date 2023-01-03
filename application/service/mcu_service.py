@@ -81,6 +81,14 @@ class MCUService:
 
         ret = {}
 
+        # Check for failure
+        # Need to extract this one byte as a range to avoid auto casting to an int
+        response_byte = response[0:1]
+        if response_byte == NEGATIVE_ACKNOWLEDGE:
+            err = f"MCU reported a failure when performing the get response"
+            logging.error(err)
+            raise RuntimeError(err)
+
         device_payloads = self._split_response_by_device_id(response)
 
         for device_id, payload_bytes in device_payloads.items():
