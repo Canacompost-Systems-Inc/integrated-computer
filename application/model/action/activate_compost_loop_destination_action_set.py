@@ -10,7 +10,7 @@ class ActivateCompostLoopDestinationActionSet(ActionSet):
                  location: Literal['air_loop', 'bioreactor1', 'bioreactor2', 'bsf_reproduction', 'sieve'] = 'air_loop',
                  ):
 
-        # TODO - added e2 connection to shredder storage, need to add to soure cof truth and this ocde
+        # TODO - added e2 connection to shredder storage, need to add to source of truth and this code
 
         # TODO - updated based on hardware, need to see if this is permanent
         # Open: 0
