@@ -307,8 +307,6 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
 
         device = device_registry_service.get_device(device_id)
 
-        # TODO - we removed the 'ref' state, so update this code
-
         # Boolean values need to be true/false and not open/close and on/off
         remap_state_value = {
             'open': 'true',
@@ -317,7 +315,6 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
             'off': 'false',
             'divert': 'true',
             'through': 'false',
-            'ref': '0',
         }
         val = remap_state_value.get(state_value, state_value)
 
@@ -334,9 +331,6 @@ def convert_mcu_state_to_response(mcu_state_tracker_service: MCUStateTrackerServ
         if display_type == Type.RADIO:
             options = []
             for string_value in device.possible_states.keys():
-                # Drop the 'ref' state sine we need a number
-                if string_value == 'ref':
-                    continue
                 options.append(Options(string_value, int(string_value)))
         elif display_type == Type.RANGE:
             # Hard coding this because this only works for the flap diverter valve.

@@ -19,14 +19,14 @@ class IsolationContext(Context):
         return self.state
 
     def change_state(self, new_state: IsolationState):
-        logging.info(f"\n\nDeactivating before changing to state {new_state}\n\n")
+        logging.info(f"Deactivating state {self.state.name} before changing to state {new_state.name}")
         yield self.deactivate_state()
-        super().change_state(DefaultState(None))  # TODO - figure out if there's a better way to do this - the flush and sanitize require this state
-        # yield self.flush_air_loop()
-        # yield self.sanitize_air_loop()
-        # yield self.flush_air_loop()
-        logging.info(f"\n\Activating state {new_state}\n\n")
+        super().change_state(DefaultState(None))
+        yield self.flush_air_loop()
+        yield self.sanitize_air_loop()
+        yield self.flush_air_loop()
         super().change_state(new_state)
+        logging.info(f"Activating state {new_state.name}")
         yield self.activate_state()
 
     # Methods implemented by the individual states

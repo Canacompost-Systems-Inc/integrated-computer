@@ -6,8 +6,6 @@ class Config(object):
     MCU_BAUD_RATE = 9600
     MCU_SERIAL_PORT = '/dev/tty.usbmodem14101'
 
-    # TODO - contact Kaan to update the dashboard pane of the UI to reflect the new sensor measurements (the chambers one works)
-
     # This needs to map {location -> {device_id -> (sensor_type_name/actuator_type_name, device_friendly_name)}}
     # The device_ids need to be unique across locations (since this is used to send and receive messages from MCU)
     DEVICE_MAP = {
@@ -26,9 +24,6 @@ class Config(object):
             'eb': ('DiscreteFlapDiverterValve', 'Environment Exchange Out'),
             'ec': ('DiscreteFlapDiverterValve', 'Environment Exchange In'),
             'f1': ('AirMover', 'Regen Blower'),
-            # TODO - f4 DiscreteFlapDiverterValve has been removed, and is now a UVC light switch
-            # TODO - also make sure to update the calls to f4 in the actions
-            # 'f4': ('DiscreteFlapDiverterValve', 'Regen Blower Output Strength Moderator'),
             'f4': ('UVCLight', 'UVC Light'),
             'f3': ('OzoneGenerator', 'Ozone Generator'),
         },

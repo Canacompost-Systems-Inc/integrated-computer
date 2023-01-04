@@ -25,7 +25,7 @@ class FlushAirLoopRoutine(Routine):
                 # Will flush to the environment
                 RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), duration_sec=0),
                 # Begin flushing
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=10),
+                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=10),
                 # Cycle through the air loop bypasses to flush each air path
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), duration_sec=5),
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),

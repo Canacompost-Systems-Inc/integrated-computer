@@ -196,13 +196,13 @@ class StateManager:
 
                 # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
 
-                self.add_routine_to_queue(
-                  self.routines_service.get_routine('MoveCompostFromBioreactor1ToBSFReproductionRoutine'),
-                  self.isolation_state_service.get_isolation_state('CompostLoopBioreactor1State'))
-
-                self.add_routine_to_queue(
-                  Routine(steps=[]),
-                  self.isolation_state_service.get_isolation_state('DefaultState'))
+                # self.add_routine_to_queue(
+                #   self.routines_service.get_routine('MoveCompostFromBioreactor1ToBSFReproductionRoutine'),
+                #   self.isolation_state_service.get_isolation_state('CompostLoopBioreactor1State'))
+                #
+                # self.add_routine_to_queue(
+                #   Routine(steps=[]),
+                #   self.isolation_state_service.get_isolation_state('DefaultState'))
 
 
                 # self.add_routine_to_queue(
@@ -252,7 +252,7 @@ class StateManager:
 
             # import random
             # if random.random() < 0.50:
-            #     possible_states = [s.name for s in self.list_available_isolation_states if s.name != self.current_isolation_state.name and s.name != 'InitialState']
+            #     possible_states = [s.name for s in self.list_available_isolation_states if s.name != self.current_isolation_state.name]
             #     chosen_state = random.choice(possible_states) if self.current_isolation_state.name == 'DefaultState' else 'DefaultState'
             #     print(f"chosen_state: {chosen_state}")
             #     self.change_isolation_state(chosen_state)

@@ -22,7 +22,7 @@ class ReadSensorsSieveRoutine(Routine):
                 RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('divert'), duration_sec=0),
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=30),
                 # Read from the sensor box
                 RoutineStep(ReadSensorsAirLoopActionSet(), duration_sec=0),
                 # End sequence

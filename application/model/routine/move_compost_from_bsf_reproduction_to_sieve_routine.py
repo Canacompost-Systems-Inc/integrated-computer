@@ -21,7 +21,7 @@ class MoveCompostFromBSFReproductionToSieveRoutine(Routine):
                 # Open the compost destination
                 RoutineStep(ActivateCompostLoopDestinationActionSet('sieve'), duration_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=30),
                 # End sequence
                 RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
                 RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),

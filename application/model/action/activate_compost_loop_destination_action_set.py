@@ -7,12 +7,10 @@ from application.model.action.action_set import ActionSet
 class ActivateCompostLoopDestinationActionSet(ActionSet):
 
     def __init__(self,
-                 location: Literal['air_loop', 'bioreactor1', 'bioreactor2', 'bsf_reproduction', 'sieve'] = 'air_loop',
+                 location: Literal['air_loop', 'shredder_storage', 'bioreactor1', 'bioreactor2', 'bsf_reproduction',
+                                   'sieve'] = 'air_loop',
                  ):
 
-        # TODO - added e2 connection to shredder storage, need to add to source of truth and this code
-
-        # TODO - updated based on hardware, need to see if this is permanent
         # Open: 0
         location_mapping_e1 = {
             'air_loop': '3',

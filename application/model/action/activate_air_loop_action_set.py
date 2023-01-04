@@ -11,7 +11,6 @@ class ActivateAirLoopActionSet(ActionSet):
                                    'sieve'] = 'compost_loop',
                  ):
 
-        # TODO - updated based on hardware, need to see if this is permanent
         # Open: 2
         location_mapping_e0 = {
             'compost_loop': '4',

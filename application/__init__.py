@@ -81,7 +81,6 @@ from application.model.state.isolation.compost_loop_bioreactor_2_state import Co
 from application.model.state.isolation.compost_loop_bsf_reproduction_state import CompostLoopBSFReproductionState
 from application.model.state.isolation.compost_loop_shredder_storage_state import CompostLoopShredderStorageState
 from application.model.state.isolation.default_state import DefaultState
-from application.model.state.isolation.initial_state import InitialState
 from application.service.device_factory import DeviceFactory
 from application.service.device_registry_service import DeviceRegistryService
 from application.service.isolation_state_registry_service import IsolationStateRegistryService
@@ -169,7 +168,6 @@ def init_app():
             CompostLoopBSFReproductionState,
             CompostLoopShredderStorageState,
             DefaultState,
-            InitialState,
         ]
         isolation_context = IsolationContext()
         isolation_state_registry_service = IsolationStateRegistryService(isolation_state_list, isolation_context)
@@ -209,8 +207,6 @@ def init_app():
                                                            isolation_context)
         state_manager = StateManager(mcu_state_tracker_service, routines_registry_service, mcu_service,
                                      isolation_state_registry_service, isolation_context)
-
-        # TODO - replace all the registry services with the singleton pattern?
 
         # Construct blueprints
         # TODO - add in a construct_sensors_bp?

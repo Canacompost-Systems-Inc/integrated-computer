@@ -19,7 +19,7 @@ class FlushCompostLoopRoutine(Routine):
                 # Will flush to the environment
                 RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), duration_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on', strength='50'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=30),
                 # End sequence
                 RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), duration_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
