@@ -15,14 +15,14 @@ class FlushCompostLoopRoutine(Routine):
         super().__init__(
             steps=[
                 # We are skipping the sensor loop
-                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), duration_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
                 # Will flush to the environment
-                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), duration_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 # End sequence
-                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), duration_sec=0),
-                RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
             ],
-            available_in_states=[]
+            must_run_in_state=None
         )

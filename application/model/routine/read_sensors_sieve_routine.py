@@ -18,18 +18,16 @@ class ReadSensorsSieveRoutine(Routine):
         super().__init__(
             steps=[
                 # Bypass the radiator and dehumidifier but not the sensor box
-                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('divert'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('divert'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 # Read from the sensor box
-                RoutineStep(ReadSensorsAirLoopActionSet(), duration_sec=0),
+                RoutineStep(ReadSensorsAirLoopActionSet(), then_wait_n_sec=0),
                 # End sequence
-                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
             ],
-            available_in_states=[
-                AirLoopSieveState,
-            ]
+            must_run_in_state=AirLoopSieveState
         )

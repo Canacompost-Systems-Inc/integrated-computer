@@ -17,16 +17,14 @@ class CoolAndDehumidifyBSFReproductionRoutine(Routine):
         super().__init__(
             steps=[
                 # Bypass the sensor box but not the radiator and dehumidifier
-                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('divert'), duration_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('divert'), then_wait_n_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 # End sequence
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
-                RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
             ],
-            available_in_states=[
-                AirLoopBSFReproductionState,
-            ]
+            must_run_in_state=AirLoopBSFReproductionState
         )

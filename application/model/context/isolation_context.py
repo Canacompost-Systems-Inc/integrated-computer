@@ -24,7 +24,6 @@ class IsolationContext(Context):
         super().change_state(DefaultState(None))
         yield self.flush_air_loop()
         yield self.sanitize_air_loop()
-        yield self.flush_air_loop()
         super().change_state(new_state)
         logging.info(f"Activating state {new_state.name}")
         yield self.activate_state()

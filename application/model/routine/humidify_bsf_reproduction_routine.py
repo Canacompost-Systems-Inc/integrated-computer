@@ -10,9 +10,9 @@ class HumidifyBSFReproductionRoutine(Routine):
 
         super().__init__(
             steps=[
-                RoutineStep(SwitchWaterPumpActionSet('bsf_reproduction', 'open'), duration_sec=5),
+                RoutineStep(SwitchWaterPumpActionSet('bsf_reproduction', 'open'), then_wait_n_sec=5),
                 # End sequence
-                RoutineStep(SwitchWaterPumpActionSet('bsf_reproduction', 'close'), duration_sec=0),
+                RoutineStep(SwitchWaterPumpActionSet('bsf_reproduction', 'close'), then_wait_n_sec=0),
             ],
-            available_in_states=[]
+            must_run_in_state=None
         )

@@ -18,8 +18,8 @@ class DefaultState(IsolationState):
 
     def activate_state(self):
         return Routine(steps=[
-            RoutineStep(ActivateCompostLoopDestinationActionSet('air_loop'), duration_sec=0),
-            RoutineStep(ActivateAirLoopActionSet('compost_loop'), duration_sec=0),
+            RoutineStep(ActivateCompostLoopDestinationActionSet('air_loop'), then_wait_n_sec=0),
+            RoutineStep(ActivateAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
         ])
 
     def deactivate_state(self):

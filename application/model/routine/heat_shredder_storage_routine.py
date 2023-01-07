@@ -10,9 +10,9 @@ class HeatShredderStorageRoutine(Routine):
 
         super().__init__(
             steps=[
-                RoutineStep(SwitchHeaterActionSet('shredder_storage', 'open'), duration_sec=15),
+                RoutineStep(SwitchHeaterActionSet('shredder_storage', 'open'), then_wait_n_sec=15),
                 # End sequence
-                RoutineStep(SwitchHeaterActionSet('shredder_storage', 'close'), duration_sec=0),
+                RoutineStep(SwitchHeaterActionSet('shredder_storage', 'close'), then_wait_n_sec=0),
             ],
-            available_in_states=[]
+            must_run_in_state=None
         )

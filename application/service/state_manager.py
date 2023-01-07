@@ -109,13 +109,6 @@ class StateManager:
         if len(matching_isolation_states) == 0:
             raise RuntimeError(f"MCU is reporting actuator states that do not match any isolation states")
 
-        # TODO - remove this hack
-        if 'DefaultState' in matching_isolation_states:
-            isolation_state_name = 'DefaultState'
-            isolation_state_instance = self.isolation_state_service.get_isolation_state(isolation_state_name)
-            self.isolation_context.state = isolation_state_instance
-            return
-
         elif len(matching_isolation_states) > 1:
             raise RuntimeError(f"MCU is reporting actuator states that match multiple isolation states: {matching_isolation_states}")
 
@@ -166,9 +159,7 @@ class StateManager:
 
                     self.mcu_state_tracker_service.update_tracked_state(response)
 
-            # TODO - commenting out for testing, uncomment before merging
             time.sleep(routine_step.duration_sec)
-            # time.sleep(routine_step.duration_sec)
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
     def manage_state(self):
@@ -194,141 +185,6 @@ class StateManager:
 
                 self.is_initialized = True
 
-                # TODO - remove this once testing is done (setting these so the mcu state tracker service has values
-
-                # self.add_routine_to_queue(
-                #   self.routines_service.get_routine('MoveCompostFromBioreactor1ToBSFReproductionRoutine'),
-                #   self.isolation_state_service.get_isolation_state('CompostLoopBioreactor1State'))
-                #
-                # self.add_routine_to_queue(
-                #   Routine(steps=[]),
-                #   self.isolation_state_service.get_isolation_state('DefaultState'))
-
-
-                # self.add_routine_to_queue(
-                #   self.routines_service.get_routine('ReadSensorsBioreactor1Routine'),
-                #   self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State'))
-
-                # self.add_routine_to_queue(
-                #   self.routines_service.get_routine('ReadSensorsBioreactor2Routine'),
-                #   self.isolation_state_service.get_isolation_state('AirLoopBioreactor2State'))
-
-                # self.add_routine_to_queue(
-                #   self.routines_service.get_routine('ReadSensorsBSFReproductionRoutine'),
-                #   self.isolation_state_service.get_isolation_state('AirLoopBSFReproductionState'))
-
-                # self.add_routine_to_queue(
-                #   self.routines_service.get_routine('ReadSensorsShredderStorageRoutine'),
-                #   self.isolation_state_service.get_isolation_state('AirLoopShredderStorageState'))
-
-                
-                # TODO - we should add shutdown code so each routine defines how to recover during a failure
-
-                # TODO - we need to remove the set pressure function from the ui, and maybe other measurements as well
-
-                # TODO - ozone shouldn't go through the sensor loop
-
-                # TODO - the SwitchAirMoverActionSet needs 10 seconds always
-
-
             self.perform_next_routine_in_queue()
 
-
-
-
-            # latest_actuator_state = self.mcu_state_tracker_service.get_actuator_states()
-            # logging.warning(f"latest_actuator_state: {latest_actuator_state}")
-            #
-            # latest_measurements = self.mcu_state_tracker_service.get_latest_measurements()
-            # logging.warning(f"latest_measurements: {latest_measurements}")
-            #
-            # if self.get_current_isolation_state().name != 'AirLoopBioreactor1State':
-            #     self.change_isolation_state('AirLoopBioreactor1State')
-            #
-            #     routine = self.routines_service.get_routine('ReadSensorsBioreactor1Routine')
-            #     isolation_state = self.isolation_state_service.get_isolation_state('AirLoopBioreactor1State')
-            #     self.add_routine_to_queue(routine, isolation_state)
-
-
-            # import random
-            # if random.random() < 0.50:
-            #     possible_states = [s.name for s in self.list_available_isolation_states if s.name != self.current_isolation_state.name]
-            #     chosen_state = random.choice(possible_states) if self.current_isolation_state.name == 'DefaultState' else 'DefaultState'
-            #     print(f"chosen_state: {chosen_state}")
-            #     self.change_isolation_state(chosen_state)
-
             time.sleep(3)
-
-
-            # NOTE - leaving test code in until we write the new management service
-
-            # print("########## Testing get system snapshot endpoint ##########")
-            # measurement_map = self.mcu_service.get_system_snapshot()
-            # print(f"measurement_map: {measurement_map}")
-
-            # print("########## Testing set actuator state endpoint ##########")
-            #
-            # def get_number_of_possible_states(device_id):
-            #     device = self.mcu_service.device_map[device_id]
-            #     return len(device.possible_states)
-            #
-            # def set_to_next_state(device_id, current_measurement_map):
-            #     device = self.mcu_service.device_map[device_id]
-            #     current_state = current_measurement_map[device.location][device.device_id][1][0].val
-            #
-            #     # Get the next possible state
-            #     possible_states = list(device.possible_states.keys())
-            #     possible_states = possible_states + possible_states
-            #     new_state = possible_states[possible_states.index(current_state) + 1]
-            #
-            #     print(f"Setting state of {device.device_friendly_name} from {current_state} to {new_state}")
-            #     return self.mcu_service.set_actuator_state(actuator_device_id=device_id, value=new_state)
-            #
-            # cur_measurement_map = measurement_map
-            # for location in measurement_map:
-            #     for device_id in measurement_map[location]:
-            #
-            #         if self.mcu_service.device_map[device_id].device_category != 'actuator':
-            #             continue
-            #
-            #         for i in range(get_number_of_possible_states(device_id)):
-            #
-            #             time.sleep(3)
-            #
-            #             update_to_measurement_map = set_to_next_state(device_id, cur_measurement_map)
-            #
-            #             for loc in update_to_measurement_map:
-            #                 for did in update_to_measurement_map[loc]:
-            #                     cur_measurement_map[loc][did] = update_to_measurement_map[loc][did]
-            #
-            #             print(f"measurement_map: {cur_measurement_map}")
-
-
-
-            # # Testing set actuator state endpoint
-            # print("########## Testing set actuator state endpoint ##########")
-            # import random
-            # set_state = random.random() > 0.5
-            # if set_state:
-            #     print(f"measurement_map: {measurement_map}")
-            #     current_state = measurement_map['BIOREACTOR1']['e1'][1][0].val
-            #     new_state = None
-            #     device = self.mcu_service.device_map['e1']
-            #     for k, v in device.possible_states.items():
-            #         if k != current_state:
-            #             new_state = k
-            #             break
-            #
-            #     print(f"Setting state of {device.device_friendly_name} from {current_state} to {new_state}")
-            #     measurement_map = self.mcu_service.set_actuator_state(actuator_device_id='e0', value=new_state)
-            #     print(f"measurement_map: {measurement_map}")
-            #
-            # # Testing get sensor state endpoint
-            # print("########## Testing get sensor state endpoint ##########")
-            # measurement_map = self.mcu_service.get_sensor_state(sensor_device_id='c0')
-            # print(f"measurement_map: {measurement_map}")
-            #
-            # # Testing get actuator state endpoint
-            # print("########## Testing get actuator state endpoint ##########")
-            # measurement_map = self.mcu_service.get_actuator_state(actuator_device_id='e0')
-            # print(f"measurement_map: {measurement_map}")

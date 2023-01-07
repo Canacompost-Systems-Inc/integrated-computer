@@ -10,9 +10,9 @@ class HumidifyShredderStorageRoutine(Routine):
 
         super().__init__(
             steps=[
-                RoutineStep(SwitchWaterPumpActionSet('shredder_storage', 'open'), duration_sec=5),
+                RoutineStep(SwitchWaterPumpActionSet('shredder_storage', 'open'), then_wait_n_sec=5),
                 # End sequence
-                RoutineStep(SwitchWaterPumpActionSet('shredder_storage', 'close'), duration_sec=0),
+                RoutineStep(SwitchWaterPumpActionSet('shredder_storage', 'close'), then_wait_n_sec=0),
             ],
-            available_in_states=[]
+            must_run_in_state=None
         )

@@ -10,9 +10,9 @@ class HumidifyBioreactor1Routine(Routine):
 
         super().__init__(
             steps=[
-                RoutineStep(SwitchWaterPumpActionSet('bioreactor1', 'open'), duration_sec=5),
+                RoutineStep(SwitchWaterPumpActionSet('bioreactor1', 'open'), then_wait_n_sec=5),
                 # End sequence
-                RoutineStep(SwitchWaterPumpActionSet('bioreactor1', 'close'), duration_sec=0),
+                RoutineStep(SwitchWaterPumpActionSet('bioreactor1', 'close'), then_wait_n_sec=0),
             ],
-            available_in_states=[]
+            must_run_in_state=None
         )

@@ -10,9 +10,9 @@ class HeatBSFReproductionRoutine(Routine):
 
         super().__init__(
             steps=[
-                RoutineStep(SwitchHeaterActionSet('bsf_reproduction', 'open'), duration_sec=15),
+                RoutineStep(SwitchHeaterActionSet('bsf_reproduction', 'open'), then_wait_n_sec=15),
                 # End sequence
-                RoutineStep(SwitchHeaterActionSet('bsf_reproduction', 'close'), duration_sec=0),
+                RoutineStep(SwitchHeaterActionSet('bsf_reproduction', 'close'), then_wait_n_sec=0),
             ],
-            available_in_states=[]
+            must_run_in_state=None
         )

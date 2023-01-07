@@ -17,16 +17,14 @@ class MoveCompostFromBSFReproductionToSieveRoutine(Routine):
         super().__init__(
             steps=[
                 # Bypass the sensor loop entirely
-                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), duration_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
                 # Open the compost destination
-                RoutineStep(ActivateCompostLoopDestinationActionSet('sieve'), duration_sec=0),
+                RoutineStep(ActivateCompostLoopDestinationActionSet('sieve'), then_wait_n_sec=0),
                 # Begin circulating the air
-                RoutineStep(SwitchAirMoverActionSet('on'), duration_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 # End sequence
-                RoutineStep(SwitchAirMoverActionSet('off'), duration_sec=0),
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), duration_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
             ],
-            available_in_states=[
-                CompostLoopBSFReproductionState,
-            ]
+            must_run_in_state=CompostLoopBSFReproductionState
         )

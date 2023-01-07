@@ -187,10 +187,11 @@ class MCUService:
 
                 else:
                     # Read something unexpected - clear the buffer then raise error
-                    # TODO - need to print the full buffer here to debug
-                    #   Note - if we are sending an EOL, can use ser.readline() rather than ser.read()
-                    self.mcu_persistent.reset_input_buffer()
-                    self.mcu_persistent.reset_output_buffer()
+                    rest_of_buffer = b''
+                    while (next_byte := self.mcu_persistent.read()) != EMPTY:
+                        rest_of_buffer += next_byte
+                    logging.debug(f"Response from MCU: {buffer.hex()}{byte.hex()}{rest_of_buffer.hex()}")
+
                     err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
                     raise RuntimeError(err)

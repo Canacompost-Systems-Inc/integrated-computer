@@ -11,5 +11,5 @@ class AdvancedTabRoutine(Routine):
 
         super().__init__(
             steps=steps,
-            available_in_states=[]
+            must_run_in_state=None
         )

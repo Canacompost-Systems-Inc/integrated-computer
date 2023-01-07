@@ -8,4 +8,4 @@ from application.model.action.action_set import ActionSet
 class RoutineStep:
     """Class for performing a set of actions then waiting a certain number of seconds."""
     action_set: Optional[ActionSet] = None  # List of Actions to perform; if None, this is effectively a sleep
-    duration_sec: int = 0  # Time to wait after performing this action
+    then_wait_n_sec: int = 0  # Time to wait after performing this action

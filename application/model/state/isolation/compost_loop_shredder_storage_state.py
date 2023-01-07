@@ -23,11 +23,11 @@ class CompostLoopShredderStorageState(IsolationState):
 
     def activate_state(self):
         return Routine(steps=[
-            RoutineStep(ActivateAirLoopActionSet('compost_loop'), duration_sec=0),
-            RoutineStep(ActivateCompostLoopSourceActionSet('shredder_storage'), duration_sec=0),
+            RoutineStep(ActivateAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+            RoutineStep(ActivateCompostLoopSourceActionSet('shredder_storage'), then_wait_n_sec=0),
         ])
 
     def deactivate_state(self):
         return Routine(steps=[
-            RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), duration_sec=0),
-        ]) + FlushCompostLoopRoutine() + SanitizeCompostLoopRoutine() + FlushCompostLoopRoutine()
+            RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
+        ]) + FlushCompostLoopRoutine() + SanitizeCompostLoopRoutine()

@@ -293,7 +293,7 @@ def generate_routine_to_set_state(machine_state: MachineState,
         required_actions.append(Action(device_id, intended_val))
 
     routine = AdvancedTabRoutine(steps=[
-        RoutineStep(ActionSet(iterable=required_actions), duration_sec=0)
+        RoutineStep(ActionSet(iterable=required_actions), then_wait_n_sec=0)
     ])
 
     return routine

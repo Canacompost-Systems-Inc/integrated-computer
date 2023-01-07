@@ -10,9 +10,9 @@ class HeatBioreactor1Routine(Routine):
 
         super().__init__(
             steps=[
-                RoutineStep(SwitchHeaterActionSet('bioreactor1', 'open'), duration_sec=15),
+                RoutineStep(SwitchHeaterActionSet('bioreactor1', 'open'), then_wait_n_sec=15),
                 # End sequence
-                RoutineStep(SwitchHeaterActionSet('bioreactor1', 'close'), duration_sec=0),
+                RoutineStep(SwitchHeaterActionSet('bioreactor1', 'close'), then_wait_n_sec=0),
             ],
-            available_in_states=[]
+            must_run_in_state=None
         )
