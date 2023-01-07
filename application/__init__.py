@@ -1,7 +1,9 @@
 import threading
 from flask import Flask
 
+from application.controller.routine import construct_routine_bp
 from application.controller.state import construct_state_bp
+from application.controller.task_queue import construct_task_queue_bp
 from application.model.actuator.air_hammer_valve_actuator import AirHammerValveActuator
 from application.model.actuator.air_mover_actuator import AirMoverActuator
 from application.model.actuator.bsf_light_actuator import BSFLightActuator
@@ -205,16 +207,21 @@ def init_app():
 
         mcu_state_tracker_service = MCUStateTrackerService(device_registry_service, location_registry_service,
                                                            isolation_context)
-        state_manager = StateManager(mcu_state_tracker_service, routines_registry_service, mcu_service,
-                                     isolation_state_registry_service, isolation_context)
+        state_manager = StateManager(mcu_state_tracker_service, mcu_service, isolation_state_registry_service,
+                                     isolation_context)
 
         # Construct blueprints
         # TODO - add in a construct_sensors_bp?
         state_controller = construct_state_bp(state_manager, mcu_state_tracker_service, device_registry_service)
+        routine_controller = construct_routine_bp(routines_registry_service)
+        task_queue_controller = construct_task_queue_bp(state_manager, routines_registry_service,
+                                                        isolation_state_registry_service)
 
         # Register API controller blueprints
         # TODO - register blueprint
         app.register_blueprint(state_controller)
+        app.register_blueprint(routine_controller)
+        app.register_blueprint(task_queue_controller)
 
         # Start the MCU manager thread. Other threads may also be required, such as polling loops to the MCUs.
         # Implementation is pending the design on how MCUs and the service will communicate

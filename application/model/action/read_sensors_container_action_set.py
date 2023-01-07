@@ -21,6 +21,9 @@ class ReadSensorsContainerActionSet(ActionSet):
         }
         values = location_mapping.get(location).split(',')
 
+        # TODO - also remove this once these sensors are all connected
+        values = [v for v in values if v]
+
         super().__init__(iterable=[
             Action(value, None)
             for value in values
