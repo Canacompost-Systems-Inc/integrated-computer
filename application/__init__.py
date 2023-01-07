@@ -1,6 +1,7 @@
 import threading
 from flask import Flask
 
+from application.controller.meta_state import construct_meta_state_bp
 from application.controller.state import construct_state_bp
 from application.model.actuator.air_hammer_valve_actuator import AirHammerValveActuator
 from application.model.actuator.air_mover_actuator import AirMoverActuator
@@ -211,10 +212,12 @@ def init_app():
         # Construct blueprints
         # TODO - add in a construct_sensors_bp?
         state_controller = construct_state_bp(state_manager, mcu_state_tracker_service, device_registry_service)
+        meta_state_controller = construct_meta_state_bp(state_manager)
 
         # Register API controller blueprints
         # TODO - register blueprint
         app.register_blueprint(state_controller)
+        app.register_blueprint(meta_state_controller)
 
         # Start the MCU manager thread. Other threads may also be required, such as polling loops to the MCUs.
         # Implementation is pending the design on how MCUs and the service will communicate

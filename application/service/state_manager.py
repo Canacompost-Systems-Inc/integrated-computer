@@ -36,6 +36,7 @@ class StateManager:
 
         self.is_initialized = False
         self.task_queue: List[Task] = []
+        self.disable_automated_routines = False
 
     def get_current_isolation_state(self) -> IsolationState:
         return self.isolation_context.get_state()
@@ -124,6 +125,12 @@ class StateManager:
     def add_routine_to_queue(self, routine: Routine, isolation_state: Optional[IsolationState] = None):
         self.task_queue.append(Task(routine, isolation_state))
 
+    def enable_automated_routine_running(self):
+        self.disable_automated_routines = False
+
+    def disable_automated_routine_running(self):
+        self.disable_automated_routines = True
+
     def perform_next_routine_in_queue(self):
         if not self.task_queue:
             return
@@ -185,6 +192,9 @@ class StateManager:
 
                 self.is_initialized = True
 
-            self.perform_next_routine_in_queue()
+            if not self.disable_automated_routines:
+                self.perform_next_routine_in_queue()
+            else:
+                logging.debug(f"Not performing routines because automated routine running is disabled")
 
             time.sleep(3)

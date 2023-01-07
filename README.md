@@ -17,6 +17,19 @@ The project has been designed to follow the pattern of [dependency injection](ht
 Using the APIs below, routines can be manually test run, and sensor values can be manually set to test the state machine.
 
 # API
+
+## Meta-state
+Examples: 
+```
+curl -X GET http://127.0.0.1:5000/meta_state -H 'Content-Type: application/json' | python -m json.tool
+
+curl -X POST http://127.0.0.1:5000/meta_state -H 'Content-Type: application/json' -d '{
+    "py/object": "application.controller.dto.system_meta_state.SystemMetaState",
+    "disable_automated_routines": true
+}'
+```
+
+## State
 Documentation: https://app.nuclino.com/Canacompost-Systems/Canacompost/API-Definition-d9f063ac-528d-462d-b2c6-4aa6d396c0e0
 
 Examples: 
