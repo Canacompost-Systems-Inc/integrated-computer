@@ -8,10 +8,15 @@ from application.model.state.isolation.isolation_state import IsolationState
 class Routine(UserList):
     name = "Routine"
 
-    def __init__(self, steps: List[Optional[RoutineStep]], must_run_in_state: Optional[type[IsolationState]] = None):
+    def __init__(self,
+                 steps: List[Optional[RoutineStep]],
+                 failure_recovery_steps: Optional[List[RoutineStep]] = None,
+                 must_run_in_state: Optional[type[IsolationState]] = None,
+                 ):
 
         super().__init__(steps)
 
+        self.failure_recovery_steps = failure_recovery_steps
         self.must_run_in_state = must_run_in_state
 
     def __eq__(self, other):

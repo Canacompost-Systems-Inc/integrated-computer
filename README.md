@@ -18,6 +18,17 @@ Using the APIs below, routines can be manually test run, and sensor values can b
 
 # API
 
+## Meta-state
+Examples: 
+```
+curl -X GET http://127.0.0.1:5000/meta_state -H 'Content-Type: application/json' | python -m json.tool
+
+curl -X POST http://127.0.0.1:5000/meta_state -H 'Content-Type: application/json' -d '{
+    "py/object": "application.controller.dto.system_meta_state.SystemMetaState",
+    "disable_automated_routines": true
+}'
+```
+
 ## Routine
 Examples:
 ```
