@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Dict
 
 from application.model.action.action import Action
+from application.model.action.action_set import ActionSet
 from application.model.context.isolation_context import IsolationContext
 from application.model.routine.routine import Routine
 from application.model.routine.routine_step import RoutineStep
@@ -38,6 +39,7 @@ class StateManager:
 
         self.is_initialized = False
         self.task_queue: List[Task] = []
+        self.lock_queue = False
 
     def get_current_isolation_state(self) -> IsolationState:
         return self.isolation_context.get_state()
@@ -123,10 +125,22 @@ class StateManager:
     def current_task_queue(self) -> List[Task]:
         return self.task_queue
 
-    def add_routine_to_queue(self, routine: Routine, isolation_state: Optional[IsolationState] = None):
-        self.task_queue.append(Task(routine, isolation_state))
+    def add_routine_to_queue(self,
+                             routine: Routine,
+                             isolation_state: Optional[IsolationState] = None,
+                             to_start: bool = False):
+        self.lock_queue = True
+        task = Task(routine, isolation_state)
+        if to_start:
+            self.task_queue = [task] + self.task_queue
+        else:
+            self.task_queue.append(task)
+        self.lock_queue = False
 
     def perform_next_routine_in_queue(self):
+        if self.lock_queue:
+            return
+
         if not self.task_queue:
             return
 
