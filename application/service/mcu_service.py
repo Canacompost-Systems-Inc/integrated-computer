@@ -13,10 +13,11 @@ from application.service.measurement_factory import MeasurementFactory
 
 class MCUService:
 
-    def __init__(self, device_registry_service, measurement_factory, testing=False):
+    def __init__(self, device_registry_service: DeviceRegistryService, measurement_factory: MeasurementFactory,
+                 testing=False):
 
-        self.device_registry_service: DeviceRegistryService = device_registry_service
-        self.measurement_factory: MeasurementFactory = measurement_factory
+        self.device_registry_service = device_registry_service
+        self.measurement_factory = measurement_factory
         self.testing = testing
 
         self.mcu_persistent = get_mcu()
@@ -80,10 +81,19 @@ class MCUService:
 
         ret = {}
 
+        # Check for failure
+        # Need to extract this one byte as a range to avoid auto casting to an int
+        response_byte = response[0:1]
+        if response_byte == NEGATIVE_ACKNOWLEDGE:
+            err = f"MCU reported a failure when performing the get response"
+            logging.error(err)
+            raise RuntimeError(err)
+
         device_payloads = self._split_response_by_device_id(response)
 
         for device_id, payload_bytes in device_payloads.items():
 
+            device = self.device_registry_service.get_device(device_id)
             measurement_name_to_value_map = device.decode_payload(payload_bytes)
 
             ret[device_id] = []
@@ -101,7 +111,7 @@ class MCUService:
         # If we are testing, there is no MCU to make requests to or read responses from, so return example responses
         if self.testing:
             if opcode == GET_SYSTEM_SNAPSHOT_OPCODE:
-                response = b'\xc1\x44\x0d\xc0\x00\x41\xb8\x4f\xc0\x41\xc4\x1b\x20\xc2\xc2\x30\x7f\x20\x47\xf3\x97\x1a\xe0\x00\x00\x00\x00\xe1\x00\x00\x00\x00\xe2\x00\x00\x00\x00\xe3\x00\x00\x00\x00\xe4\x00\x00\x00\x00\xe5\x00\x00\x00\x00\xe6\x00\x00\x00\x00\xe7\x00\x00\x00\x00\xe8\x00\x00\x00\x00\xea\x00\x00\x00\x00\xeb\x00\x00\x00\x00\xec\x00\x00\x00\x00\xf0\x00\x00\x00\x00\xf4\x00\x00\x00\x00'
+                response = b'\xc1\x43\xf8\x80\x00\x41\xbf\x88\x30\x41\xfe\x23\x60\xc2\xc2\x30\x7f\x20\x47\xf3\x97\x1a\xc7\x00\x00\x00\x00\xe0\x00\x00\x00\x04\xe1\x00\x00\x00\x03\xe2\x00\x00\x00\x01\xe3\x00\x00\x00\x00\xe4\x00\x00\x00\x00\xe5\x00\x00\x00\x00\xe6\x00\x00\x00\x00\xe7\x00\x00\x00\x00\xe8\x00\x00\x00\x00\xeb\x00\x00\x00\x00\xec\x00\x00\x00\x00\xf0\x00\x00\x00\x00\xe9\x00\x00\x00\x00\xf6\x00\x00\x00\x00\xf8\x00\x00\x00\x00\xfa\x00\x00\x00\x00\xf1\x00\x00\x00\x00\xf2\x00\x00\x00\x00\xf3\x00\x00\x00\x00\xf4\x00\x00\x00\x00'
 
             elif opcode == GET_SENSOR_STATE_OPCODE:
                 # Example responses:
@@ -176,7 +186,12 @@ class MCUService:
                     state = READING_DEVICE_ID
 
                 else:
-                    # Read something unexpected
+                    # Read something unexpected - clear the buffer then raise error
+                    rest_of_buffer = b''
+                    while (next_byte := self.mcu_persistent.read()) != EMPTY:
+                        rest_of_buffer += next_byte
+                    logging.debug(f"Response from MCU: {buffer.hex()}{byte.hex()}{rest_of_buffer.hex()}")
+
                     err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
                     raise RuntimeError(err)
@@ -215,6 +230,8 @@ class MCUService:
 
                 # Done reading payload, return to checking for device id or end transmission char
                 state = READING_DEVICE_ID
+
+        logging.debug(f"Response from MCU: {buffer.hex()}")
 
         return buffer
 

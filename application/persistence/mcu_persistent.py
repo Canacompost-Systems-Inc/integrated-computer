@@ -25,6 +25,9 @@ class MCUPersistent:
                 timeout=5)
             time.sleep(1)
 
+            self._serial_connection.reset_input_buffer()
+            self._serial_connection.reset_output_buffer()
+
     def get_mcu(self):
         if not self._serial_connection:
             self.establish_connection()

@@ -1,6 +1,16 @@
+from typing import Optional
+
+
 class BSFReproductionSensors:
-    def __init__(self, humidity, c02, air_temperature, soil_temperature):
+    def __init__(self,
+                 temperature: Optional[float] = None,
+                 humidity: Optional[float] = None,
+                 co2: Optional[float] = None,
+                 pressure: Optional[float] = None,
+                 h2: Optional[float] = None,
+                 ):
+        self.temperature = temperature
         self.humidity = humidity
-        self.c02 = c02
-        self.air_temperature = air_temperature
-        self.soil_temperature = soil_temperature
+        self.co2 = co2
+        self.pressure = pressure
+        self.h2 = h2
