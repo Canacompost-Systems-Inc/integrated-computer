@@ -14,5 +14,8 @@ class HeatShredderStorageRoutine(Routine):
                 # End sequence
                 RoutineStep(SwitchHeaterActionSet('shredder_storage', 'close'), then_wait_n_sec=0),
             ],
-            must_run_in_state=None
+            must_run_in_state=None,
+            failure_recovery_steps=[
+                RoutineStep(SwitchHeaterActionSet('shredder_storage', 'close'), then_wait_n_sec=0),
+            ]
         )

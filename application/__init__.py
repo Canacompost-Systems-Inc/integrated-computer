@@ -84,6 +84,7 @@ from application.model.state.isolation.compost_loop_shredder_storage_state impor
 from application.model.state.isolation.default_state import DefaultState
 from application.service.device_factory import DeviceFactory
 from application.service.device_registry_service import DeviceRegistryService
+from application.service.dto_translator_service import DtoTranslatorService
 from application.service.isolation_state_registry_service import IsolationStateRegistryService
 from application.service.location_registry_service import LocationRegistryService
 from application.service.mcu_service import MCUService
@@ -210,18 +211,32 @@ def init_app():
                                      isolation_state_registry_service, isolation_context)
 
         # Construct blueprints
-        # TODO - add in a construct_sensors_bp?
-        state_controller = construct_state_bp(state_manager, mcu_state_tracker_service, device_registry_service)
+        dto_translator_service = DtoTranslatorService(device_registry_service)
+        state_controller = construct_state_bp(state_manager, mcu_state_tracker_service, dto_translator_service)
         meta_state_controller = construct_meta_state_bp(state_manager)
 
         # Register API controller blueprints
-        # TODO - register blueprint
         app.register_blueprint(state_controller)
         app.register_blueprint(meta_state_controller)
 
+        # Define a wrapper function to restart the thread if it dies
+        def restart_thread_wrapper(thread_func):
+            def wrapper():
+                while True:
+                    try:
+                        thread_func()
+                    except BaseException as e:
+                        import traceback
+                        traceback.print_exc()
+                        app.logger.error(f"{e}; restarting thread")
+                    else:
+                        app.logger.error(f"Thread exited normally, which shouldn't happen; restarting thread")
+
+            return wrapper
+
         # Start the MCU manager thread. Other threads may also be required, such as polling loops to the MCUs.
         # Implementation is pending the design on how MCUs and the service will communicate
-        thread = threading.Thread(target=state_manager.manage_state)
+        thread = threading.Thread(target=restart_thread_wrapper(state_manager.manage_state))
         thread.start()
 
     return app

@@ -14,5 +14,8 @@ class HumidifyBioreactor2Routine(Routine):
                 # End sequence
                 RoutineStep(SwitchWaterPumpActionSet('bioreactor2', 'close'), then_wait_n_sec=0),
             ],
-            must_run_in_state=None
+            must_run_in_state=None,
+            failure_recovery_steps=[
+                RoutineStep(SwitchWaterPumpActionSet('bioreactor2', 'close'), then_wait_n_sec=0),
+            ]
         )

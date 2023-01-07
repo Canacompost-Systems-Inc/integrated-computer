@@ -3,8 +3,11 @@ import time
 from dataclasses import dataclass
 from typing import List, Optional, Dict
 
+from application.model.action.action import Action
+from application.model.action.action_set import ActionSet
 from application.model.context.isolation_context import IsolationContext
 from application.model.routine.routine import Routine
+from application.model.routine.routine_step import RoutineStep
 from application.model.state.isolation.isolation_state import IsolationState
 from application.service.isolation_state_registry_service import IsolationStateRegistryService
 from application.service.routine_registry_service import RoutineRegistryService
@@ -36,6 +39,7 @@ class StateManager:
 
         self.is_initialized = False
         self.task_queue: List[Task] = []
+        self.lock_queue = False
         self.disable_automated_routines = False
 
     def get_current_isolation_state(self) -> IsolationState:
@@ -122,8 +126,17 @@ class StateManager:
     def current_task_queue(self) -> List[Task]:
         return self.task_queue
 
-    def add_routine_to_queue(self, routine: Routine, isolation_state: Optional[IsolationState] = None):
-        self.task_queue.append(Task(routine, isolation_state))
+    def add_routine_to_queue(self,
+                             routine: Routine,
+                             isolation_state: Optional[IsolationState] = None,
+                             to_start: bool = False):
+        self.lock_queue = True
+        task = Task(routine, isolation_state)
+        if to_start:
+            self.task_queue = [task] + self.task_queue
+        else:
+            self.task_queue.append(task)
+        self.lock_queue = False
 
     def enable_automated_routine_running(self):
         self.disable_automated_routines = False
@@ -132,6 +145,9 @@ class StateManager:
         self.disable_automated_routines = True
 
     def perform_next_routine_in_queue(self):
+        if self.lock_queue:
+            return
+
         if not self.task_queue:
             return
 
@@ -142,6 +158,28 @@ class StateManager:
 
         self.perform_routine(task.routine)
 
+    def perform_action(self, action: Action):
+
+        logging.debug(f"Performing action {action}")
+
+        if action.set_to_value is None:
+            # This is a sensor that needs to be read
+            response = self.mcu_service.get_sensor_state(action.device_id)
+        else:
+            # This is an actuator to set
+            response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
+
+        self.mcu_state_tracker_service.update_tracked_state(response)
+
+    def perform_routine_step(self, routine_step: RoutineStep):
+        action_set = routine_step.action_set
+        if action_set is not None:
+            for action in action_set:
+
+                self.perform_action(action)
+
+        time.sleep(routine_step.then_wait_n_sec)
+
     def perform_routine(self, routine: Routine):
 
         logging.info(f"Performing routine {routine.name}")
@@ -151,22 +189,26 @@ class StateManager:
                                f"{self.get_current_isolation_state().name} state")
 
         for routine_step in routine:
-            action_set = routine_step.action_set
-            if action_set is not None:
-                for action in action_set:
+            try:
+                self.perform_routine_step(routine_step)
+            except RuntimeError as e:
 
-                    logging.debug(f"Performing action {action}")
+                logging.error(f"Encountered an error while performing routine {routine.name}; running failure "
+                              f"recovery steps")
 
-                    if action.set_to_value is None:
-                        # This is a sensor that needs to be read
-                        response = self.mcu_service.get_sensor_state(action.device_id)
-                    else:
-                        # This is an actuator to set
-                        response = self.mcu_service.set_actuator_state(action.device_id, action.set_to_value)
+                # We encountered an error while performing the routine, so we need to run the failure recovery steps
+                for failure_recovery_step in routine.failure_recovery_steps:
 
-                    self.mcu_state_tracker_service.update_tracked_state(response)
+                    logging.error(f"Performing actions {failure_recovery_step.action_set}")
+                    try:
+                        self.perform_routine_step(failure_recovery_step)
+                    except:
+                        # Even if we encounter an exception, we want to perform all the steps
+                        pass
 
-            time.sleep(routine_step.duration_sec)
+                # TODO - we should also prevent any other routines from running until the user can manually unlock this (to add when we have api to lock the routines)
+
+                raise e
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
     def manage_state(self):
