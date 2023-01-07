@@ -34,5 +34,12 @@ class SanitizeAirLoopRoutine(Routine):
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
             ],
-            must_run_in_state=DefaultState
+            must_run_in_state=DefaultState,
+            failure_recovery_steps=[
+                RoutineStep(SwitchOzoneGeneratorActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=30),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+            ]
         )

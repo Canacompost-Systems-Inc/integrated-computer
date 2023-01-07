@@ -23,6 +23,12 @@ class FlushCompostLoopRoutine(Routine):
                 # End sequence
                 RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
             ],
-            must_run_in_state=None
+            must_run_in_state=None,
+            failure_recovery_steps=[
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+            ]
         )

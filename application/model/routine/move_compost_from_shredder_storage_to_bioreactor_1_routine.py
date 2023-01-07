@@ -1,6 +1,7 @@
 from application.model.action.activate_compost_loop_destination_action_set import \
     ActivateCompostLoopDestinationActionSet
-from application.model.action.switch_air_loop_bypass_sensor_box_action_set import SwitchAirLoopBypassSensorBoxActionSet
+from application.model.action.activate_compost_loop_source_action_set import ActivateCompostLoopSourceActionSet
+from application.model.action.switch_air_hammer_action_set import SwitchAirHammerActionSet
 from application.model.action.switch_air_loop_bypass_sensor_loop_action_set import \
     SwitchAirLoopBypassSensorLoopActionSet
 from application.model.action.switch_air_mover_action_set import SwitchAirMoverActionSet
@@ -20,11 +21,32 @@ class MoveCompostFromShredderStorageToBioreactor1Routine(Routine):
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
                 # Open the compost destination
                 RoutineStep(ActivateCompostLoopDestinationActionSet('bioreactor1'), then_wait_n_sec=0),
-                # Begin circulating the air
+                # Run the air hammer briefly (it is VERY loud)
+                RoutineStep(SwitchAirHammerActionSet('shredder_storage', 'open'), then_wait_n_sec=1),
+                RoutineStep(SwitchAirHammerActionSet('shredder_storage', 'close'), then_wait_n_sec=0),
+                # Begin circulating the air and move as much compost as possible
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
+                # Turn the air off to let the remaining compost drop down
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                # Run the air hammer briefly (it is VERY loud)
+                RoutineStep(SwitchAirHammerActionSet('shredder_storage', 'open'), then_wait_n_sec=1),
+                RoutineStep(SwitchAirHammerActionSet('shredder_storage', 'close'), then_wait_n_sec=0),
+                # Close the butterfly valve, circulate air twice to move the remainder, and re-open butterfly valve
+                RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=15),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=15),
+                RoutineStep(ActivateCompostLoopSourceActionSet('shredder_storage'), then_wait_n_sec=0),
                 # End sequence
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
-                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(ActivateCompostLoopDestinationActionSet('air_loop'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
             ],
-            must_run_in_state=CompostLoopShredderStorageState
+            must_run_in_state=CompostLoopShredderStorageState,
+            failure_recovery_steps=[
+                RoutineStep(SwitchAirHammerActionSet('shredder_storage', 'close'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(ActivateCompostLoopSourceActionSet('shredder_storage'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+            ]
         )

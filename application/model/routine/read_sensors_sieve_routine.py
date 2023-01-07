@@ -29,5 +29,11 @@ class ReadSensorsSieveRoutine(Routine):
                 RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
             ],
-            must_run_in_state=AirLoopSieveState
+            must_run_in_state=AirLoopSieveState,
+            failure_recovery_steps=[
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+            ]
         )
