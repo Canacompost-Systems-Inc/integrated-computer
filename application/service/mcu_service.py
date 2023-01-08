@@ -159,7 +159,7 @@ class MCUService:
         self.mcu_persistent.write(request)
         return self._get_response()
 
-    def _get_response(self, timeout_sec=10) -> bytes:
+    def _get_response(self, timeout_sec=3) -> bytes:
         buffer = b''
         state = IDLE
         current_payload_length_bytes = 0
