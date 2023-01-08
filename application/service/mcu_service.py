@@ -187,10 +187,15 @@ class MCUService:
 
                 else:
                     # Read something unexpected - clear the buffer then raise error
-                    logging.debug(f"Unexpected response from MCU")
+                    logging.debug(f"Unexpected response from MCU: {byte.hex()}")
+                    read_maximum_n_bytes = 100
                     rest_of_buffer = b''
                     while (next_byte := self.mcu_persistent.read()) != EMPTY:
+                        logging.debug(f"Next byte: {next_byte.hex()}")
                         rest_of_buffer += next_byte
+                        read_maximum_n_bytes -= 1
+                        if read_maximum_n_bytes <= 0:
+                            break
                     logging.debug(f"Response from MCU: {buffer.hex()}{byte.hex()}{rest_of_buffer.hex()}")
 
                     err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
