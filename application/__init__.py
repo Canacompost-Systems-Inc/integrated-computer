@@ -52,8 +52,16 @@ from application.model.routine.humidify_bsf_reproduction_routine import Humidify
 from application.model.routine.humidify_shredder_storage_routine import HumidifyShredderStorageRoutine
 from application.model.routine.move_compost_from_bioreactor_1_to_bsf_reproduction_routine import \
     MoveCompostFromBioreactor1ToBSFReproductionRoutine
+from application.model.routine.move_compost_from_bioreactor_1_to_shredder_storage_routine import \
+    MoveCompostFromBioreactor1ToShredderStorageRoutine
 from application.model.routine.move_compost_from_bioreactor_2_to_bsf_reproduction_routine import \
     MoveCompostFromBioreactor2ToBSFReproductionRoutine
+from application.model.routine.move_compost_from_bioreactor_2_to_shredder_storage_routine import \
+    MoveCompostFromBioreactor2ToShredderStorageRoutine
+from application.model.routine.move_compost_from_bsf_reproduction_to_bioreactor_1_routine import \
+    MoveCompostFromBSFReproductionToBioreactor1Routine
+from application.model.routine.move_compost_from_bsf_reproduction_to_bioreactor_2_routine import \
+    MoveCompostFromBSFReproductionToBioreactor2Routine
 from application.model.routine.move_compost_from_bsf_reproduction_to_sieve_routine import \
     MoveCompostFromBSFReproductionToSieveRoutine
 from application.model.routine.move_compost_from_shredder_storage_to_bioreactor_1_routine import \
@@ -193,7 +201,11 @@ def init_app():
             HumidifyBSFReproductionRoutine,
             HumidifyShredderStorageRoutine,
             MoveCompostFromBioreactor1ToBSFReproductionRoutine,
+            MoveCompostFromBioreactor1ToShredderStorageRoutine,
             MoveCompostFromBioreactor2ToBSFReproductionRoutine,
+            MoveCompostFromBioreactor2ToShredderStorageRoutine,
+            MoveCompostFromBSFReproductionToBioreactor1Routine,
+            MoveCompostFromBSFReproductionToBioreactor2Routine,
             MoveCompostFromBSFReproductionToSieveRoutine,
             MoveCompostFromShredderStorageToBioreactor1Routine,
             MoveCompostFromShredderStorageToBioreactor2Routine,
