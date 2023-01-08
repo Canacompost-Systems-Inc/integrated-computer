@@ -22,9 +22,8 @@ class IsolationContext(Context):
         logging.info(f"Deactivating state {self.state.name} before changing to state {new_state.name}")
         yield self.deactivate_state()
         super().change_state(DefaultState(None))
-        # TODO - uncomment before merging
-        # yield self.flush_air_loop()
-        # yield self.sanitize_air_loop()
+        yield self.flush_air_loop()
+        yield self.sanitize_air_loop()
         super().change_state(new_state)
         logging.info(f"Activating state {new_state.name}")
         yield self.activate_state()

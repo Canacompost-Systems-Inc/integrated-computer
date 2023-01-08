@@ -224,7 +224,8 @@ class StateManager:
                             # Even if we encounter an exception, we want to perform all the steps
                             pass
 
-                    # TODO - we should also prevent any other routines from running until the user can manually unlock this (to add when we have api to lock the routines)
+                    # Prevent any other routines from running until the user manually enables this on the advanced tab
+                    self.disable_automated_routine_running()
 
                     raise e
 
