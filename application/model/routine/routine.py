@@ -16,6 +16,8 @@ class Routine(UserList):
 
         super().__init__(steps)
 
+        if failure_recovery_steps is None:
+            failure_recovery_steps = []
         self.failure_recovery_steps = failure_recovery_steps
         self.must_run_in_state = must_run_in_state
 
