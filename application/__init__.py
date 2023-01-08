@@ -1,6 +1,7 @@
 import threading
 from flask import Flask
 
+from application.controller.meta_state import construct_meta_state_bp
 from application.controller.state import construct_state_bp
 from application.model.actuator.air_hammer_valve_actuator import AirHammerValveActuator
 from application.model.actuator.air_mover_actuator import AirMoverActuator
@@ -212,9 +213,26 @@ def init_app():
         # Construct blueprints
         dto_translator_service = DtoTranslatorService(device_registry_service)
         state_controller = construct_state_bp(state_manager, mcu_state_tracker_service, dto_translator_service)
+        meta_state_controller = construct_meta_state_bp(state_manager)
 
         # Register API controller blueprints
         app.register_blueprint(state_controller)
+        app.register_blueprint(meta_state_controller)
+
+        # Define a wrapper function to restart the thread if it dies
+        def restart_thread_wrapper(thread_func):
+            def wrapper():
+                while True:
+                    try:
+                        thread_func()
+                    except BaseException as e:
+                        import traceback
+                        traceback.print_exc()
+                        app.logger.error(f"{e}; restarting thread")
+                    else:
+                        app.logger.error(f"Thread exited normally, which shouldn't happen; restarting thread")
+
+            return wrapper
 
         # Define a wrapper function to restart the thread if it dies
         def restart_thread_wrapper(thread_func):

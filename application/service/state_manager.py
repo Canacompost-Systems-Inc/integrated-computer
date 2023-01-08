@@ -40,6 +40,7 @@ class StateManager:
         self.is_initialized = False
         self.task_queue: List[Task] = []
         self.lock_queue = False
+        self.disable_automated_routines = False
 
     def get_current_isolation_state(self) -> IsolationState:
         return self.isolation_context.get_state()
@@ -137,6 +138,12 @@ class StateManager:
             self.task_queue.append(task)
         self.lock_queue = False
 
+    def enable_automated_routine_running(self):
+        self.disable_automated_routines = False
+
+    def disable_automated_routine_running(self):
+        self.disable_automated_routines = True
+
     def perform_next_routine_in_queue(self):
         if self.lock_queue:
             return
@@ -200,6 +207,7 @@ class StateManager:
                         pass
 
                 # TODO - we should also prevent any other routines from running until the user can manually unlock this (to add when we have api to lock the routines)
+
                 raise e
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
@@ -226,6 +234,9 @@ class StateManager:
 
                 self.is_initialized = True
 
-            self.perform_next_routine_in_queue()
+            if not self.disable_automated_routines:
+                self.perform_next_routine_in_queue()
+            else:
+                logging.debug(f"Not performing routines because automated routine running is disabled")
 
             time.sleep(3)
