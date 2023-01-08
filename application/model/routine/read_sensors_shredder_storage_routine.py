@@ -31,5 +31,11 @@ class ReadSensorsShredderStorageRoutine(Routine):
                 RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
             ],
-            must_run_in_state=AirLoopShredderStorageState
+            must_run_in_state=AirLoopShredderStorageState,
+            failure_recovery_steps=[
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+            ]
         )
