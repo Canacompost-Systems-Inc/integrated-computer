@@ -187,6 +187,7 @@ class MCUService:
 
                 else:
                     # Read something unexpected - clear the buffer then raise error
+                    logging.debug(f"Unexpected response from MCU")
                     rest_of_buffer = b''
                     while (next_byte := self.mcu_persistent.read()) != EMPTY:
                         rest_of_buffer += next_byte
