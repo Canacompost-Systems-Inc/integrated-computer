@@ -2,7 +2,9 @@ import threading
 from flask import Flask
 
 from application.controller.meta_state import construct_meta_state_bp
+from application.controller.routine import construct_routine_bp
 from application.controller.state import construct_state_bp
+from application.controller.task_queue import construct_task_queue_bp
 from application.model.actuator.air_hammer_valve_actuator import AirHammerValveActuator
 from application.model.actuator.air_mover_actuator import AirMoverActuator
 from application.model.actuator.bsf_light_actuator import BSFLightActuator
@@ -207,32 +209,22 @@ def init_app():
 
         mcu_state_tracker_service = MCUStateTrackerService(device_registry_service, location_registry_service,
                                                            isolation_context)
-        state_manager = StateManager(mcu_state_tracker_service, routines_registry_service, mcu_service,
-                                     isolation_state_registry_service, isolation_context)
+        state_manager = StateManager(mcu_state_tracker_service, mcu_service, isolation_state_registry_service,
+                                     isolation_context)
 
         # Construct blueprints
         dto_translator_service = DtoTranslatorService(device_registry_service)
         state_controller = construct_state_bp(state_manager, mcu_state_tracker_service, dto_translator_service)
         meta_state_controller = construct_meta_state_bp(state_manager)
+        routine_controller = construct_routine_bp(routines_registry_service)
+        task_queue_controller = construct_task_queue_bp(state_manager, routines_registry_service,
+                                                        isolation_state_registry_service)
 
         # Register API controller blueprints
         app.register_blueprint(state_controller)
         app.register_blueprint(meta_state_controller)
-
-        # Define a wrapper function to restart the thread if it dies
-        def restart_thread_wrapper(thread_func):
-            def wrapper():
-                while True:
-                    try:
-                        thread_func()
-                    except BaseException as e:
-                        import traceback
-                        traceback.print_exc()
-                        app.logger.error(f"{e}; restarting thread")
-                    else:
-                        app.logger.error(f"Thread exited normally, which shouldn't happen; restarting thread")
-
-            return wrapper
+        app.register_blueprint(routine_controller)
+        app.register_blueprint(task_queue_controller)
 
         # Define a wrapper function to restart the thread if it dies
         def restart_thread_wrapper(thread_func):
