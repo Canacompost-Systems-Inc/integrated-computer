@@ -5,6 +5,7 @@ from typing import List, Optional, Dict
 from application.model.action.action import Action
 from application.model.action.action_set import ActionSet
 from application.model.context.isolation_context import IsolationContext
+from application.model.routine.advanced_tab_routine import AdvancedTabRoutine
 from application.model.routine.routine import Routine
 from application.model.routine.routine_step import RoutineStep
 from application.model.state.isolation.isolation_state import IsolationState
@@ -134,9 +135,12 @@ class StateManager:
         self.lock_queue = False
 
     def enable_automated_routine_running(self):
+        logging.debug(f"Enabled running of new routines")
         self.disable_automated_routines = False
 
     def disable_automated_routine_running(self):
+        logging.debug(f"Disabled running of new routines, but will finish the current one if it is in progress and will"
+                      f"finish a state transition if it is in progress")
         self.disable_automated_routines = True
 
     def perform_next_routine_in_queue(self):
@@ -146,11 +150,22 @@ class StateManager:
         if not self.task_queue:
             return
 
+        # Not popping off the queue until we actually run it
+        next_task = self.task_queue[0]
+
+        # If we have disabled automated routine running, only run the AdvancedTabRoutines
+        if self.disable_automated_routines and not isinstance(next_task.routine, AdvancedTabRoutine):
+            return
+
+        if next_task.isolation_state is not None and self.get_current_isolation_state() != next_task.isolation_state:
+            self.change_isolation_state(next_task.isolation_state.name)
+
+        # One more check in case the user disabled automated routine running while the system was changing state
+        if self.disable_automated_routines and not isinstance(next_task.routine, AdvancedTabRoutine):
+            return
+
+        # Now we're running this task, so pop it off the queue
         task = self.task_queue.pop(0)
-
-        if task.isolation_state is not None and self.get_current_isolation_state() != task.isolation_state:
-            self.change_isolation_state(task.isolation_state.name)
-
         self.perform_routine(task.routine)
 
     def perform_action(self, action: Action):
@@ -209,7 +224,8 @@ class StateManager:
                             # Even if we encounter an exception, we want to perform all the steps
                             pass
 
-                    # TODO - we should also prevent any other routines from running until the user can manually unlock this (to add when we have api to lock the routines)
+                    # Prevent any other routines from running until the user manually enables this on the advanced tab
+                    self.disable_automated_routine_running()
 
                     raise e
 
@@ -245,9 +261,6 @@ class StateManager:
 
                 self.is_initialized = True
 
-            if not self.disable_automated_routines:
-                self.perform_next_routine_in_queue()
-            else:
-                logging.debug(f"Not performing routines because automated routine running is disabled")
+            self.perform_next_routine_in_queue()
 
-            time.sleep(3)
+            time.sleep(1)

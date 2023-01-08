@@ -11,13 +11,20 @@ class SwitchAirHammerActionSet(ActionSet):
                  to: Literal['open', 'close'] = 'close',
                  ):
 
+        # TODO - commenting out while these are not connected
+
         location_mapping = {
             'shredder_storage': 'ed',
-            'bioreactor1': 'ee',
-            'bioreactor2': 'ef',
-            'bsf_reproduction': 'f0'
+            'bioreactor1': '',  # ee
+            'bioreactor2': '',  # ef
+            'bsf_reproduction': ''  # f0
         }
         value = location_mapping.get(location)
+
+        # TODO - comment this out once all air hammer relays are connected
+        if not value:
+            super().__init__(iterable=[])
+            return
 
         super().__init__(iterable=[
             Action(value, to)
