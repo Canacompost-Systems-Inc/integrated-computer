@@ -200,7 +200,6 @@ class StateManager:
                         pass
 
                 # TODO - we should also prevent any other routines from running until the user can manually unlock this (to add when we have api to lock the routines)
-
                 raise e
 
     # Manage state function is intended to be run as a looping thread. Should periodically monitor & control the recycler
