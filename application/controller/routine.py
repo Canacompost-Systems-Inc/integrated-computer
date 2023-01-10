@@ -19,11 +19,11 @@ def construct_routine_bp(routines_service: RoutineRegistryService):
         if request.method == 'GET':
 
             # Too simple to bother with a translator service
-            routines = Routines(
+            routines = Routines([
                 Routine(_routine.name)
                 for _routine
                 in routines_service.all_routines()
-            )
+            ])
 
             return Response(jsonpickle.encode(routines), status=200)
 

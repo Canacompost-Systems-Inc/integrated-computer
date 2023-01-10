@@ -1,0 +1,9 @@
+{
+    "type": "object",
+    "properties": {
+        "disable_automated_routines": { "type": "boolean" }
+    },
+    "required": [
+        "disable_automated_routines"
+    ]
+}
