@@ -1,0 +1,26 @@
+{
+    "type": "object",
+    "properties": {
+        "currently_running_routine": {
+            "type": ["object", "null"],
+            "properties": {
+                "name": {"type": "string"}
+            }
+        },
+        "tasks": {
+            "type": ["array", "null"],
+            "items": {
+                "type": ["object", "null"],
+                "properties": {
+                    "routine": {
+                        "type": ["object", "null"],
+                        "properties": {
+                            "name": {"type": "string"}
+                        },
+                        "required": ["name"]
+                    }
+                }
+            }
+        }
+    }
+}
