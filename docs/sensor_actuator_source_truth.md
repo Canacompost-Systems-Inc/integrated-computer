@@ -42,6 +42,4 @@
 | BSF Reproduction | fb        | Heater Relay                 | Heater Relay BSFReproduction           | 0 off<br />1 on                                                                                      |
 | BSF Reproduction | e9        | Water Pump Relay             | Water Pump Relay BSFReproduction       | 0 off<br />1 on                                                                                      |
 
-![Simplified System Diagram](./resources/simplified_system_diagram.drawio?raw=true)
-
-<br>
+![Simplified System Diagram](./resources/simplified_system_diagram.png?raw=true)
