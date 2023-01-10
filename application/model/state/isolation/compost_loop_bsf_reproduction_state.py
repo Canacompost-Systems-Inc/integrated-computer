@@ -24,10 +24,7 @@ class CompostLoopBSFReproductionState(IsolationState):
     def activate_state(self):
         return Routine(steps=[
             RoutineStep(ActivateAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
-            RoutineStep(ActivateCompostLoopSourceActionSet('bsf_reproduction'), then_wait_n_sec=0),
         ])
 
     def deactivate_state(self):
-        return Routine(steps=[
-            RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
-        ]) + FlushCompostLoopRoutine() + SanitizeCompostLoopRoutine()
+        return FlushCompostLoopRoutine() + SanitizeCompostLoopRoutine()

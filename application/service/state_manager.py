@@ -31,7 +31,7 @@ class StateManager:
         self.is_initialized = False
         self.task_queue: List[Task] = []
         self.lock_queue = False
-        self.disable_automated_routines = False
+        self.automated_routines_disabled = False
         self.running_routine = None
 
     def get_current_isolation_state(self) -> IsolationState:
@@ -52,66 +52,16 @@ class StateManager:
             self.perform_routine(routine)
 
     def initialize_isolation_state_context(self):
-        """Function used during initialization to determine the isolation state based on the current state reported by
-        the MCU, and then to set the isolation state context based on this.
+        """Function to initialize the isolation state context and perform any actions required during startup.
         """
-
-        def get_expected_actuator_states(_isolation_state: IsolationState) -> Dict[str, str]:
-            """Use the isolation_state.activate_state function to determine the expected actuator states for a given
-            isolation state.
-            """
-            actuator_states = {}
-
-            routine: Routine = _isolation_state.activate_state()
-
-            for routine_step in routine:
-                action_set = routine_step.action_set
-                if action_set is not None:
-                    for action in action_set:
-
-                        if action.set_to_value is not None:
-                            # This is an actuator to set
-                            actuator_states[action.device_id] = action.set_to_value
-
-            return actuator_states
-
-        def all_expected_actuator_states_are_set(
-                actual_states: Dict[str, str],
-                expected_states: Dict[str, str]) -> bool:
-
-            return all([
-                expected_value == actual_states[device_id]
-                for device_id, expected_value
-                in expected_states.items()
-            ])
 
         # Get the current actuator states of the system
         actual_actuator_states = self.mcu_state_tracker_service.get_actuator_states()
 
         logging.info(f"Initial actuator states: {actual_actuator_states}")
 
-        # Get the expected actuator states under each isolation state
-        expected_actuator_states = {}
-        for isolation_state in self.list_available_isolation_states:
-
-            expected_actuator_states[isolation_state.name] = get_expected_actuator_states(isolation_state)
-
-        # Determine which isolation_state is currently set - raise error if more than one matches
-        matching_isolation_states = []
-        for isolation_state_name in expected_actuator_states:
-
-            if all_expected_actuator_states_are_set(actual_actuator_states, expected_actuator_states[isolation_state_name]):
-                matching_isolation_states.append(isolation_state_name)
-
-        if len(matching_isolation_states) == 0:
-            raise RuntimeError(f"MCU is reporting actuator states that do not match any isolation states")
-
-        elif len(matching_isolation_states) > 1:
-            raise RuntimeError(f"MCU is reporting actuator states that match multiple isolation states: {matching_isolation_states}")
-
-        # Set the isolation_context object to the right state
-        isolation_state_name = matching_isolation_states[0]
-        isolation_state_instance = self.isolation_state_service.get_isolation_state(isolation_state_name)
+        # We always start up in the default state
+        isolation_state_instance = self.isolation_state_service.get_isolation_state('DefaultState')
         self.isolation_context.state = isolation_state_instance
 
     @property
@@ -136,12 +86,12 @@ class StateManager:
 
     def enable_automated_routine_running(self):
         logging.debug(f"Enabled running of new routines")
-        self.disable_automated_routines = False
+        self.automated_routines_disabled = False
 
     def disable_automated_routine_running(self):
         logging.debug(f"Disabled running of new routines, but will finish the current one if it is in progress and will"
                       f"finish a state transition if it is in progress")
-        self.disable_automated_routines = True
+        self.automated_routines_disabled = True
 
     def perform_next_routine_in_queue(self):
         if self.lock_queue:
@@ -154,14 +104,21 @@ class StateManager:
         next_task = self.task_queue[0]
 
         # If we have disabled automated routine running, only run the AdvancedTabRoutines
-        if self.disable_automated_routines and not isinstance(next_task.routine, AdvancedTabRoutine):
+        if self.automated_routines_disabled and not isinstance(next_task.routine, AdvancedTabRoutine):
+            return
+
+        # Similarly, if we have enabled automated routine running, do not run any AdvancedTabRoutines
+        if not self.automated_routines_disabled and isinstance(next_task.routine, AdvancedTabRoutine):
+            logging.warning(f"Cannot run AdvancedTabRoutine {next_task.routine} because automated routine running has "
+                            f"not been disabled; ignoring this task and removing it from the queue")
+            _ = self.task_queue.pop(0)
             return
 
         if next_task.isolation_state is not None and self.get_current_isolation_state() != next_task.isolation_state:
             self.change_isolation_state(next_task.isolation_state.name)
 
         # One more check in case the user disabled automated routine running while the system was changing state
-        if self.disable_automated_routines and not isinstance(next_task.routine, AdvancedTabRoutine):
+        if self.automated_routines_disabled and not isinstance(next_task.routine, AdvancedTabRoutine):
             return
 
         # Now we're running this task, so pop it off the queue
