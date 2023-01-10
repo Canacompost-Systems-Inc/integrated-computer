@@ -177,10 +177,6 @@ class StateManager:
 
     def perform_routine(self, routine: Routine):
 
-        if not isinstance(routine, AdvancedTabRoutine) and self.routines_currently_disabled:
-            raise RuntimeError(f"Cannot run the {routine.name} routine because routine running is disabled between "
-                               f"{self.disable_routines_between[0]} and {self.disable_routines_between[1]}")
-
         if self.running_routine is not None:
             raise RuntimeError(f"Cannot run the {routine.name} routine because the {self.running_routine.name} routine"
                                f"is already running")
