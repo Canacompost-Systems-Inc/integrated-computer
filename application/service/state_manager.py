@@ -1,9 +1,9 @@
 import logging
 import time
-from typing import List, Optional, Dict
+from datetime import datetime, timezone, time as dtime
+from typing import List, Optional, Tuple
 
 from application.model.action.action import Action
-from application.model.action.action_set import ActionSet
 from application.model.context.isolation_context import IsolationContext
 from application.model.routine.advanced_tab_routine import AdvancedTabRoutine
 from application.model.routine.routine import Routine
@@ -22,11 +22,13 @@ class StateManager:
     """
 
     def __init__(self, mcu_state_tracker_service: MCUStateTrackerService, mcu_service: MCUService,
-                 isolation_state_registry_service: IsolationStateRegistryService, isolation_context: IsolationContext):
+                 isolation_state_registry_service: IsolationStateRegistryService, isolation_context: IsolationContext,
+                 disable_routines_between: Tuple[str, str]):
         self.mcu_state_tracker_service = mcu_state_tracker_service
         self.mcu_service = mcu_service
         self.isolation_state_service = isolation_state_registry_service
         self.isolation_context = isolation_context
+        self.disable_routines_between = disable_routines_between
 
         self.is_initialized = False
         self.task_queue: List[Task] = []
@@ -93,6 +95,22 @@ class StateManager:
                       f"finish a state transition if it is in progress")
         self.automated_routines_disabled = True
 
+    @property
+    def routines_currently_disabled(self):
+        """Helper function to determine if routines are currently disabled based on the time"""
+
+        local_timezone = datetime.now(timezone.utc).astimezone().tzinfo
+        local_time = datetime.now(local_timezone).timetz()
+
+        start_time = dtime.fromisoformat(self.disable_routines_between[0]).replace(tzinfo=local_timezone)
+        end_time = dtime.fromisoformat(self.disable_routines_between[1]).replace(tzinfo=local_timezone)
+
+        if start_time < end_time:
+            return start_time <= local_time <= end_time
+        else:
+            # Timerange spans midnight
+            return start_time <= local_time or local_time <= end_time
+
     def perform_next_routine_in_queue(self):
         if self.lock_queue:
             return
@@ -102,6 +120,13 @@ class StateManager:
 
         # Not popping off the queue until we actually run it
         next_task = self.task_queue[0]
+
+        if self.routines_currently_disabled and not isinstance(next_task.routine, AdvancedTabRoutine):
+            logging.warning(f"Cannot run the {next_task.routine.name} routine because routine running is disabled "
+                            f"between {self.disable_routines_between[0]} and {self.disable_routines_between[1]}; "
+                            f"ignoring this task and removing it from the queue")
+            _ = self.task_queue.pop(0)
+            return
 
         # If we have disabled automated routine running, only run the AdvancedTabRoutines
         if self.automated_routines_disabled and not isinstance(next_task.routine, AdvancedTabRoutine):

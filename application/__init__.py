@@ -222,7 +222,8 @@ def init_app():
         mcu_state_tracker_service = MCUStateTrackerService(device_registry_service, location_registry_service,
                                                            isolation_context)
         state_manager = StateManager(mcu_state_tracker_service, mcu_service, isolation_state_registry_service,
-                                     isolation_context)
+                                     isolation_context,
+                                     disable_routines_between=app.config['DISABLE_ROUTINES_BETWEEN'])
 
         # Construct blueprints
         dto_translator_service = DtoTranslatorService(device_registry_service)
