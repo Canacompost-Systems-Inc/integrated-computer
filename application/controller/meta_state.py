@@ -37,7 +37,7 @@ def construct_meta_state_bp(state_manager: StateManager):
         elif request.method == 'GET':
 
             # This is too basic to bother with a translator service
-            system_meta_state = SystemMetaState(disable_automated_routines=state_manager._disable_automated_routines)
+            system_meta_state = SystemMetaState(disable_automated_routines=state_manager.automated_routines_disabled)
             return Response(jsonpickle.encode(system_meta_state), status=200)
 
     return meta_state_bp
