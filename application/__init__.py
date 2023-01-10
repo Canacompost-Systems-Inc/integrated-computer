@@ -1,5 +1,6 @@
 import threading
 from flask import Flask
+from flask_cors import CORS
 
 from application.controller.meta_state import construct_meta_state_bp
 from application.controller.routine import construct_routine_bp
@@ -112,6 +113,8 @@ def init_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('application.config.Config')
+
+    CORS(app)
 
     # Initialize connections / plugins / etc.
     mcu.init_app(app)
