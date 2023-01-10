@@ -48,6 +48,12 @@ def construct_task_queue_bp(state_manager: StateManager, routines_service: Routi
                         isolation_state_model = isolation_state_registry_service.get_isolation_state(
                             isolation_state_required.name)
 
+                    if state_manager.routines_currently_disabled:
+                        err = f"Cannot run the {routine_model.name} routine because routine running is disabled " \
+                              f"between {state_manager.disable_routines_between[0]} and " \
+                              f"{state_manager.disable_routines_between[1]}"
+                        return Response(json.dumps({"error": err}), status=400)
+
                     state_manager.add_routine_to_queue(routine_model, isolation_state_model)
 
                 except Exception as e:

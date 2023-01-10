@@ -66,3 +66,6 @@ class Config(object):
 
     # List of device_ids for sensors that are in the air loop but take measurements for containers
     LOCATION_AWARE_SENSORS = ['c0', 'c1', 'c2', 'c8']
+
+    # Time is specifying as %H:%M:%S (i.e. a 24-hour clock) and is in Pacific time (PST or PDT)
+    DISABLE_ROUTINES_BETWEEN = ('19:00:00', '09:00:00')
