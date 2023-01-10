@@ -1,10 +1,9 @@
 import logging
 import time
-from datetime import datetime, timezone
-from typing import List, Optional, Dict, Tuple
+from datetime import datetime, timezone, time as dtime
+from typing import List, Optional, Tuple
 
 from application.model.action.action import Action
-from application.model.action.action_set import ActionSet
 from application.model.context.isolation_context import IsolationContext
 from application.model.routine.advanced_tab_routine import AdvancedTabRoutine
 from application.model.routine.routine import Routine
@@ -99,8 +98,6 @@ class StateManager:
     @property
     def routines_currently_disabled(self):
         """Helper function to determine if routines are currently disabled based on the time"""
-
-        from datetime import time as dtime
 
         local_timezone = datetime.now(timezone.utc).astimezone().tzinfo
         local_time = datetime.now(local_timezone).timetz()
