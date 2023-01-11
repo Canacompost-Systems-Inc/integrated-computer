@@ -195,7 +195,13 @@ class MCUService:
                         read_maximum_n_bytes -= 1
                         if read_maximum_n_bytes <= 0:
                             break
-                    logging.debug(f"Response from MCU: {buffer.hex()}{byte.hex()}{rest_of_buffer.hex()}")
+                    full_response = buffer.hex() + byte.hex() + rest_of_buffer.hex()
+                    logging.debug(f"Response from MCU: {full_response}")
+                    try:
+                        decoded = bytes.fromhex(full_response).decode('utf-8')
+                        logging.debug(decoded)
+                    except Exception:
+                        pass
 
                     err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
