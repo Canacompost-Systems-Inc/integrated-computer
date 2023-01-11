@@ -14,10 +14,10 @@ class SwitchAirHammerActionSet(ActionSet):
         # TODO - commenting out while these are not connected
 
         location_mapping = {
-            'shredder_storage': 'ed',
+            'shredder_storage': '',  # ed
             'bioreactor1': '',  # ee
             'bioreactor2': '',  # ef
-            'bsf_reproduction': ''  # f0
+            'bsf_reproduction': 'f0'  # f0
         }
         value = location_mapping.get(location)
 
