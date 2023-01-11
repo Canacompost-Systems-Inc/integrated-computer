@@ -38,28 +38,32 @@ class MoveCompostRoutine(Routine):
                 RoutineStep(ActivateCompostLoopDestinationActionSet(to_location), then_wait_n_sec=0),
 
                 # Open the butterfly valve to release the compost
-                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=0),
+                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=5),
                 # Run the air hammer briefly (it is VERY loud)
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
                 # Begin circulating the air and move as much compost as possible
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
+                # Close the butterfly valve and let the compost push through
+                RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=5),
                 # Turn the air off to let the remaining compost drop down
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
-                # Repeat this cycle two more times
-                RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
-                RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
-                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
-                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
-                RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
-                RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
-                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
-                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
-                # Close the butterfly valve
-                RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
 
-                # Push all the compost to the destination
-                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
+                # Repeat this cycle two more times
+                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=5),
+                RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
+                RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
+                RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=5),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=5),
+                RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
+                RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
+                RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=5),
+                # Push all the remaining compost to the destination
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=20),
+
                 # End sequence
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
                 RoutineStep(ActivateCompostLoopDestinationActionSet('air_loop'), then_wait_n_sec=0),
