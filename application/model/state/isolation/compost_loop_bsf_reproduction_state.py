@@ -27,4 +27,4 @@ class CompostLoopBSFReproductionState(IsolationState):
         ])
 
     def deactivate_state(self):
-        return FlushCompostLoopRoutine() + SanitizeCompostLoopRoutine()
+        return Routine(steps=[]) + FlushCompostLoopRoutine() + SanitizeCompostLoopRoutine()
