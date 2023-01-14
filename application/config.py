@@ -34,6 +34,7 @@ class Config(object):
         },
         'ShredderStorage': {
             'c3': ('DS18B20', 'Soil Temp Probe Shredder Storage'),
+            'cd': ('SHT40', 'Temp Humidity Sensor Shredder Storage'),
             'e3': ('ButterflyValve', 'Butterfly Valve From Shredder Storage'),
             'ed': ('AirHammerValve', 'Air Hammer Shredder Storage'),
             'f5': ('HeaterRelay', 'Heater Relay Shredder Storage'),
@@ -41,6 +42,7 @@ class Config(object):
         },
         'Bioreactor1': {
             'c4': ('DS18B20', 'Soil Temp Probe Bioreactor1'),
+            'cb': ('SHT40', 'Temp Humidity Sensor Bioreactor1'),
             'e4': ('ButterflyValve', 'Butterfly Valve From Bioreactor1'),
             'ee': ('AirHammerValve', 'Air Hammer Bioreactor1'),
             'f7': ('HeaterRelay', 'Heater Relay Bioreactor1'),
@@ -48,6 +50,7 @@ class Config(object):
         },
         'Bioreactor2': {
             'c5': ('DS18B20', 'Soil Temp Probe Bioreactor2'),
+            'cc': ('SHT40', 'Temp Humidity Sensor Bioreactor2'),
             'e5': ('ButterflyValve', 'Butterfly Valve From Bioreactor2'),
             'ef': ('AirHammerValve', 'Air Hammer Bioreactor2'),
             'f9': ('HeaterRelay', 'Heater Relay Bioreactor2'),
@@ -55,6 +58,7 @@ class Config(object):
         },
         'BSFReproduction': {
             'c6': ('DS18B20', 'Soil Temp Probe BSFReproduction'),
+            'ce': ('SHT40', 'Temp Humidity Sensor BSFReproduction'),
             'e6': ('ButterflyValve', 'Butterfly Valve From BSFReproduction'),
             'f0': ('AirHammerValve', 'Air Hammer BSFReproduction'),
             'f2': ('BSFLight', 'BSFReproduction Light'),
