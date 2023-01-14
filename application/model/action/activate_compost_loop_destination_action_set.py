@@ -13,18 +13,18 @@ class ActivateCompostLoopDestinationActionSet(ActionSet):
 
         # Open: 0
         location_mapping_e1 = {
-            'air_loop': '3',
+            'air_loop': '1',
             'shredder_storage': '2',
             'bioreactor1': '4',
             'bioreactor2': '5',
-            'bsf_reproduction': '1',
+            'bsf_reproduction': '3',
             'sieve': ''
         }
         # Open: 3
         location_mapping_e2 = {
-            'air_loop': '1',
+            'air_loop': '0',
             'shredder_storage': '5',
-            'bioreactor1': '0',
+            'bioreactor1': '3',
             'bioreactor2': '2',
             'bsf_reproduction': '4',
             'sieve': '',

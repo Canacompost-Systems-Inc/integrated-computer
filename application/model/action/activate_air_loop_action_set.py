@@ -13,20 +13,20 @@ class ActivateAirLoopActionSet(ActionSet):
 
         # Open: 2
         location_mapping_e0 = {
-            'compost_loop': '4',
+            'compost_loop': '0',
             'shredder_storage': '3',
             'bioreactor1': '1',
-            'bioreactor2': '0',
+            'bioreactor2': '4',
             'bsf_reproduction': '5',
             'sieve': ''
         }
         # Open: 0
         location_mapping_e1 = {
-            'compost_loop': '3',
+            'compost_loop': '1',
             'shredder_storage': '2',
             'bioreactor1': '4',
             'bioreactor2': '5',
-            'bsf_reproduction': '1',
+            'bsf_reproduction': '3',
             'sieve': ''
         }
         value_e0 = location_mapping_e0.get(location)
