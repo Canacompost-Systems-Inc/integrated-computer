@@ -1,4 +1,5 @@
 from flask import current_app
+import logging
 import serial
 import time
 
@@ -25,8 +26,26 @@ class MCUPersistent:
                 timeout=5)
             time.sleep(1)
 
-            self._serial_connection.reset_input_buffer()
-            self._serial_connection.reset_output_buffer()
+            self.clear_buffers()
+
+    def clear_buffers(self):
+        # Get the contents of the input buffer
+        buffer = b''
+        try:
+            buffer = self._serial_connection.read(self._serial_connection.in_waiting())
+        except:
+            pass
+        # Print the contents of the input buffer
+        if buffer != b'':
+            logging.debug(f"Buffer contents: {buffer}")
+            try:
+                decoded = bytes.fromhex(buffer).decode('utf-8')
+                logging.debug(f"Response from MCU (decoded): {decoded}")
+            except Exception:
+                pass
+        # Clear the buffers
+        self._serial_connection.reset_input_buffer()
+        self._serial_connection.reset_output_buffer()
 
     def get_mcu(self):
         if not self._serial_connection:

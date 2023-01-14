@@ -24,14 +24,17 @@ class MCUService:
         self.mcu_persistent = get_mcu()
 
     def get_system_snapshot(self) -> Dict[str, List[Datum]]:
+        self.mcu_persistent.clear_buffers()
         response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
         return self._decode_get_response(response)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
+        self.mcu_persistent.clear_buffers()
         response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
         return self._decode_get_response(response)
 
     def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, List[Datum]]:
+        self.mcu_persistent.clear_buffers()
         response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
         return self._decode_get_response(response)
 
@@ -69,6 +72,7 @@ class MCUService:
             return {actuator_device_id: [dat]}
 
         payload = self.device_registry_service.get_payload_bytes(actuator_device_id, value)
+        self.mcu_persistent.clear_buffers()
         response = self._make_request(SET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id, payload=payload)
         return _decode_set_response(response)
 
