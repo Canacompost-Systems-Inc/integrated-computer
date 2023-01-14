@@ -21,8 +21,8 @@ class PressureMeasurement(BaseMeasurement):
 
     @property
     def ideal_max(self) -> float:
-        return 101000.0
+        return 102000.0
 
     @property
     def ideal_min(self) -> float:
-        return 0.0
+        return 98000.0
