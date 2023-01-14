@@ -25,4 +25,4 @@ class PressureMeasurement(BaseMeasurement):
 
     @property
     def ideal_min(self) -> float:
-        return 100000.0
+        return 0.0

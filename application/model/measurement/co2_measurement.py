@@ -25,4 +25,4 @@ class CO2Measurement(BaseMeasurement):
 
     @property
     def ideal_min(self) -> float:
-        return 400.0
+        return 0.0
