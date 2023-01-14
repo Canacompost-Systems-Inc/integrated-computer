@@ -24,11 +24,8 @@ class MCUService:
         self.mcu_persistent = get_mcu()
 
     def get_system_snapshot(self) -> Dict[str, List[Datum]]:
-        logging.debug(f"Test a")
         self.clear_buffers()
-        logging.debug(f"Test b")
         response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
-        logging.debug(f"Test c")
         return self._decode_get_response(response)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
@@ -81,18 +78,13 @@ class MCUService:
 
     def clear_buffers(self):
         # Get the contents of the input buffer
-        logging.debug(f"Test 1")
         buffer = b''
         try:
-            logging.debug(f"Test 2")
             buffer = self.mcu_persistent.read(self.mcu_persistent.in_waiting)
-            logging.debug(f"Test 3")
         except Exception as e:
             logging.debug(f"Encountered error while reading input buffer: {e}")
         # Print the contents of the input buffer
-        logging.debug(f"Test 4")
         if buffer != b'':
-            logging.debug(f"Test 5")
             logging.debug(f"Buffer contents: {buffer}")
             try:
                 decoded = bytes.fromhex(buffer).decode('utf-8')
@@ -100,11 +92,8 @@ class MCUService:
             except Exception:
                 pass
         # Clear the buffers
-        logging.debug(f"Test 6")
         self.mcu_persistent.reset_input_buffer()
-        logging.debug(f"Test 7")
         self.mcu_persistent.reset_output_buffer()
-        logging.debug(f"Test 8")
 
     def _decode_get_response(self, response: bytes) -> Dict[str, List[Datum]]:
         """
