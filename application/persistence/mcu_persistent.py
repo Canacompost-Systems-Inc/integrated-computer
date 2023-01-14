@@ -30,13 +30,18 @@ class MCUPersistent:
 
     def clear_buffers(self):
         # Get the contents of the input buffer
+        logging.debug(f"Test 1")
         buffer = b''
         try:
+            logging.debug(f"Test 2")
             buffer = self._serial_connection.read(self._serial_connection.in_waiting)
+            logging.debug(f"Test 3")
         except Exception as e:
             logging.debug(f"Encountered error while reading input buffer: {e}")
         # Print the contents of the input buffer
+        logging.debug(f"Test 4")
         if buffer != b'':
+            logging.debug(f"Test 5")
             logging.debug(f"Buffer contents: {buffer}")
             try:
                 decoded = bytes.fromhex(buffer).decode('utf-8')
@@ -44,11 +49,11 @@ class MCUPersistent:
             except Exception:
                 pass
         # Clear the buffers
-        logging.debug(f"Test 1")
+        logging.debug(f"Test 6")
         self._serial_connection.reset_input_buffer()
-        logging.debug(f"Test 2")
+        logging.debug(f"Test 7")
         self._serial_connection.reset_output_buffer()
-        logging.debug(f"Test 3")
+        logging.debug(f"Test 8")
 
     def get_mcu(self):
         if not self._serial_connection:
