@@ -11,6 +11,7 @@
 
 ### Resources and Documentation
 1. API Docs:
+   1. [Measurement Schema](./docs/schema/measurement.md)
    1. [Meta State Schema](./docs/schema/meta_state.md)
    2. [Routine Schema](./docs/schema/routine.md)
    3. [State Schema](./docs/schema/state.md)

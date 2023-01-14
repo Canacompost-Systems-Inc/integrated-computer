@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "properties": {
+        "measurements": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "unit": { "type": "string" },
+                    "min": { "type": "number" },
+                    "max": { "type": "number" }
+                },
+                "required": ["name", "unit", "min", "max"]
+            }
+        }
+    }
+}

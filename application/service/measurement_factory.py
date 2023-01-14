@@ -1,3 +1,5 @@
+from typing import List
+
 from application.model.measurement.base_measurement import BaseMeasurement
 
 
@@ -20,3 +22,7 @@ class MeasurementFactory:
         measurement_instance = measurement_class(value)
 
         return measurement_instance
+
+    @property
+    def available_measurements(self) -> List[str]:
+        return list(self.measurement_class_map.keys())
