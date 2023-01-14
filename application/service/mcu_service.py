@@ -29,7 +29,6 @@ class MCUService:
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
         response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
-        logging.warning(f"get_sensor_state response (type {type(response)}): {response}")
         return self._decode_get_response(response)
 
     def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, List[Datum]]:
