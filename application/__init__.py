@@ -222,6 +222,7 @@ def init_app():
             SanitizeAirLoopRoutine,
             SanitizeCompostLoopRoutine,
         ]
+        routine_list = [r for r in routine_list if r.name not in app.config['DISABLED_ROUTINES']]
         routines_registry_service = RoutineRegistryService(routine_list)
 
         mcu_state_tracker_service = MCUStateTrackerService(device_registry_service, location_registry_service,
