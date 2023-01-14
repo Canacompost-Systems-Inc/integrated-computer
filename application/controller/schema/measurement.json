@@ -9,9 +9,11 @@
                     "name": { "type": "string" },
                     "unit": { "type": "string" },
                     "min": { "type": "number" },
-                    "max": { "type": "number" }
+                    "max": { "type": "number" },
+                    "idealMin": { "type": "number" },
+                    "idealMax": { "type": "number" }
                 },
-                "required": ["name", "unit", "min", "max"]
+                "required": ["name", "unit", "min", "max", "idealMin", "idealMax"]
             }
         }
     }

@@ -18,3 +18,11 @@ class CO2Measurement(BaseMeasurement):
     @property
     def normal_min(self) -> float:
         return 400.0
+
+    @property
+    def ideal_max(self) -> float:
+        return 1000.0
+
+    @property
+    def ideal_min(self) -> float:
+        return 400.0

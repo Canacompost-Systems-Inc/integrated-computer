@@ -25,6 +25,8 @@ def construct_measurement_bp(measurement_factory: MeasurementFactory):
                     measurement_factory.get_measurement(_measurement_name, 0).unit,
                     measurement_factory.get_measurement(_measurement_name, 0).normal_min,
                     measurement_factory.get_measurement(_measurement_name, 0).normal_max,
+                    measurement_factory.get_measurement(_measurement_name, 0).ideal_min,
+                    measurement_factory.get_measurement(_measurement_name, 0).ideal_max,
                 )
                 for _measurement_name
                 in measurement_factory.available_measurements

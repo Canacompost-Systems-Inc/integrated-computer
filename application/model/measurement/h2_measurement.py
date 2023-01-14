@@ -18,3 +18,11 @@ class H2Measurement(BaseMeasurement):
     @property
     def normal_min(self) -> float:
         return 0.0
+
+    @property
+    def ideal_max(self) -> float:
+        return 25.0
+
+    @property
+    def ideal_min(self) -> float:
+        return 0.0
