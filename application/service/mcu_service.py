@@ -200,7 +200,7 @@ class MCUService:
                     logging.debug(f"Response from MCU: {full_response}")
                     try:
                         decoded = bytes.fromhex(full_response).decode('utf-8')
-                        logging.debug(decoded)
+                        logging.debug(f"Response from MCU (decoded): {decoded}")
                     except Exception:
                         pass
 
