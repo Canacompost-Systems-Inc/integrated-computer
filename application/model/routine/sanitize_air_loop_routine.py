@@ -19,21 +19,20 @@ class SanitizeAirLoopRoutine(Routine):
 
         super().__init__(
             steps=[
-                # TODO - uncomment before merging
-                # # Remove any bypasses
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
-                # # Turn on the ozone generator and let it build up
-                # RoutineStep(SwitchOzoneGeneratorActionSet('on'), then_wait_n_sec=30),
-                # # Begin circulating the ozone
-                # RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
-                # # Stop producing ozone
-                # RoutineStep(SwitchOzoneGeneratorActionSet('off'), then_wait_n_sec=10),
-                # # Flush the ozone from the system
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=30),
-                # # End sequence
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                # Remove any bypasses
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
+                # Turn on the ozone generator and let it build up
+                RoutineStep(SwitchOzoneGeneratorActionSet('on'), then_wait_n_sec=30),
+                # Begin circulating the ozone
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
+                # Stop producing ozone
+                RoutineStep(SwitchOzoneGeneratorActionSet('off'), then_wait_n_sec=10),
+                # Flush the ozone from the system
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=30),
+                # End sequence
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
             ],
             must_run_in_state=DefaultState,
             failure_recovery_steps=[

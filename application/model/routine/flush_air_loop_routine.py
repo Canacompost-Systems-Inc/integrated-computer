@@ -18,25 +18,24 @@ class FlushAirLoopRoutine(Routine):
 
         super().__init__(
             steps=[
-                # TODO - uncomment before merging
-                # # Remove any bypasses
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
-                # # Will flush to the environment
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=0),
-                # # Begin flushing
-                # RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
-                # # Cycle through the air loop bypasses to flush each air path
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=5),
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('divert'), then_wait_n_sec=5),
-                # RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('divert'), then_wait_n_sec=5),
-                # RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
-                # # End sequence
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                # Remove any bypasses
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
+                # Will flush to the environment
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=0),
+                # Begin flushing
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
+                # Cycle through the air loop bypasses to flush each air path
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=5),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('divert'), then_wait_n_sec=5),
+                RoutineStep(SwitchAirLoopBypassRadiatorDehumidifierActionSet('through'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('divert'), then_wait_n_sec=5),
+                RoutineStep(SwitchAirLoopBypassSensorBoxActionSet('through'), then_wait_n_sec=0),
+                # End sequence
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
             ],
             must_run_in_state=DefaultState,
             failure_recovery_steps=[
