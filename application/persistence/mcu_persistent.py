@@ -32,7 +32,7 @@ class MCUPersistent:
         # Get the contents of the input buffer
         buffer = b''
         try:
-            buffer = self._serial_connection.read(self._serial_connection.in_waiting())
+            buffer = self._serial_connection.read(self._serial_connection.in_waiting)
         except Exception as e:
             logging.debug(f"Encountered error while reading input buffer: {e}")
             pass
