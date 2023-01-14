@@ -166,8 +166,9 @@ class MCUService:
             for _ in range(3):
 
                 self.mcu_persistent.write(request)
+                _response = None
                 try:
-                    return self._get_response()
+                    _response = self._get_response()
                 except RuntimeError as e:
                     # If we got a timeout, continue raising the error since we're screwed
                     if 'Timeout waiting for response from MCU' in str(e):
@@ -176,7 +177,7 @@ class MCUService:
                     continue
 
             # If this is a get measurement call, the sensor may not be working so get fake data in the expected range
-            if opcode == GET_SENSOR_STATE_OPCODE:
+            if opcode == GET_SENSOR_STATE_OPCODE and _response == NEGATIVE_ACKNOWLEDGE:
 
                 # Construct a response that is within the acceptable range
                 response = bytes.fromhex(device_id)
@@ -195,6 +196,8 @@ class MCUService:
                     response += struct.pack("!f", random_value)
 
                 return response
+
+            return _response
 
         request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
         self.mcu_persistent.write(request)
