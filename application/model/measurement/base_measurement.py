@@ -32,3 +32,13 @@ class BaseMeasurement(metaclass=ABCMeta):
     @abstractmethod
     def normal_min(self) -> float:
         pass
+
+    @property
+    @abstractmethod
+    def ideal_max(self) -> float:
+        pass
+
+    @property
+    @abstractmethod
+    def ideal_min(self) -> float:
+        pass

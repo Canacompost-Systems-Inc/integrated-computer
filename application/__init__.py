@@ -2,6 +2,7 @@ import threading
 from flask import Flask
 from flask_cors import CORS
 
+from application.controller.measurement import construct_measurement_bp
 from application.controller.meta_state import construct_meta_state_bp
 from application.controller.routine import construct_routine_bp
 from application.controller.state import construct_state_bp
@@ -235,12 +236,14 @@ def init_app():
         routine_controller = construct_routine_bp(routines_registry_service)
         task_queue_controller = construct_task_queue_bp(state_manager, routines_registry_service,
                                                         isolation_state_registry_service)
+        measurement_controller = construct_measurement_bp(measurement_factory)
 
         # Register API controller blueprints
         app.register_blueprint(state_controller)
         app.register_blueprint(meta_state_controller)
         app.register_blueprint(routine_controller)
         app.register_blueprint(task_queue_controller)
+        app.register_blueprint(measurement_controller)
 
         # Define a wrapper function to restart the thread if it dies
         def restart_thread_wrapper(thread_func):

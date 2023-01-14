@@ -13,8 +13,16 @@ class FlowRateMeasurement(BaseMeasurement):
 
     @property
     def normal_max(self) -> float:
-        return 65.0
+        return 30.0
 
     @property
     def normal_min(self) -> float:
-        return 15.0
+        return 0.0
+
+    @property
+    def ideal_max(self) -> float:
+        return 20.0
+
+    @property
+    def ideal_min(self) -> float:
+        return 0.0

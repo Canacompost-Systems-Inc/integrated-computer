@@ -17,4 +17,12 @@ class TemperatureMeasurement(BaseMeasurement):
 
     @property
     def normal_min(self) -> float:
-        return 15.0
+        return 0.0
+
+    @property
+    def ideal_max(self) -> float:
+        return 30.0
+
+    @property
+    def ideal_min(self) -> float:
+        return 0.0

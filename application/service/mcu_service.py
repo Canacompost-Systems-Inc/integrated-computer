@@ -124,7 +124,8 @@ class MCUService:
                 for measurement_name in self.device_registry_service.get_device(device_id).measurement_order:
 
                     measurement = self.measurement_factory.get_measurement(measurement_name, 0)
-                    range_min, range_max = measurement.normal_min, measurement.normal_max
+                    range_min = max(measurement.normal_min, measurement.ideal_min)
+                    range_max = min(measurement.normal_max, measurement.ideal_max)
 
                     from random import uniform
                     random_value = uniform(range_min, range_max)
