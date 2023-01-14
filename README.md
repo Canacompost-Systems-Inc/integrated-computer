@@ -11,10 +11,11 @@
 
 ### Resources and Documentation
 1. API Docs:
-   1. [Meta State Schema](./docs/schema/meta_state.md)
-   2. [Routine Schema](./docs/schema/routine.md)
-   3. [State Schema](./docs/schema/state.md)
-   4. [Task Queue Schema](./docs/schema/task_queue.md)
+   1. [Measurement Schema](./docs/schema/measurement.md)
+   2. [Meta State Schema](./docs/schema/meta_state.md)
+   3. [Routine Schema](./docs/schema/routine.md)
+   4. [State Schema](./docs/schema/state.md)
+   5. [Task Queue Schema](./docs/schema/task_queue.md)
 2. [Sensor and Actuator Source of Truth](./docs/sensor_actuator_source_truth.md)
 3. [Original API Definition](https://app.nuclino.com/Canacompost-Systems/Canacompost/API-Definition-d9f063ac-528d-462d-b2c6-4aa6d396c0e0)
 4. [Flask Documentation](https://flask.palletsprojects.com/en/2.0.x/)

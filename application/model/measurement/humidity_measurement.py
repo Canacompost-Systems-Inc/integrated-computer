@@ -13,8 +13,16 @@ class HumidityMeasurement(BaseMeasurement):
 
     @property
     def normal_max(self) -> float:
-        return 80.0
+        return 100.0
 
     @property
     def normal_min(self) -> float:
-        return 30.0
+        return 0.0
+
+    @property
+    def ideal_max(self) -> float:
+        return 50.0
+
+    @property
+    def ideal_min(self) -> float:
+        return 0.0
