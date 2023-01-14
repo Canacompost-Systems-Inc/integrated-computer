@@ -36,49 +36,49 @@ user@local:~$ curl -X GET http://127.0.0.1:5000/measurement -H 'Content-Type: ap
             "py/object": "application.controller.dto.measurement.Measurement",
             "name": "co2",
             "unit": "ppm",
-            "min": 2.0,
-            "max": 40.0
+            "min": 400.0,
+            "max": 5000.0
         },
         {
             "py/object": "application.controller.dto.measurement.Measurement",
             "name": "flowrate",
             "unit": "L/min",
-            "min": 15.0,
-            "max": 65.0
+            "min": 0.0,
+            "max": 30.0
         },
         {
             "py/object": "application.controller.dto.measurement.Measurement",
             "name": "h2",
             "unit": "ppm",
-            "min": 2.0,
-            "max": 40.0
+            "min": 0.0,
+            "max": 50.0
         },
         {
             "py/object": "application.controller.dto.measurement.Measurement",
             "name": "humidity",
             "unit": "%",
-            "min": 30.0,
-            "max": 80.0
+            "min": 0.0,
+            "max": 100.0
         },
         {
             "py/object": "application.controller.dto.measurement.Measurement",
             "name": "o3",
             "unit": "ppb",
-            "min": 2.0,
-            "max": 40.0
+            "min": 0.0,
+            "max": 100.0
         },
         {
             "py/object": "application.controller.dto.measurement.Measurement",
             "name": "pressure",
             "unit": "Pa",
-            "min": 1.0,
-            "max": 2.0
+            "min": 95000.0,
+            "max": 105000.0
         },
         {
             "py/object": "application.controller.dto.measurement.Measurement",
             "name": "temperature",
             "unit": "C",
-            "min": 15.0,
+            "min": 0.0,
             "max": 65.0
         },
         {
