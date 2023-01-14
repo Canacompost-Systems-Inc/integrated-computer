@@ -229,6 +229,7 @@ class StateManager:
                 try:
                     system_snapshot = self.mcu_service.get_system_snapshot()
                 except Exception as e:
+                    logging.debug(f"Encountered error while getting the system snapshot: {e}")
                     # If the MCU isn't ready yet, it will sometimes raise an error
                     time.sleep(3)
                     continue
