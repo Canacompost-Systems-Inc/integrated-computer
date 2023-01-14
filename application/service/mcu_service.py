@@ -169,7 +169,7 @@ class MCUService:
                     return self._get_response()
                 except RuntimeError as e:
                     # If we got a timeout, continue raising the error since we're screwed
-                    if 'Timeout waiting for response from MCU' in e:
+                    if 'Timeout waiting for response from MCU' in str(e):
                         raise e
                     # Otherwise, just try writing the request again
                     continue
