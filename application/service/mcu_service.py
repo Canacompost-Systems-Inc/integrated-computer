@@ -79,6 +79,10 @@ class MCUService:
     def clear_buffers(self):
         # Get the contents of the input buffer
         buffer = b''
+        if self.mcu_persistent.in_waiting == 0:
+            return
+        # Give it time to receive the rest of the input
+        time.sleep(1)
         try:
             buffer = self.mcu_persistent.read(self.mcu_persistent.in_waiting)
         except Exception as e:
@@ -94,6 +98,8 @@ class MCUService:
         # Clear the buffers
         self.mcu_persistent.reset_input_buffer()
         self.mcu_persistent.reset_output_buffer()
+        # Give it time before continuing to use the connection
+        time.sleep(1)
 
     def _decode_get_response(self, response: bytes) -> Dict[str, List[Datum]]:
         """
