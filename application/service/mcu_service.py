@@ -14,11 +14,12 @@ from application.service.measurement_factory import MeasurementFactory
 class MCUService:
 
     def __init__(self, device_registry_service: DeviceRegistryService, measurement_factory: MeasurementFactory,
-                 testing=False):
+                 testing=False, demo_mode=False):
 
         self.device_registry_service = device_registry_service
         self.measurement_factory = measurement_factory
         self.testing = testing
+        self.demo_mode = demo_mode
 
         self.mcu_persistent = get_mcu()
 
@@ -155,6 +156,44 @@ class MCUService:
                 raise RuntimeError(f"Unknown opcode '{opcode}'")
 
             return response
+
+        # If demo mode is enabled, we need to retry multiple times since the MCU will write errors occasionally
+        if self.demo_mode:
+            request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
+
+            # Retry this many times (plus one more down below)
+            for _ in range(3):
+
+                self.mcu_persistent.write(request)
+                try:
+                    return self._get_response()
+                except RuntimeError as e:
+                    # If we got a timeout, continue raising the error since we're screwed
+                    if 'Timeout waiting for response from MCU' in e:
+                        raise e
+                    # Otherwise, just try writing the request again
+                    continue
+
+            # If this is a get measurement call, the sensor may not be working so get fake data in the expected range
+            if opcode == GET_SENSOR_STATE_OPCODE:
+
+                # Construct a response that is within the acceptable range
+                response = bytes.fromhex(device_id)
+
+                for measurement_name in self.device_registry_service.get_device(device_id).measurement_order:
+
+                    from application.constants.demo import MEASUREMENT_RANGES
+                    range_min = MEASUREMENT_RANGES.get(measurement_name, (0.0, 0.0))[0]
+                    range_max = MEASUREMENT_RANGES.get(measurement_name, (0.0, 0.0))[1]
+
+                    from random import uniform
+                    random_value = uniform(range_min, range_max)
+
+                    # Add this measurement to the response
+                    import struct
+                    response += struct.pack("!f", random_value)
+
+                return response
 
         request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
         self.mcu_persistent.write(request)

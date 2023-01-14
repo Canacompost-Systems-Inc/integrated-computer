@@ -171,7 +171,8 @@ def init_app():
         ]
         measurement_factory = MeasurementFactory(measurements_list)
 
-        mcu_service = MCUService(device_registry_service, measurement_factory, testing=app.config['TESTING'])
+        mcu_service = MCUService(device_registry_service, measurement_factory, testing=app.config['TESTING'],
+                                 demo_mode=app.config['DEMO_MODE'])
 
         isolation_state_list = [
             AirLoopBioreactor1State,
