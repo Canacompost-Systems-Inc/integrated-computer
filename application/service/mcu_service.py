@@ -25,19 +25,19 @@ class MCUService:
 
     def get_system_snapshot(self) -> Dict[str, List[Datum]]:
         logging.debug(f"Test a")
-        self.mcu_persistent.clear_buffers()
+        self.clear_buffers()
         logging.debug(f"Test b")
         response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
         logging.debug(f"Test c")
         return self._decode_get_response(response)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
-        self.mcu_persistent.clear_buffers()
+        self.clear_buffers()
         response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
         return self._decode_get_response(response)
 
     def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, List[Datum]]:
-        self.mcu_persistent.clear_buffers()
+        self.clear_buffers()
         response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
         return self._decode_get_response(response)
 
@@ -75,9 +75,36 @@ class MCUService:
             return {actuator_device_id: [dat]}
 
         payload = self.device_registry_service.get_payload_bytes(actuator_device_id, value)
-        self.mcu_persistent.clear_buffers()
+        self.clear_buffers()
         response = self._make_request(SET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id, payload=payload)
         return _decode_set_response(response)
+
+    def clear_buffers(self):
+        # Get the contents of the input buffer
+        logging.debug(f"Test 1")
+        buffer = b''
+        try:
+            logging.debug(f"Test 2")
+            buffer = self.mcu_persistent.read(self.mcu_persistent.in_waiting)
+            logging.debug(f"Test 3")
+        except Exception as e:
+            logging.debug(f"Encountered error while reading input buffer: {e}")
+        # Print the contents of the input buffer
+        logging.debug(f"Test 4")
+        if buffer != b'':
+            logging.debug(f"Test 5")
+            logging.debug(f"Buffer contents: {buffer}")
+            try:
+                decoded = bytes.fromhex(buffer).decode('utf-8')
+                logging.debug(f"Response from MCU (decoded): {decoded}")
+            except Exception:
+                pass
+        # Clear the buffers
+        logging.debug(f"Test 6")
+        self.mcu_persistent.reset_input_buffer()
+        logging.debug(f"Test 7")
+        self.mcu_persistent.reset_output_buffer()
+        logging.debug(f"Test 8")
 
     def _decode_get_response(self, response: bytes) -> Dict[str, List[Datum]]:
         """
