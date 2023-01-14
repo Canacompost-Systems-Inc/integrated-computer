@@ -174,6 +174,8 @@ class MCUService:
                         raise e
                     # Otherwise, just try writing the request again
                     continue
+                if _response is not None:
+                    return _response
 
             # If this is a get measurement call, the sensor may not be working so get fake data in the expected range
             if opcode == GET_SENSOR_STATE_OPCODE and _response == NEGATIVE_ACKNOWLEDGE:
