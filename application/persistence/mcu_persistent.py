@@ -35,7 +35,6 @@ class MCUPersistent:
             buffer = self._serial_connection.read(self._serial_connection.in_waiting)
         except Exception as e:
             logging.debug(f"Encountered error while reading input buffer: {e}")
-            pass
         # Print the contents of the input buffer
         if buffer != b'':
             logging.debug(f"Buffer contents: {buffer}")
@@ -45,8 +44,11 @@ class MCUPersistent:
             except Exception:
                 pass
         # Clear the buffers
+        logging.debug(f"Test 1")
         self._serial_connection.reset_input_buffer()
+        logging.debug(f"Test 2")
         self._serial_connection.reset_output_buffer()
+        logging.debug(f"Test 3")
 
     def get_mcu(self):
         if not self._serial_connection:

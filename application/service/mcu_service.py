@@ -24,8 +24,11 @@ class MCUService:
         self.mcu_persistent = get_mcu()
 
     def get_system_snapshot(self) -> Dict[str, List[Datum]]:
+        logging.debug(f"Test a")
         self.mcu_persistent.clear_buffers()
+        logging.debug(f"Test b")
         response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
+        logging.debug(f"Test c")
         return self._decode_get_response(response)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
