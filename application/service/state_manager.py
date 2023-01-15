@@ -170,6 +170,8 @@ class StateManager:
 
                 self.perform_action(action)
 
+        if routine_step.then_wait_n_sec and routine_step.then_wait_n_sec > 0:
+            logging.debug(f"Waiting {routine_step.then_wait_n_sec} seconds")
         time.sleep(routine_step.then_wait_n_sec)
 
     def perform_routine(self, routine: Routine):
