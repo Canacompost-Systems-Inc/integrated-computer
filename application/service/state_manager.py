@@ -237,17 +237,6 @@ class StateManager:
                     time.sleep(3)
                     continue
 
-                if self.mcu_service.demo_mode:
-                    # Set initial measurements so we don't startup with empty values
-                    # TODO - set these values in self.last_read_measurements
-
-                    # from application.constants.demo import MEASUREMENT_RANGES
-                    # range_min = MEASUREMENT_RANGES.get(datum.measurement.name, (0.0, 0.0))[0]
-                    # range_max = MEASUREMENT_RANGES.get(datum.measurement.name, (0.0, 0.0))[1]
-                    # from random import uniform
-                    # random_value = uniform(range_min, range_max)
-                    pass
-
                 self.mcu_state_tracker_service.update_tracked_state(system_snapshot)
                 self.initialize_isolation_state_context()
 
@@ -259,6 +248,7 @@ class StateManager:
                 self.is_initialized = True
 
             self.perform_next_routine_in_queue()
-            # TODO - only run this routine if we do not have the advanced tab enabled
-            #self.perform_routine(ReadSensorsRealtimeRoutine())
+            # Only get the realtime sensor updates if automated routine running is enabled
+            if not self.automated_routines_disabled:
+                self.perform_routine(ReadSensorsRealtimeRoutine())
             time.sleep(1)
