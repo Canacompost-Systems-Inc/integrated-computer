@@ -21,8 +21,7 @@ class MCUPersistent:
         if not self.app.config['TESTING']:
             self._serial_connection = serial.Serial(
                 self.app.config['MCU_SERIAL_PORT'],
-                self.app.config['MCU_BAUD_RATE'],
-                timeout=5)
+                self.app.config['MCU_BAUD_RATE'])
             time.sleep(1)
 
             self._serial_connection.reset_input_buffer()
