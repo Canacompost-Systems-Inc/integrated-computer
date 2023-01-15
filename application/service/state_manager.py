@@ -259,5 +259,6 @@ class StateManager:
                 self.is_initialized = True
 
             self.perform_next_routine_in_queue()
+            # TODO - only run this routine if we do not have the advanced tab enabled
             #self.perform_routine(ReadSensorsRealtimeRoutine())
             time.sleep(1)
