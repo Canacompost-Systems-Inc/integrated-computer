@@ -38,7 +38,7 @@ class MoveCompostRoutine(Routine):
                 RoutineStep(ActivateCompostLoopDestinationActionSet(to_location), then_wait_n_sec=0),
 
                 # Open the butterfly valve to release the compost
-                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=5),
+                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=30),
                 # Run the air hammer briefly (it is VERY loud)
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
@@ -50,13 +50,13 @@ class MoveCompostRoutine(Routine):
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
 
                 # Repeat this cycle two more times
-                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=5),
+                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=30),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
                 RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=5),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
-                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=5),
+                RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=30),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
