@@ -259,5 +259,5 @@ class StateManager:
                 self.is_initialized = True
 
             self.perform_next_routine_in_queue()
-            self.perform_routine(ReadSensorsRealtimeRoutine())
+            #self.perform_routine(ReadSensorsRealtimeRoutine())
             time.sleep(1)
