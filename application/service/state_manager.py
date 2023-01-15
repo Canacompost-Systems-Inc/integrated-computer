@@ -6,6 +6,7 @@ from typing import List, Optional, Tuple
 from application.model.action.action import Action
 from application.model.context.isolation_context import IsolationContext
 from application.model.routine.advanced_tab_routine import AdvancedTabRoutine
+from application.model.routine.read_sensors_realtime_routine import ReadSensorsRealtimeRoutine
 from application.model.routine.routine import Routine
 from application.model.routine.routine_step import RoutineStep
 from application.model.state.isolation.isolation_state import IsolationState
@@ -170,6 +171,8 @@ class StateManager:
 
                 self.perform_action(action)
 
+        if routine_step.then_wait_n_sec and routine_step.then_wait_n_sec > 0:
+            logging.debug(f"Waiting {routine_step.then_wait_n_sec} seconds")
         time.sleep(routine_step.then_wait_n_sec)
 
     def perform_routine(self, routine: Routine):
@@ -229,6 +232,7 @@ class StateManager:
                 try:
                     system_snapshot = self.mcu_service.get_system_snapshot()
                 except Exception as e:
+                    logging.debug(f"Encountered error while getting the system snapshot: {e}")
                     # If the MCU isn't ready yet, it will sometimes raise an error
                     time.sleep(3)
                     continue
@@ -244,5 +248,7 @@ class StateManager:
                 self.is_initialized = True
 
             self.perform_next_routine_in_queue()
-
+            # Only get the realtime sensor updates if automated routine running is enabled
+            if not self.automated_routines_disabled:
+                self.perform_routine(ReadSensorsRealtimeRoutine())
             time.sleep(1)

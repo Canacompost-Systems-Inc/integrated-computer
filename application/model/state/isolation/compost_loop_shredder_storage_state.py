@@ -1,7 +1,8 @@
 from typing import Dict
 
-from application.model.action.activate_air_loop_action_set import ActivateAirLoopActionSet
-from application.model.action.activate_compost_loop_source_action_set import ActivateCompostLoopSourceActionSet
+from application.model.action.set_rotary_valve_compost_loop_action_set import SetRotaryValveCompostLoopActionSet
+from application.model.action.set_rotary_valve_from_air_loop_action_set import SetRotaryValveFromAirLoopActionSet
+from application.model.action.set_rotary_valve_to_air_loop_action_set import SetRotaryValveToAirLoopActionSet
 from application.model.location.base_location import BaseLocation
 from application.model.location.compostloop_location import CompostLoopLocation
 from application.model.location.shredderstorage_location import ShredderStorageLocation
@@ -23,7 +24,9 @@ class CompostLoopShredderStorageState(IsolationState):
 
     def activate_state(self):
         return Routine(steps=[
-            RoutineStep(ActivateAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+            RoutineStep(SetRotaryValveFromAirLoopActionSet('shredder_storage'), then_wait_n_sec=0),
+            RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+            RoutineStep(SetRotaryValveCompostLoopActionSet('air_loop'), then_wait_n_sec=0),
         ])
 
     def deactivate_state(self):

@@ -14,23 +14,27 @@ from application.service.measurement_factory import MeasurementFactory
 class MCUService:
 
     def __init__(self, device_registry_service: DeviceRegistryService, measurement_factory: MeasurementFactory,
-                 testing=False):
+                 testing=False, demo_mode=False):
 
         self.device_registry_service = device_registry_service
         self.measurement_factory = measurement_factory
         self.testing = testing
+        self.demo_mode = demo_mode
 
         self.mcu_persistent = get_mcu()
 
     def get_system_snapshot(self) -> Dict[str, List[Datum]]:
+        self.clear_buffers()
         response = self._make_request(GET_SYSTEM_SNAPSHOT_OPCODE)
         return self._decode_get_response(response)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
+        self.clear_buffers()
         response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
         return self._decode_get_response(response)
 
     def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, List[Datum]]:
+        self.clear_buffers()
         response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
         return self._decode_get_response(response)
 
@@ -68,8 +72,36 @@ class MCUService:
             return {actuator_device_id: [dat]}
 
         payload = self.device_registry_service.get_payload_bytes(actuator_device_id, value)
+        self.clear_buffers()
         response = self._make_request(SET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id, payload=payload)
         return _decode_set_response(response)
+
+    def clear_buffers(self):
+        # Get the contents of the input buffer
+        buffer = b''
+        if self.mcu_persistent is None:
+            return
+        if self.mcu_persistent.in_waiting == 0:
+            return
+        # Give it time to receive the rest of the input
+        time.sleep(1)
+        try:
+            buffer = self.mcu_persistent.read(self.mcu_persistent.in_waiting)
+        except Exception as e:
+            logging.debug(f"Encountered error while reading input buffer: {e}")
+        # Print the contents of the input buffer
+        if buffer != b'':
+            logging.debug(f"Buffer contents: {buffer}")
+            try:
+                decoded = bytes.fromhex(buffer).decode('utf-8')
+                logging.debug(f"Response from MCU (decoded): {decoded}")
+            except Exception:
+                pass
+        # Clear the buffers
+        self.mcu_persistent.reset_input_buffer()
+        self.mcu_persistent.reset_output_buffer()
+        # Give it time before continuing to use the connection
+        time.sleep(1)
 
     def _decode_get_response(self, response: bytes) -> Dict[str, List[Datum]]:
         """
@@ -156,11 +188,56 @@ class MCUService:
 
             return response
 
+        # If demo mode is enabled, we need to retry multiple times since the MCU will write errors occasionally
+        if self.demo_mode:
+            request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
+
+            # Retry this many times (plus one more down below)
+            for _ in range(3):
+
+                self.mcu_persistent.write(request)
+                _response = None
+                try:
+                    _response = self._get_response()
+                except RuntimeError as e:
+                    # If we got a timeout, continue raising the error since we're screwed
+                    if 'Timeout waiting for response from MCU' in str(e):
+                        raise e
+                    # Otherwise, just try writing the request again
+                    continue
+                if _response is not None:
+                    break
+
+            # If this is a get measurement call, the sensor may not be working so get fake data in the expected range
+            if opcode == GET_SENSOR_STATE_OPCODE and _response == NEGATIVE_ACKNOWLEDGE:
+
+                # Construct a response that is within the acceptable range
+                response = bytes.fromhex(device_id)
+
+                for measurement_name in self.device_registry_service.get_device(device_id).measurement_order:
+
+                    from application.constants.demo import MEASUREMENT_RANGES
+                    range_min = MEASUREMENT_RANGES.get(measurement_name, (0.0, 0.0))[0]
+                    range_max = MEASUREMENT_RANGES.get(measurement_name, (0.0, 0.0))[1]
+
+                    from random import uniform
+                    random_value = uniform(range_min, range_max)
+
+                    # Add this measurement to the response
+                    import struct
+                    response += struct.pack("!f", random_value)
+
+                return response
+
+            return _response
+
         request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
+        logging.debug(f"Writing to MCU: {request.hex()}")
         self.mcu_persistent.write(request)
         return self._get_response()
 
     def _get_response(self, timeout_sec=10) -> bytes:
+        logging.debug(f"Getting response from MCU")
         buffer = b''
         state = IDLE
         current_payload_length_bytes = 0
@@ -168,6 +245,8 @@ class MCUService:
         while True:
 
             byte = self.mcu_persistent.read()
+
+            logging.debug(f"Received byte from MCU: {byte.hex()}")
 
             if byte == EMPTY:
                 # Wait so we don't keep reading nothing repeatedly
@@ -188,24 +267,9 @@ class MCUService:
 
                 else:
                     # Read something unexpected - clear the buffer then raise error
-                    logging.debug(f"Unexpected response from MCU: {byte.hex()}")
-                    read_maximum_n_bytes = 500
-                    rest_of_buffer = b''
-                    while (next_byte := self.mcu_persistent.read()) != EMPTY:
-                        rest_of_buffer += next_byte
-                        read_maximum_n_bytes -= 1
-                        if read_maximum_n_bytes <= 0:
-                            break
-                    full_response = buffer.hex() + byte.hex() + rest_of_buffer.hex()
-                    logging.debug(f"Response from MCU: {full_response}")
-                    try:
-                        decoded = bytes.fromhex(full_response).decode('utf-8')
-                        logging.debug(f"Response from MCU (decoded): {decoded}")
-                    except Exception:
-                        pass
-
                     err = f"Unexpected response from MCU. Expected '' or '{START_TRANSMISSION.hex()}', but got '{byte.hex()}'"
                     logging.error(err)
+                    self.clear_buffers()
                     raise RuntimeError(err)
 
             elif state == READING_DEVICE_ID:

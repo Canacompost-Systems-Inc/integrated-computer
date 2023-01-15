@@ -46,8 +46,9 @@ class MCUStateTrackerService:
                 to_name = to_location.name
                 location_remapping[from_name] = self.location_registry_service.get_location(to_name)
 
-                logging.debug(
-                    f"Recording measurements from {from_name} as {to_name} because the isolation state {self.isolation_context.state} is active")
+                # logging.debug(
+                #     f"Recording measurements from {from_name} as {to_name} because the isolation state "
+                #     f"{self.isolation_context.state} is active")
 
         for device_id, datum_list in mcu_service_response.items():
 

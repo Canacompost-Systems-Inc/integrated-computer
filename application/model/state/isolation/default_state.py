@@ -1,8 +1,8 @@
 from typing import Dict
 
-from application.model.action.activate_air_loop_action_set import ActivateAirLoopActionSet
-from application.model.action.activate_compost_loop_destination_action_set import \
-    ActivateCompostLoopDestinationActionSet
+from application.model.action.set_rotary_valve_compost_loop_action_set import SetRotaryValveCompostLoopActionSet
+from application.model.action.set_rotary_valve_from_air_loop_action_set import SetRotaryValveFromAirLoopActionSet
+from application.model.action.set_rotary_valve_to_air_loop_action_set import SetRotaryValveToAirLoopActionSet
 from application.model.location.base_location import BaseLocation
 from application.model.routine.routine import Routine
 from application.model.routine.routine_step import RoutineStep
@@ -18,8 +18,9 @@ class DefaultState(IsolationState):
 
     def activate_state(self):
         return Routine(steps=[
-            RoutineStep(ActivateCompostLoopDestinationActionSet('air_loop'), then_wait_n_sec=0),
-            RoutineStep(ActivateAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+            RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+            RoutineStep(SetRotaryValveCompostLoopActionSet('air_loop'), then_wait_n_sec=0),
+            RoutineStep(SetRotaryValveFromAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
         ])
 
     def deactivate_state(self):

@@ -2,6 +2,7 @@
 class Config(object):
     # Flask configuration - note that "from_object() loads only the uppercase attributes of the module/class"
     TESTING = True
+    DEMO_MODE = False
 
     MCU_BAUD_RATE = 9600
     MCU_SERIAL_PORT = '/dev/tty.usbmodem14101'
@@ -33,6 +34,7 @@ class Config(object):
         },
         'ShredderStorage': {
             'c3': ('DS18B20', 'Soil Temp Probe Shredder Storage'),
+            'cd': ('SHT40', 'Temp Humidity Sensor Shredder Storage'),
             'e3': ('ButterflyValve', 'Butterfly Valve From Shredder Storage'),
             'ed': ('AirHammerValve', 'Air Hammer Shredder Storage'),
             'f5': ('HeaterRelay', 'Heater Relay Shredder Storage'),
@@ -40,6 +42,7 @@ class Config(object):
         },
         'Bioreactor1': {
             'c4': ('DS18B20', 'Soil Temp Probe Bioreactor1'),
+            'cb': ('SHT40', 'Temp Humidity Sensor Bioreactor1'),
             'e4': ('ButterflyValve', 'Butterfly Valve From Bioreactor1'),
             'ee': ('AirHammerValve', 'Air Hammer Bioreactor1'),
             'f7': ('HeaterRelay', 'Heater Relay Bioreactor1'),
@@ -47,6 +50,7 @@ class Config(object):
         },
         'Bioreactor2': {
             'c5': ('DS18B20', 'Soil Temp Probe Bioreactor2'),
+            'cc': ('SHT40', 'Temp Humidity Sensor Bioreactor2'),
             'e5': ('ButterflyValve', 'Butterfly Valve From Bioreactor2'),
             'ef': ('AirHammerValve', 'Air Hammer Bioreactor2'),
             'f9': ('HeaterRelay', 'Heater Relay Bioreactor2'),
@@ -54,6 +58,7 @@ class Config(object):
         },
         'BSFReproduction': {
             'c6': ('DS18B20', 'Soil Temp Probe BSFReproduction'),
+            'ce': ('SHT40', 'Temp Humidity Sensor BSFReproduction'),
             'e6': ('ButterflyValve', 'Butterfly Valve From BSFReproduction'),
             'f0': ('AirHammerValve', 'Air Hammer BSFReproduction'),
             'f2': ('BSFLight', 'BSFReproduction Light'),
@@ -69,3 +74,7 @@ class Config(object):
 
     # Time is specifying as %H:%M:%S (i.e. a 24-hour clock) and is in Pacific time (PST or PDT)
     DISABLE_ROUTINES_BETWEEN = ('19:00:00', '09:00:00')
+
+    DISABLED_ROUTINES = [
+        'ReadSensorsRealtimeRoutine',
+    ]
