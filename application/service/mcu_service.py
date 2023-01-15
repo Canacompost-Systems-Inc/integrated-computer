@@ -34,6 +34,7 @@ class MCUService:
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
         if sensor_device_id in self.disabled_devices:
+            logging.debug(f"Skipping because this device is disabled")
             return {}
         self.clear_buffers()
         response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
@@ -41,6 +42,7 @@ class MCUService:
 
     def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, List[Datum]]:
         if actuator_device_id in self.disabled_devices:
+            logging.debug(f"Skipping because this device is disabled")
             return {}
         self.clear_buffers()
         response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
@@ -48,6 +50,7 @@ class MCUService:
 
     def set_actuator_state(self, actuator_device_id='e0', value='off') -> Dict[str, List[Datum]]:
         if actuator_device_id in self.disabled_devices:
+            logging.debug(f"Skipping because this device is disabled")
             return {}
 
         def _decode_set_response(_response: bytes) -> Dict[str, List[Datum]]:
