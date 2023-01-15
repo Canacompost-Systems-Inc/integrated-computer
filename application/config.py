@@ -80,4 +80,5 @@ class Config(object):
         'MoveCompostFromBioreactor2ToShredderStorageRoutine',
         'MoveCompostFromBSFReproductionToBioreactor2Routine',
         'MoveCompostFromShredderStorageToBioreactor2Routine',
+        'ReadSensorsRealtimeRoutine',
     ]

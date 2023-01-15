@@ -73,6 +73,7 @@ from application.model.routine.move_compost.move_compost_from_shredder_storage_t
 from application.model.routine.read_sensors_bioreactor_1_routine import ReadSensorsBioreactor1Routine
 from application.model.routine.read_sensors_bioreactor_2_routine import ReadSensorsBioreactor2Routine
 from application.model.routine.read_sensors_bsf_reproduction_routine import ReadSensorsBSFReproductionRoutine
+from application.model.routine.read_sensors_realtime_routine import ReadSensorsRealtimeRoutine
 from application.model.routine.read_sensors_shredder_storage_routine import ReadSensorsShredderStorageRoutine
 from application.model.routine.read_sensors_sieve_routine import ReadSensorsSieveRoutine
 from application.model.routine.sanitize_air_loop_routine import SanitizeAirLoopRoutine
@@ -217,6 +218,7 @@ def init_app():
             ReadSensorsBioreactor1Routine,
             ReadSensorsBioreactor2Routine,
             ReadSensorsBSFReproductionRoutine,
+            ReadSensorsRealtimeRoutine,
             ReadSensorsShredderStorageRoutine,
             ReadSensorsSieveRoutine,
             SanitizeAirLoopRoutine,
