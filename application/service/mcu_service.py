@@ -245,12 +245,12 @@ class MCUService:
             return _response
 
         request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
-        logging.debug(f"Writing to MCU: {request.hex()}")
+        # logging.debug(f"Writing to MCU: {request.hex()}")
         self.mcu_persistent.write(request)
         return self._get_response()
 
     def _get_response(self, timeout_sec=10) -> bytes:
-        logging.debug(f"Getting response from MCU")
+        # logging.debug(f"Getting response from MCU")
         buffer = b''
         state = IDLE
         current_payload_length_bytes = 0
@@ -259,7 +259,7 @@ class MCUService:
 
             byte = self.mcu_persistent.read()
 
-            logging.debug(f"Received byte from MCU: {byte.hex()}")
+            # logging.debug(f"Received byte from MCU: {byte.hex()}")
 
             if byte == EMPTY:
                 # Wait so we don't keep reading nothing repeatedly

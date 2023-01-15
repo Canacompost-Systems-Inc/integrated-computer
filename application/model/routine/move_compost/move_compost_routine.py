@@ -47,10 +47,15 @@ class MoveCompostRoutine(Routine):
                 RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
                 # Push the compost through
                 RoutineStep(SetRotaryValveFromAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveCompostLoopActionSet(to_location), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveToAirLoopActionSet(to_location), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
 
                 # Repeat this cycle two more times
+                RoutineStep(SetRotaryValveFromAirLoopActionSet(from_location), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveCompostLoopActionSet('air_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
                 RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=00),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
@@ -58,9 +63,14 @@ class MoveCompostRoutine(Routine):
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
                 RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
                 RoutineStep(SetRotaryValveFromAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveCompostLoopActionSet(to_location), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveToAirLoopActionSet(to_location), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
 
+                RoutineStep(SetRotaryValveFromAirLoopActionSet(from_location), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveCompostLoopActionSet('air_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
                 RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=00),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'open'), then_wait_n_sec=1),
@@ -68,12 +78,15 @@ class MoveCompostRoutine(Routine):
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
                 RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
                 RoutineStep(SetRotaryValveFromAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveCompostLoopActionSet(to_location), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveToAirLoopActionSet(to_location), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
 
                 # End sequence
-                RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveFromAirLoopActionSet(from_location), then_wait_n_sec=0),
                 RoutineStep(SetRotaryValveCompostLoopActionSet('air_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
             ],
             must_run_in_state=must_run_in_state,
@@ -81,8 +94,9 @@ class MoveCompostRoutine(Routine):
                 RoutineStep(SwitchAirHammerActionSet(from_location, 'close'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
                 RoutineStep(ActivateCompostLoopSourceActionSet(deactivate=True), then_wait_n_sec=0),
-                RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveFromAirLoopActionSet(from_location), then_wait_n_sec=0),
                 RoutineStep(SetRotaryValveCompostLoopActionSet('air_loop'), then_wait_n_sec=0),
+                RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
             ]
         )
