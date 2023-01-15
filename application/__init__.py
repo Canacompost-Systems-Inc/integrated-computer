@@ -41,7 +41,6 @@ from application.model.routine.cool_and_dehumidify_bsf_reproduction_routine impo
     CoolAndDehumidifyBSFReproductionRoutine
 from application.model.routine.cool_and_dehumidify_shredder_storage_routine import \
     CoolAndDehumidifyShredderStorageRoutine
-from application.model.routine.cool_and_dehumidify_sieve_routine import CoolAndDehumidifySieveRoutine
 from application.model.routine.flush_air_loop_routine import FlushAirLoopRoutine
 from application.model.routine.flush_compost_loop_routine import FlushCompostLoopRoutine
 from application.model.routine.heat_bioreactor_1_routine import HeatBioreactor1Routine
@@ -75,7 +74,6 @@ from application.model.routine.read_sensors_bioreactor_2_routine import ReadSens
 from application.model.routine.read_sensors_bsf_reproduction_routine import ReadSensorsBSFReproductionRoutine
 from application.model.routine.read_sensors_realtime_routine import ReadSensorsRealtimeRoutine
 from application.model.routine.read_sensors_shredder_storage_routine import ReadSensorsShredderStorageRoutine
-from application.model.routine.read_sensors_sieve_routine import ReadSensorsSieveRoutine
 from application.model.routine.sanitize_air_loop_routine import SanitizeAirLoopRoutine
 from application.model.routine.sanitize_compost_loop_routine import SanitizeCompostLoopRoutine
 from application.model.sensor.ds18b20_sensor import DS18B20Sensor
@@ -89,7 +87,6 @@ from application.model.state.isolation.air_loop_bioreactor_1_state import AirLoo
 from application.model.state.isolation.air_loop_bioreactor_2_state import AirLoopBioreactor2State
 from application.model.state.isolation.air_loop_bsf_reproduction_state import AirLoopBSFReproductionState
 from application.model.state.isolation.air_loop_shredder_storage_state import AirLoopShredderStorageState
-from application.model.state.isolation.air_loop_sieve_state import AirLoopSieveState
 from application.model.state.isolation.compost_loop_bioreactor_1_state import CompostLoopBioreactor1State
 from application.model.state.isolation.compost_loop_bioreactor_2_state import CompostLoopBioreactor2State
 from application.model.state.isolation.compost_loop_bsf_reproduction_state import CompostLoopBSFReproductionState
@@ -180,7 +177,6 @@ def init_app():
             AirLoopBioreactor2State,
             AirLoopBSFReproductionState,
             AirLoopShredderStorageState,
-            AirLoopSieveState,
             CompostLoopBioreactor1State,
             CompostLoopBioreactor2State,
             CompostLoopBSFReproductionState,
@@ -195,7 +191,6 @@ def init_app():
             CoolAndDehumidifyBioreactor2Routine,
             CoolAndDehumidifyBSFReproductionRoutine,
             CoolAndDehumidifyShredderStorageRoutine,
-            CoolAndDehumidifySieveRoutine,
             FlushAirLoopRoutine,
             FlushCompostLoopRoutine,
             HeatBioreactor1Routine,
@@ -220,7 +215,6 @@ def init_app():
             ReadSensorsBSFReproductionRoutine,
             ReadSensorsRealtimeRoutine,
             ReadSensorsShredderStorageRoutine,
-            ReadSensorsSieveRoutine,
             SanitizeAirLoopRoutine,
             SanitizeCompostLoopRoutine,
         ]

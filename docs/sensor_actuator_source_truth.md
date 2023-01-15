@@ -1,7 +1,7 @@
 # Sensor and Actuator Source of Truth
 
 | Location         | Device ID | Device Type                  | Friendly Name                          | Possible States                                                                                 |
-| ---------------- |-----------| ---------------------------- |----------------------------------------| ----------------------------------------------------------------------------------------------- |
+|------------------|-----------| ---------------------------- |----------------------------------------| ----------------------------------------------------------------------------------------------- |
 | Air Loop         | c0        | SHT40                        | Shared Temp Humidity Sensor            | -                                                                                               |
 | Air Loop         | c1        | SCD41                        | Shared CO2 Temp Humidity Sensor        | -                                                                                               |
 | Air Loop         | c2        | IPC10100                     | Shared Temp Pressure Sensor            | -                                                                                               |
@@ -21,21 +21,25 @@
 | Air Loop         | f3        | Ozone Generator              | Ozone Generator                        | 0 off<br />1 on                                                                                      |
 | Compost Loop     | e2        | Rotary Diverter Valve 1>6    | Rotary Diverter Valve Compost Loop     | 0 to air loop<br />1 -<br />2 bioreactor 1<br />3 bioreactor 2<br />4 bsf reproduction<br />5 sieve                      |
 | Shredder Storage | c3        | DS18B20                      | Soil Temp Probe Shredder Storage       | -                                                                                               |
+| Shredder Storage | cd        | SHT40                        | Temp Humidity Sensor Shredder Storage  | -                                                                                               |
 | Shredder Storage | e3        | Butterfly Valve              | Butterfly Valve From Shredder Storage  | 0 off<br />1 on                                                                                      |
 | Shredder Storage | ed        | Air Hammer Valve             | Air Hammer Shredder Storage            | 0 off<br />1 on                                                                                      |
 | Shredder Storage | f5        | Heater Relay                 | Heater Relay Shredder Storage          | 0 off<br />1 on                                                                                      |
 | Shredder Storage | f6        | Water Pump Relay             | Water Pump Relay Shredder Storage      | 0 off<br />1 on                                                                                      |
 | Bioreactor1      | c4        | DS18B20                      | Soil Temp Probe Bioreactor1            | -                                                                                               |
+| Bioreactor1      | cb        | SHT40                        | Temp Humidity Sensor Bioreactor1       | -                                                                                               |
 | Bioreactor1      | e4        | Butterfly Valve              | Butterfly Valve From Bioreactor1       | 0 off<br />1 on                                                                                      |
 | Bioreactor1      | ee        | Air Hammer Valve             | Air Hammer Bioreactor1                 | 0 off<br />1 on                                                                                      |
 | Bioreactor1      | f7        | Heater Relay                 | Heater Relay Bioreactor1               | 0 off<br />1 on                                                                                      |
 | Bioreactor1      | f8        | Water Pump Relay             | Water Pump Relay Bioreactor1           | 0 off<br />1 on                                                                                      |
 | Bioreactor2      | c5        | DS18B20                      | Soil Temp Probe Bioreactor2            | -                                                                                               |
+| Bioreactor2      | cc        | SHT40                        | Temp Humidity Sensor Bioreactor2       | -                                                                                               |
 | Bioreactor2      | e5        | Butterfly Valve              | Butterfly Valve From Bioreactor2       | 0 off<br />1 on                                                                                      |
 | Bioreactor2      | ef        | Air Hammer Valve             | Air Hammer Bioreactor2                 | 0 off<br />1 on                                                                                      |
 | Bioreactor2      | f9        | Heater Relay                 | Heater Relay Bioreactor2               | 0 off<br />1 on                                                                                      |
 | Bioreactor2      | fa        | Water Pump Relay             | Water Pump Relay Bioreactor2           | 0 off<br />1 on                                                                                      |
 | BSF Reproduction | c6        | DS18B20                      | Soil Temp Probe BSFReproduction        | -                                                                                               |
+| BSF Reproduction | ce        | SHT40                        | Temp Humidity Sensor BSFReproduction   | -                                                                                               |
 | BSF Reproduction | e6        | Butterfly Valve              | Butterfly Valve From BSFReproduction   | 0 off<br />1 on                                                                                      |
 | BSF Reproduction | f0        | Air Hammer Valve             | Air Hammer BSFReproduction             | 0 off<br />1 on                                                                                      |
 | BSF Reproduction | f2        | BSF Light                    | BSFReproduction Light                  | 0 off<br />1 on                                                                                      |

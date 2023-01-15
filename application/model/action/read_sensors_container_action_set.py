@@ -12,10 +12,10 @@ class ReadSensorsContainerActionSet(ActionSet):
 
         # These can be comma separated lists of device ids if more than one sensor exists in the container
         location_mapping = {
-            'shredder_storage': 'cd',  # c3
-            'bioreactor1': 'cb',  # c4
-            'bioreactor2': 'cc',  # c5
-            'bsf_reproduction': 'ce',  # c6
+            'shredder_storage': 'c3,cd',
+            'bioreactor1': 'c4,cb',
+            'bioreactor2': 'c5,cc',
+            'bsf_reproduction': 'c6,ce',
         }
         values = location_mapping.get(location).split(',')
 

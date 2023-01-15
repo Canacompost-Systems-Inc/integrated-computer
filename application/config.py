@@ -76,9 +76,5 @@ class Config(object):
     DISABLE_ROUTINES_BETWEEN = ('19:00:00', '09:00:00')
 
     DISABLED_ROUTINES = [
-        # 'MoveCompostFromBioreactor2ToBSFReproductionRoutine',
-        # 'MoveCompostFromBioreactor2ToShredderStorageRoutine',
-        # 'MoveCompostFromBSFReproductionToBioreactor2Routine',
-        # 'MoveCompostFromShredderStorageToBioreactor2Routine',
         'ReadSensorsRealtimeRoutine',
     ]

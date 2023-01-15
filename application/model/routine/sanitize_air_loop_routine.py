@@ -1,6 +1,3 @@
-from application.model.action.switch_air_loop_bypass_radiator_dehumidifier_action_set import \
-    SwitchAirLoopBypassRadiatorDehumidifierActionSet
-from application.model.action.switch_air_loop_bypass_sensor_box_action_set import SwitchAirLoopBypassSensorBoxActionSet
 from application.model.action.switch_air_loop_bypass_sensor_loop_action_set import \
     SwitchAirLoopBypassSensorLoopActionSet
 from application.model.action.switch_air_loop_environment_exchange_action_set import \
@@ -20,23 +17,24 @@ class SanitizeAirLoopRoutine(Routine):
 
         super().__init__(
             steps=[
-                # # Remove any bypasses
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
-                # # Turn on the ozone generator and let it build up
+                # Remove any bypasses
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
+                # Turn on the ozone generator and let it build up
+                # NOTE - commenting this out while we have air leaks
                 # RoutineStep(SwitchOzoneGeneratorActionSet('on'), then_wait_n_sec=30),
-                # # Turn on the UVC light
-                # RoutineStep(SwitchUVCLightActionSet('on'), then_wait_n_sec=0),
-                # # Begin circulating the ozone
-                # RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
-                # # Stop producing ozone
-                # RoutineStep(SwitchOzoneGeneratorActionSet('off'), then_wait_n_sec=10),
-                # # Flush the ozone from the system
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=30),
-                # # End sequence
-                # RoutineStep(SwitchUVCLightActionSet('off'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
+                # Turn on the UVC light
+                RoutineStep(SwitchUVCLightActionSet('on'), then_wait_n_sec=0),
+                # Begin circulating the ozone
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
+                # Stop producing ozone
+                RoutineStep(SwitchOzoneGeneratorActionSet('off'), then_wait_n_sec=10),
+                # Flush the ozone from the system
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=30),
+                # End sequence
+                RoutineStep(SwitchUVCLightActionSet('off'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('through'), then_wait_n_sec=0),
             ],
             must_run_in_state=DefaultState,
             failure_recovery_steps=[

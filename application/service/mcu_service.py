@@ -79,6 +79,8 @@ class MCUService:
     def clear_buffers(self):
         # Get the contents of the input buffer
         buffer = b''
+        if self.mcu_persistent is None:
+            return
         if self.mcu_persistent.in_waiting == 0:
             return
         # Give it time to receive the rest of the input

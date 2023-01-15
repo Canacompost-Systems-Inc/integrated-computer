@@ -16,22 +16,23 @@ class SanitizeCompostLoopRoutine(Routine):
 
         super().__init__(
             steps=[
-                # # We are skipping the sensor loop
-                # RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
-                # # Turn on the ozone generator and let it build up
+                # We are skipping the sensor loop
+                RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
+                # Turn on the ozone generator and let it build up
+                # NOTE - commenting this out while we have air leaks
                 # RoutineStep(SwitchOzoneGeneratorActionSet('on'), then_wait_n_sec=30),
-                # # Turn on the UVC light
-                # RoutineStep(SwitchUVCLightActionSet('on'), then_wait_n_sec=0),
-                # # Begin circulating the ozone
-                # RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
-                # # Stop producing ozone
-                # RoutineStep(SwitchOzoneGeneratorActionSet('off'), then_wait_n_sec=10),
-                # # Flush the ozone from the system
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=30),
-                # # End sequence
-                # RoutineStep(SwitchUVCLightActionSet('off'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
-                # RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                # Turn on the UVC light
+                RoutineStep(SwitchUVCLightActionSet('on'), then_wait_n_sec=0),
+                # Begin circulating the ozone
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=10),
+                # Stop producing ozone
+                RoutineStep(SwitchOzoneGeneratorActionSet('off'), then_wait_n_sec=0),
+                # Flush the ozone from the system
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='100'), then_wait_n_sec=30),
+                # End sequence
+                RoutineStep(SwitchUVCLightActionSet('off'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirLoopEnvironmentExchangeActionSet(strength='0'), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
             ],
             must_run_in_state=None,
             failure_recovery_steps=[
