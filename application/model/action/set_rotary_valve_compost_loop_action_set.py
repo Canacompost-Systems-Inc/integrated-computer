@@ -11,14 +11,13 @@ class SetRotaryValveCompostLoopActionSet(ActionSet):
                                    'sieve'] = 'air_loop',
                  ):
 
-        # Open: 2
         location_mapping = {
             'air_loop': '0',
             'shredder_storage': '5',
             'bioreactor1': '3',
             'bioreactor2': '2',
             'bsf_reproduction': '4',
-            'sieve': '',
+            'sieve': '2',
         }
         value = location_mapping.get(location)
 
