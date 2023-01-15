@@ -230,10 +230,12 @@ class MCUService:
             return _response
 
         request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
+        logging.debug(f"Writing to MCU: {request}")
         self.mcu_persistent.write(request)
         return self._get_response()
 
     def _get_response(self, timeout_sec=10) -> bytes:
+        logging.debug(f"Getting response from MCU")
         buffer = b''
         state = IDLE
         current_payload_length_bytes = 0
