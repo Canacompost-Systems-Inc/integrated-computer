@@ -7,8 +7,8 @@ from application.model.action.action_set import ActionSet
 class SetRotaryValveToAirLoopActionSet(ActionSet):
 
     def __init__(self,
-                 location: Literal['compost_loop', 'shredder_storage', 'bioreactor1', 'bioreactor2',
-                                   'bsf_reproduction'] = 'compost_loop',
+                 location: Literal['compost_loop', 'shredder_storage', 'bioreactor1', 'bioreactor2', 'bsf_reproduction',
+                                   'sieve'] = 'compost_loop',
                  ):
 
         # Open: 0
@@ -18,6 +18,7 @@ class SetRotaryValveToAirLoopActionSet(ActionSet):
             'bioreactor1': '4',
             'bioreactor2': '5',
             'bsf_reproduction': '3',
+            'sieve': '1',
         }
         value = location_mapping.get(location)
 

@@ -41,6 +41,7 @@ from application.model.routine.cool_and_dehumidify_bsf_reproduction_routine impo
     CoolAndDehumidifyBSFReproductionRoutine
 from application.model.routine.cool_and_dehumidify_shredder_storage_routine import \
     CoolAndDehumidifyShredderStorageRoutine
+from application.model.routine.dissuade_reproduction_routine import DissuadeReproductionRoutine
 from application.model.routine.flush_air_loop_routine import FlushAirLoopRoutine
 from application.model.routine.flush_compost_loop_routine import FlushCompostLoopRoutine
 from application.model.routine.heat_bioreactor_1_routine import HeatBioreactor1Routine
@@ -51,14 +52,19 @@ from application.model.routine.humidify_bioreactor_1_routine import HumidifyBior
 from application.model.routine.humidify_bioreactor_2_routine import HumidifyBioreactor2Routine
 from application.model.routine.humidify_bsf_reproduction_routine import HumidifyBSFReproductionRoutine
 from application.model.routine.humidify_shredder_storage_routine import HumidifyShredderStorageRoutine
+from application.model.routine.induce_reproduction_routine import InduceReproductionRoutine
 from application.model.routine.move_compost.move_compost_from_bioreactor_1_to_bsf_reproduction_routine import \
     MoveCompostFromBioreactor1ToBSFReproductionRoutine
 from application.model.routine.move_compost.move_compost_from_bioreactor_1_to_shredder_storage_routine import \
     MoveCompostFromBioreactor1ToShredderStorageRoutine
+from application.model.routine.move_compost.move_compost_from_bioreactor_1_to_sieve_routine import \
+    MoveCompostFromBioreactor1ToSieveRoutine
 from application.model.routine.move_compost.move_compost_from_bioreactor_2_to_bsf_reproduction_routine import \
     MoveCompostFromBioreactor2ToBSFReproductionRoutine
 from application.model.routine.move_compost.move_compost_from_bioreactor_2_to_shredder_storage_routine import \
     MoveCompostFromBioreactor2ToShredderStorageRoutine
+from application.model.routine.move_compost.move_compost_from_bioreactor_2_to_sieve_routine import \
+    MoveCompostFromBioreactor2ToSieveRoutine
 from application.model.routine.move_compost.move_compost_from_bsf_reproduction_to_bioreactor_1_routine import \
     MoveCompostFromBSFReproductionToBioreactor1Routine
 from application.model.routine.move_compost.move_compost_from_bsf_reproduction_to_bioreactor_2_routine import \
@@ -170,7 +176,7 @@ def init_app():
         measurement_factory = MeasurementFactory(measurements_list)
 
         mcu_service = MCUService(device_registry_service, measurement_factory, testing=app.config['TESTING'],
-                                 demo_mode=app.config['DEMO_MODE'])
+                                 demo_mode=app.config['DEMO_MODE'], disabled_devices=app.config['DISABLED_DEVICES'])
 
         isolation_state_list = [
             AirLoopBioreactor1State,
@@ -191,6 +197,7 @@ def init_app():
             CoolAndDehumidifyBioreactor2Routine,
             CoolAndDehumidifyBSFReproductionRoutine,
             CoolAndDehumidifyShredderStorageRoutine,
+            DissuadeReproductionRoutine,
             FlushAirLoopRoutine,
             FlushCompostLoopRoutine,
             HeatBioreactor1Routine,
@@ -201,10 +208,13 @@ def init_app():
             HumidifyBioreactor2Routine,
             HumidifyBSFReproductionRoutine,
             HumidifyShredderStorageRoutine,
+            InduceReproductionRoutine,
             MoveCompostFromBioreactor1ToBSFReproductionRoutine,
             MoveCompostFromBioreactor1ToShredderStorageRoutine,
+            MoveCompostFromBioreactor1ToSieveRoutine,
             MoveCompostFromBioreactor2ToBSFReproductionRoutine,
             MoveCompostFromBioreactor2ToShredderStorageRoutine,
+            MoveCompostFromBioreactor2ToSieveRoutine,
             MoveCompostFromBSFReproductionToBioreactor1Routine,
             MoveCompostFromBSFReproductionToBioreactor2Routine,
             MoveCompostFromBSFReproductionToSieveRoutine,

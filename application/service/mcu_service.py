@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from application.constants.mcu import IDLE, READING_DEVICE_ID, READING_PAYLOAD, EMPTY, START_TRANSMISSION, \
     END_TRANSMISSION, ACKNOWLEDGE, NEGATIVE_ACKNOWLEDGE, GET_SYSTEM_SNAPSHOT_OPCODE, GET_SENSOR_STATE_OPCODE, \
@@ -14,12 +14,16 @@ from application.service.measurement_factory import MeasurementFactory
 class MCUService:
 
     def __init__(self, device_registry_service: DeviceRegistryService, measurement_factory: MeasurementFactory,
-                 testing=False, demo_mode=False):
+                 testing=False, demo_mode=False, disabled_devices: Optional[List] = None):
+
+        if disabled_devices is None:
+            disabled_devices = []
 
         self.device_registry_service = device_registry_service
         self.measurement_factory = measurement_factory
         self.testing = testing
         self.demo_mode = demo_mode
+        self.disabled_devices = disabled_devices
 
         self.mcu_persistent = get_mcu()
 
@@ -29,16 +33,25 @@ class MCUService:
         return self._decode_get_response(response)
 
     def get_sensor_state(self, sensor_device_id='c0') -> Dict[str, List[Datum]]:
+        if sensor_device_id in self.disabled_devices:
+            logging.debug(f"Skipping because this device is disabled")
+            return {}
         self.clear_buffers()
         response = self._make_request(GET_SENSOR_STATE_OPCODE, device_id=sensor_device_id)
         return self._decode_get_response(response)
 
     def get_actuator_state(self, actuator_device_id='e0') -> Dict[str, List[Datum]]:
+        if actuator_device_id in self.disabled_devices:
+            logging.debug(f"Skipping because this device is disabled")
+            return {}
         self.clear_buffers()
         response = self._make_request(GET_ACTUATOR_STATE_OPCODE, device_id=actuator_device_id)
         return self._decode_get_response(response)
 
     def set_actuator_state(self, actuator_device_id='e0', value='off') -> Dict[str, List[Datum]]:
+        if actuator_device_id in self.disabled_devices:
+            logging.debug(f"Skipping because this device is disabled")
+            return {}
 
         def _decode_set_response(_response: bytes) -> Dict[str, List[Datum]]:
             """
@@ -232,12 +245,12 @@ class MCUService:
             return _response
 
         request = START_TRANSMISSION + opcode + bytes.fromhex(device_id) + payload + END_TRANSMISSION
-        logging.debug(f"Writing to MCU: {request.hex()}")
+        # logging.debug(f"Writing to MCU: {request.hex()}")
         self.mcu_persistent.write(request)
         return self._get_response()
 
     def _get_response(self, timeout_sec=10) -> bytes:
-        logging.debug(f"Getting response from MCU")
+        # logging.debug(f"Getting response from MCU")
         buffer = b''
         state = IDLE
         current_payload_length_bytes = 0
@@ -246,7 +259,7 @@ class MCUService:
 
             byte = self.mcu_persistent.read()
 
-            logging.debug(f"Received byte from MCU: {byte.hex()}")
+            # logging.debug(f"Received byte from MCU: {byte.hex()}")
 
             if byte == EMPTY:
                 # Wait so we don't keep reading nothing repeatedly

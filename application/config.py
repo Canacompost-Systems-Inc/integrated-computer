@@ -78,3 +78,10 @@ class Config(object):
     DISABLED_ROUTINES = [
         'ReadSensorsRealtimeRoutine',
     ]
+
+    DISABLED_DEVICES = [
+        'f5',
+        'f7',
+        'f9',
+        'fb'
+    ]
