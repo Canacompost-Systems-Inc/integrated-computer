@@ -36,6 +36,12 @@ class MoveCompostRoutine(Routine):
                 # Bypass the sensor loop entirely
                 RoutineStep(SwitchAirLoopBypassSensorLoopActionSet('divert'), then_wait_n_sec=0),
 
+                # Aerate the bioreactor
+                RoutineStep(SetRotaryValveToAirLoopActionSet(from_location), then_wait_n_sec=0),
+                RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
+                RoutineStep(SwitchAirMoverActionSet('off'), then_wait_n_sec=10),
+                RoutineStep(SetRotaryValveToAirLoopActionSet('compost_loop'), then_wait_n_sec=0),
+
                 # Open the butterfly valve and pressurize the container to release the compost
                 RoutineStep(ActivateCompostLoopSourceActionSet(from_location), then_wait_n_sec=00),
                 RoutineStep(SwitchAirMoverActionSet('on'), then_wait_n_sec=30),
