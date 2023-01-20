@@ -230,6 +230,6 @@ sudo bash -c 'cat <<'\''EOF'\'' >/home/canacompost2/.config/lxsession/LXDE/autos
 @lxpanel --profile LXDE
 @pcmanfm --desktop --profile LXDE
 @xscreensaver -no-splash
-@chromium-browser --kiosk http://http://localhost:3000/
+@chromium-browser --kiosk http://localhost:3000/
 EOF'
 ```
